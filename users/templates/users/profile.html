@@ -1,0 +1,173 @@
+{% extends 'base.html' %}
+
+{% block title %}Профиль{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <h2 class="mb-4">Профиль пользователя</h2>
+        
+        <!-- Вкладки -->
+        <ul class="nav nav-tabs mb-4" id="profileTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <a class="nav-link {% if active_tab == 'edit' or not active_tab %}active{% endif %}" 
+                   href="{% url 'users:profile_edit' %}">
+                    Редактировать данные
+                </a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link {% if active_tab == 'password' %}active{% endif %}" 
+                   href="{% url 'users:change_password' %}">
+                    Изменить пароль
+                </a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link {% if active_tab == 'groups' %}active{% endif %}" 
+                   href="{% url 'students:my_groups' %}">
+                    Мои группы
+                </a>
+            </li>
+        </ul>
+
+        <!-- Содержимое вкладок -->
+        <div class="tab-content" id="profileTabsContent">
+            <!-- Вкладка редактирования данных -->
+            <div class="tab-pane fade {% if active_tab == 'edit' or not active_tab %}show active{% endif %}" 
+                 id="edit" 
+                 role="tabpanel">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title mb-4">Редактирование данных профиля</h5>
+                        <form method="post" action="{% url 'users:profile_edit' %}">
+                            {% csrf_token %}
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="{{ form.first_name.id_for_label }}" class="form-label">
+                                        {{ form.first_name.label }}
+                                    </label>
+                                    {{ form.first_name }}
+                                    {% if form.first_name.errors %}
+                                        <div class="text-danger small">{{ form.first_name.errors }}</div>
+                                    {% endif %}
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="{{ form.last_name.id_for_label }}" class="form-label">
+                                        {{ form.last_name.label }}
+                                    </label>
+                                    {{ form.last_name }}
+                                    {% if form.last_name.errors %}
+                                        <div class="text-danger small">{{ form.last_name.errors }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="{{ form.middle_name.id_for_label }}" class="form-label">
+                                        {{ form.middle_name.label }}
+                                    </label>
+                                    {{ form.middle_name }}
+                                    {% if form.middle_name.errors %}
+                                        <div class="text-danger small">{{ form.middle_name.errors }}</div>
+                                    {% endif %}
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="{{ form.email.id_for_label }}" class="form-label">
+                                        {{ form.email.label }}
+                                    </label>
+                                    {{ form.email }}
+                                    {% if form.email.errors %}
+                                        <div class="text-danger small">{{ form.email.errors }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <button type="submit" class="btn btn-primary">Сохранить изменения</button>
+                                <a href="{% url 'users:profile' %}" class="btn btn-secondary">Отмена</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Вкладка изменения пароля -->
+            <div class="tab-pane fade {% if active_tab == 'password' %}show active{% endif %}" 
+                 id="password" 
+                 role="tabpanel">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title mb-4">Изменение пароля</h5>
+                        {% if form %}
+                        <form method="post" action="{% url 'users:change_password' %}">
+                            {% csrf_token %}
+                            <div class="mb-3">
+                                <label for="{{ form.old_password.id_for_label }}" class="form-label">
+                                    {{ form.old_password.label }}
+                                </label>
+                                <input type="password" 
+                                       name="{{ form.old_password.name }}" 
+                                       class="form-control" 
+                                       id="{{ form.old_password.id_for_label }}"
+                                       required>
+                                {% if form.old_password.errors %}
+                                    <div class="text-danger small">{{ form.old_password.errors }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="mb-3">
+                                <label for="{{ form.new_password1.id_for_label }}" class="form-label">
+                                    {{ form.new_password1.label }}
+                                </label>
+                                <input type="password" 
+                                       name="{{ form.new_password1.name }}" 
+                                       class="form-control" 
+                                       id="{{ form.new_password1.id_for_label }}"
+                                       required>
+                                {% if form.new_password1.errors %}
+                                    <div class="text-danger small">{{ form.new_password1.errors }}</div>
+                                {% endif %}
+                                {% if form.new_password1.help_text %}
+                                    <div class="form-text">{{ form.new_password1.help_text }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="mb-3">
+                                <label for="{{ form.new_password2.id_for_label }}" class="form-label">
+                                    {{ form.new_password2.label }}
+                                </label>
+                                <input type="password" 
+                                       name="{{ form.new_password2.name }}" 
+                                       class="form-control" 
+                                       id="{{ form.new_password2.id_for_label }}"
+                                       required>
+                                {% if form.new_password2.errors %}
+                                    <div class="text-danger small">{{ form.new_password2.errors }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="mb-3">
+                                <button type="submit" class="btn btn-primary">Изменить пароль</button>
+                                <a href="{% url 'users:profile' %}" class="btn btn-secondary">Отмена</a>
+                            </div>
+                        </form>
+                        {% else %}
+                        <p class="text-muted">Форма изменения пароля недоступна.</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Вкладка мои группы -->
+            <div class="tab-pane fade {% if active_tab == 'groups' %}show active{% endif %}" 
+                 id="groups" 
+                 role="tabpanel">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title mb-4">Мои группы</h5>
+                        <p class="card-text">Для просмотра списка групп перейдите на страницу "Мои группы".</p>
+                        <a href="{% url 'students:my_groups' %}" class="btn btn-primary">Перейти к группам</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+

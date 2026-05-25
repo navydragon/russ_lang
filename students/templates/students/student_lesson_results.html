@@ -1,0 +1,157 @@
+{% extends 'base.html' %}
+
+{% block title %}Результаты урока: {{ student }} - {{ lesson.name }}{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2>{{ student }}</h2>
+        <h4 class="text-muted">{{ lesson.course.name }} - {{ lesson.name }}</h4>
+    </div>
+    <a href="{% url 'students:group_results' group.id %}?course_id={{ lesson.course.id }}" class="btn btn-secondary">Назад к результатам группы</a>
+</div>
+
+<!-- Поиск по названию задания -->
+<div class="mb-3">
+    <label for="taskSearch" class="form-label">Поиск по названию задания</label>
+    <input type="text" id="taskSearch" class="form-control" placeholder="Введите часть названия...">
+</div>
+
+{% if tasks_data %}
+    <div class="row">
+        {% for task_data in tasks_data %}
+            <div class="col-12 mb-3 task-card-wrapper" data-task-name="{{ task_data.task.name|lower }}">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">{{ task_data.task.name }}</h5>
+                    </div>
+                    <div class="card-body">
+                        {% if task_data.attempts %}
+                            <div class="d-flex flex-wrap gap-2">
+                                {% for attempt_info in task_data.attempts %}
+                                    <button 
+                                        type="button" 
+                                        class="btn btn-sm {% if attempt_info.attempt.is_completed %}btn-success{% else %}btn-secondary{% endif %}"
+                                        data-bs-toggle="modal" 
+                                        data-bs-target="#attemptModal{{ attempt_info.attempt.id }}"
+                                    >
+                                        {{ attempt_info.number }}
+                                    </button>
+                                    
+                                    <!-- Модальное окно для попытки -->
+                                    <div class="modal fade attempt-modal" id="attemptModal{{ attempt_info.attempt.id }}" tabindex="-1" aria-labelledby="attemptModalLabel{{ attempt_info.attempt.id }}" aria-hidden="true">
+                                        <div class="modal-dialog modal-xl modal-dialog-centered">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="attemptModalLabel{{ attempt_info.attempt.id }}">
+                                                        Попытка {{ attempt_info.number }} - {{ task_data.task.name }}
+                                                    </h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <div class="mb-3">
+                                                        <strong>Дата и время:</strong> {{ attempt_info.attempt.datetime|date:"d.m.Y H:i" }}<br>
+                                                        <strong>Статус:</strong> 
+                                                        <span class="badge {% if attempt_info.attempt.is_completed %}bg-success{% else %}bg-secondary{% endif %}">
+                                                            {% if attempt_info.attempt.is_completed %}Пройдено{% else %}Не пройдено{% endif %}
+                                                        </span><br>
+                                                        {% if attempt_info.attempt.score is not None %}
+                                                            <strong>Баллы:</strong> {{ attempt_info.attempt.score }}
+                                                            {% if attempt_info.attempt.score_percent is not None %}
+                                                                ({{ attempt_info.attempt.score_percent }}%)
+                                                            {% endif %}
+                                                        {% endif %}
+                                                    </div>
+                                                    <hr>
+                                                    <div class="attempt-results">
+                                                        {{ attempt_info.attempt.results|safe }}
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <p class="text-muted mb-0">Нет попыток выполнения</p>
+                        {% endif %}
+                    </div>
+                    <div class="card-footer text-muted">
+                        <strong>Всего попыток:</strong> {{ task_data.attempts|length }}
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="alert alert-info">
+        <h5>Задания не найдены</h5>
+        <p class="mb-0">В уроке "{{ lesson.name }}" пока нет заданий.</p>
+    </div>
+{% endif %}
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .card-header,
+    .card-footer {
+        padding: 0.5rem 0.75rem;
+    }
+    .card-body {
+        padding: 0.5rem 0.75rem;
+    }
+    .attempt-results {
+        max-height: 60vh;
+        overflow-y: auto;
+        padding: 10px;
+        border: 1px solid #dee2e6;
+        border-radius: 4px;
+    }
+    .attempt-results table {
+        width: 100%;
+    }
+    /* Скрытие карточек при фильтрации */
+    .task-card-wrapper.d-none {
+        display: none !important;
+    }
+    /* Широкая модалка с ограничением по ширине экрана */
+    .attempt-modal .modal-dialog {
+        max-width: 90vw;
+    }
+    @media (min-width: 1200px) {
+        .attempt-modal .modal-dialog {
+            max-width: 1100px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    (function() {
+        const input = document.getElementById('taskSearch');
+        if (!input) return;
+        const cards = document.querySelectorAll('.task-card-wrapper');
+
+        const normalize = (str) => (str || '').toString().trim().toLowerCase();
+
+        function filter() {
+            const query = normalize(input.value);
+            cards.forEach(card => {
+                const name = normalize(card.dataset.taskName);
+                if (!query || name.includes(query)) {
+                    card.classList.remove('d-none');
+                } else {
+                    card.classList.add('d-none');
+                }
+            });
+        }
+
+        input.addEventListener('input', filter);
+    })();
+</script>
+{% endblock %}
+

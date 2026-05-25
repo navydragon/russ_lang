@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block title %}Удаление студента из группы{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-6 offset-md-3">
+        <div class="card">
+            <div class="card-header bg-warning text-dark">
+                <h3 class="mb-0">Подтверждение удаления</h3>
+            </div>
+            <div class="card-body">
+                <p>Вы уверены, что хотите удалить студента <strong>"{{ student }}"</strong> из группы <strong>"{{ group.name }}"</strong>?</p>
+                
+                <div class="alert alert-info">
+                    <small>Студент не будет удален из системы, но будет убран из этой группы.</small>
+                </div>
+                
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="d-flex justify-content-between">
+                        <a href="{% url 'students:group_students' group.id %}" class="btn btn-secondary">Отмена</a>
+                        <button type="submit" class="btn btn-danger">Удалить из группы</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

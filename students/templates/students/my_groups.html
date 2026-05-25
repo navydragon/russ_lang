@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+
+{% block title %}Мои группы{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Мои группы</h2>
+    {% if user.is_superuser %}
+        <span class="badge bg-info">Режим администратора</span>
+    {% endif %}
+</div>
+
+{% if groups %}
+    <div class="table-responsive">
+        <table class="table table-striped table-hover">
+            <thead class="table-dark">
+                <tr>
+                    <th>Название</th>
+                    <th>Код</th>
+                    <th>Куратор</th>
+                    <th>Количество студентов</th>
+                    <th>Действия</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for group in groups %}
+                    <tr>
+                        <td>{{ group.name }}</td>
+                        <td><code>{{ group.code }}</code></td>
+                        <td>
+                            {% if group.curator %}
+                                {{ group.curator.get_full_name|default:group.curator.username }}
+                            {% else %}
+                                <span class="text-muted">Не назначен</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <span class="badge bg-secondary">{{ group.students.count }}</span>
+                        </td>
+                        <td>
+                            <a href="{% url 'students:group_results' group.id %}" class="btn btn-sm btn-primary">
+                                Результаты
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% else %}
+    <div class="alert alert-info">
+        <h5>Группы не найдены</h5>
+        <p class="mb-0">
+            {% if user.is_superuser %}
+                В системе пока нет групп.
+            {% else %}
+                У вас нет назначенных групп в качестве куратора.
+            {% endif %}
+        </p>
+    </div>
+{% endif %}
+{% endblock %}
+
+

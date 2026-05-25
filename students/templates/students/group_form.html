@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h3 class="mb-0">{{ title }}</h3>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.name.id_for_label }}" class="form-label">
+                            {{ form.name.label }}
+                            {% if form.name.field.required %}<span class="text-danger">*</span>{% endif %}
+                        </label>
+                        {{ form.name }}
+                        {% if form.name.errors %}
+                            <div class="text-danger small mt-1">{{ form.name.errors }}</div>
+                        {% endif %}
+                        {% if form.name.help_text %}
+                            <div class="form-text">{{ form.name.help_text }}</div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.code.id_for_label }}" class="form-label">
+                            {{ form.code.label }}
+                            {% if form.code.field.required %}<span class="text-danger">*</span>{% endif %}
+                        </label>
+                        {{ form.code }}
+                        {% if form.code.errors %}
+                            <div class="text-danger small mt-1">{{ form.code.errors }}</div>
+                        {% endif %}
+                        {% if form.code.help_text %}
+                            <div class="form-text">{{ form.code.help_text }}</div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.curator.id_for_label }}" class="form-label">
+                            {{ form.curator.label }}
+                            {% if form.curator.field.required %}<span class="text-danger">*</span>{% endif %}
+                        </label>
+                        {{ form.curator }}
+                        {% if form.curator.errors %}
+                            <div class="text-danger small mt-1">{{ form.curator.errors }}</div>
+                        {% endif %}
+                        {% if form.curator.help_text %}
+                            <div class="form-text">{{ form.curator.help_text }}</div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="d-flex justify-content-between">
+                        <a href="{% url 'students:group_management' %}" class="btn btn-secondary">Отмена</a>
+                        <button type="submit" class="btn btn-primary">Сохранить</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+
+
+

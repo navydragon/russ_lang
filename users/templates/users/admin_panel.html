@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block title %}Администрирование{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h3 class="mb-0">Панель администрирования</h3>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-info">
+                    <h5 class="alert-heading">Страница в разработке</h5>
+                    <p class="mb-0">
+                        Функционал администрирования находится в разработке. 
+                        В данный момент доступна только базовая страница-заглушка.
+                    </p>
+                </div>
+                
+                <div class="mt-4">
+                    <h5>Доступные функции:</h5>
+                    <ul class="list-group">
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <strong>Управление пользователями</strong>
+                            <a href="{% url 'users:user_management' %}" class="btn btn-sm btn-primary">Перейти</a>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <strong>Управление группами</strong>
+                            <a href="{% url 'students:group_management' %}" class="btn btn-sm btn-primary">Перейти</a>
+                        </li>
+                        <li class="list-group-item">
+                            <strong>Управление курсами</strong>
+                            <span class="badge bg-secondary ms-2">Скоро</span>
+                        </li>
+                        <li class="list-group-item">
+                            <strong>Статистика и отчеты</strong>
+                            <span class="badge bg-secondary ms-2">Скоро</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="mt-4">
+                    <a href="{% url 'users:profile' %}" class="btn btn-secondary">Вернуться в профиль</a>
+                    <a href="{% url 'students:my_groups' %}" class="btn btn-primary">Мои группы</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+
