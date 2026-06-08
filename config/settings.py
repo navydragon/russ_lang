@@ -1,5 +1,5 @@
 """
-Django settings for email_forwarding project.
+Django settings for russ_lang project.
 """
 
 import os
@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'users',
     'students',
     'courses',
+    'api',
 ]
 
 MIDDLEWARE = [
@@ -50,7 +51,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'email_forwarding.urls'
+ROOT_URLCONF = 'config.urls'
 
 TEMPLATES = [
     {
@@ -68,7 +69,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'email_forwarding.wsgi.application'
+WSGI_APPLICATION = 'config.wsgi.application'
 
 
 # Database
@@ -145,6 +146,18 @@ DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL', 'admin@emiit.ru')
 PASSWORD_RESET_TIMEOUT = 86400  # 24 часа в секундах
 
 # Logging configuration
+def _log_handlers():
+    handlers = []
+    if os.getenv('LOG_TO_CONSOLE', 'true').lower() == 'true':
+        handlers.append('console')
+    if os.getenv('LOG_TO_FILE', 'true').lower() == 'true':
+        handlers.append('file')
+    return handlers or ['console']
+
+
+LOG_HANDLERS = _log_handlers()
+LOG_FILE = BASE_DIR / os.getenv('LOG_FILE', 'logs/django.log')
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -165,23 +178,34 @@ LOGGING = {
         },
         'file': {
             'class': 'logging.FileHandler',
-            'filename': BASE_DIR / 'logs' / 'django.log',
+            'filename': LOG_FILE,
             'formatter': 'verbose',
+            'encoding': 'utf-8',
         },
     },
     'root': {
-        'handlers': ['console'],
+        'handlers': LOG_HANDLERS,
         'level': 'INFO',
     },
     'loggers': {
         'django': {
-            'handlers': ['console', 'file'],
+            'handlers': LOG_HANDLERS,
             'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
             'propagate': False,
         },
         'forwarder': {
-            'handlers': ['console', 'file'],
-            'level': 'INFO',
+            'handlers': LOG_HANDLERS,
+            'level': os.getenv('FORWARDER_LOG_LEVEL', 'INFO'),
+            'propagate': False,
+        },
+        'api': {
+            'handlers': LOG_HANDLERS,
+            'level': os.getenv('API_LOG_LEVEL', 'INFO'),
+            'propagate': False,
+        },
+        'courses': {
+            'handlers': LOG_HANDLERS,
+            'level': os.getenv('COURSES_LOG_LEVEL', 'INFO'),
             'propagate': False,
         },
     },

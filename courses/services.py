@@ -2,10 +2,11 @@ from students.models import Student
 from courses.models import Task, TaskAttempt, StudentTask
 from django.utils import timezone
 from datetime import datetime
-from decimal import Decimal
-from typing import Optional
+from decimal import Decimal, InvalidOperation
+from typing import Any, Optional
 import re
 import logging
+import xml.etree.ElementTree as ET
 
 logger = logging.getLogger('courses')
 
@@ -130,42 +131,137 @@ def extract_score_value(score_str: str) -> Optional[Decimal]:
         return None
 
 
+def _to_decimal(value: Any) -> Optional[Decimal]:
+    if value is None or value == '':
+        return None
+    try:
+        return Decimal(str(value))
+    except (InvalidOperation, ValueError):
+        return None
+
+
+def _find_summary_element(root: ET.Element) -> Optional[ET.Element]:
+    for element in root.iter():
+        if element.tag == 'summary' or element.tag.endswith('}summary'):
+            return element
+    return None
+
+
+def parse_dr_summary(dr_xml: str) -> dict:
+    """
+    Извлекает summary из XML детальных результатов iSpring (поле dr).
+    """
+    result = {
+        'passed': None,
+        'score': None,
+        'percent': None,
+        'finish_timestamp': None,
+    }
+    if not dr_xml:
+        return result
+
+    try:
+        root = ET.fromstring(dr_xml)
+        summary = _find_summary_element(root)
+        if summary is None:
+            logger.warning('Элемент summary не найден в dr XML')
+            return result
+
+        passed = summary.get('passed')
+        if passed is not None:
+            result['passed'] = passed.lower() == 'true'
+
+        result['score'] = summary.get('score')
+        result['percent'] = summary.get('percent')
+        result['finish_timestamp'] = summary.get('finishTimestamp')
+    except ET.ParseError as e:
+        logger.warning(f'Ошибка парсинга dr XML: {e}')
+
+    return result
+
+
+def parse_ispring_post(post) -> dict:
+    """
+    Преобразует POST-данные iSpring QuizMaker в формат для save_quiz_result.
+    """
+    dr_xml = post.get('dr', '')
+    summary = parse_dr_summary(dr_xml)
+
+    score_value = _to_decimal(post.get('tp')) or _to_decimal(post.get('sp'))
+    if score_value is None:
+        score_value = _to_decimal(summary.get('score'))
+
+    score_percent = _to_decimal(summary.get('percent'))
+
+    passed = summary.get('passed')
+    if passed is None:
+        tp = _to_decimal(post.get('tp'))
+        ps = _to_decimal(post.get('ps'))
+        if tp is not None and ps is not None:
+            passed = tp >= ps
+        else:
+            passed = False
+
+    return {
+        'sid': post.get('sid') or None,
+        'task_code': post.get('qt') or None,
+        'date': summary.get('finish_timestamp'),
+        'score_value': score_value,
+        'score_percent': score_percent,
+        'result': passed,
+        'results_content': dr_xml,
+    }
+
+
+def _find_student(parsed_data: dict) -> Optional[Student]:
+    sid = parsed_data.get('sid')
+    if sid:
+        return Student.objects.filter(sid=sid).first()
+
+    user_id = parsed_data.get('user_id')
+    if user_id:
+        return Student.objects.filter(code=user_id).first()
+
+    return None
+
+
 def save_quiz_result(parsed_data: dict, html_body: Optional[str] = None) -> bool:
     """
     Сохраняет результат выполнения задания в базу данных.
-    
+
     Args:
-        parsed_data: Словарь с распарсенными данными из письма:
-            - user_id: код студента
+        parsed_data: Словарь с распарсенными данными:
+            - sid: ID студента во внешней системе (API QuizMaker)
+            - user_id: код студента (email-forwarder)
             - task_code: код задания
-            - date: дата выполнения
-            - score: строка с результатом
+            - date: дата выполнения (строка или datetime)
+            - score: строка с результатом (email)
+            - score_value, score_percent: числовые значения (API)
             - result: True если пройдено, False если не пройдено
+            - results_content: подробный результат (XML dr или HTML)
         html_body: HTML тело письма для сохранения в поле results
-            
+
     Returns:
         True при успешном сохранении, False при ошибке
     """
     try:
-        # 1. Проверяем наличие обязательных данных
+        sid = parsed_data.get('sid')
         user_id = parsed_data.get('user_id')
         task_code = parsed_data.get('task_code')
-        
-        if not user_id or not task_code:
-            logger.warning(f"Недостаточно данных для сохранения: user_id={user_id}, task_code={task_code}")
+
+        if not task_code or (not sid and not user_id):
+            logger.warning(
+                f"Недостаточно данных для сохранения: sid={sid}, "
+                f"user_id={user_id}, task_code={task_code}"
+            )
             return False
-        
-        # 2. Находим студента по коду
-        try:
-            student = Student.objects.get(code=user_id)
-        except Student.DoesNotExist:
-            logger.error(f"Студент с кодом {user_id} не найден")
+
+        student = _find_student(parsed_data)
+        if not student:
+            logger.error(f"Студент не найден: sid={sid}, user_id={user_id}")
             return False
-        except Exception as e:
-            logger.error(f"Ошибка поиска студента с кодом {user_id}: {e}")
-            return False
-        
-        # 3. Находим задание по коду (точное совпадение)
+
+        # Находим задание по коду (точное совпадение)
         try:
             task = Task.objects.get(code=task_code)
         except Task.DoesNotExist:
@@ -175,25 +271,34 @@ def save_quiz_result(parsed_data: dict, html_body: Optional[str] = None) -> bool
             logger.error(f"Ошибка поиска задания с кодом {task_code}: {e}")
             return False
         
-        # 4. Парсим дату
-        date_str = parsed_data.get('date')
-        attempt_datetime = parse_russian_date(date_str) if date_str else None
-        
+        date_value = parsed_data.get('date')
+        if isinstance(date_value, datetime):
+            attempt_datetime = date_value
+        elif date_value:
+            attempt_datetime = parse_russian_date(str(date_value))
+        else:
+            attempt_datetime = None
+
         if not attempt_datetime:
-            logger.warning(f"Не удалось распарсить дату: {date_str}, используем текущее время")
+            logger.warning(
+                f"Не удалось распарсить дату: {date_value}, используем текущее время"
+            )
             attempt_datetime = timezone.now()
-        
-        # 5. Извлекаем данные из score
-        score_str = parsed_data.get('score')
-        score_value = extract_score_value(score_str) if score_str else None
-        score_percent = extract_score_percent(score_str) if score_str else None
-        
-        # 6. Определяем статус выполнения
+        elif timezone.is_naive(attempt_datetime):
+            attempt_datetime = timezone.make_aware(attempt_datetime)
+
+        score_value = parsed_data.get('score_value')
+        score_percent = parsed_data.get('score_percent')
+        if score_value is None or score_percent is None:
+            score_str = parsed_data.get('score')
+            if score_value is None and score_str:
+                score_value = extract_score_value(score_str)
+            if score_percent is None and score_str:
+                score_percent = extract_score_percent(score_str)
+
         is_completed = parsed_data.get('result', False)
-        
-        # 7. Создаем TaskAttempt
-        # Сохраняем HTML тело письма в поле results
-        results_content = html_body if html_body else ""
+
+        results_content = parsed_data.get('results_content') or html_body or ''
         
         task_attempt = TaskAttempt.objects.create(
             student=student,
@@ -207,7 +312,7 @@ def save_quiz_result(parsed_data: dict, html_body: Optional[str] = None) -> bool
         
         logger.info(f"Создана попытка выполнения задания: {task_attempt}")
         
-        # 8. Если задание пройдено, создаем StudentTask
+        # Если задание пройдено, создаем StudentTask
         if is_completed:
             # Подсчитываем количество существующих попыток (все попытки)
             attempts_count = TaskAttempt.objects.filter(

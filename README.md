@@ -139,7 +139,7 @@ python email_forwarder.py
 ## Структура проекта
 
 ```
-email_forwarding/
+config/
 ├── email_forwarder.py  # Основной скрипт
 ├── requirements.txt    # Зависимости Python
 ├── .env.example        # Пример конфигурации
