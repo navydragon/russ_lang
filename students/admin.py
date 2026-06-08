@@ -32,9 +32,9 @@ class StudentAdmin(admin.ModelAdmin):
     """
     Админ-интерфейс для модели Student.
     """
-    list_display = ('last_name', 'first_name', 'middle_name', 'code', 'sid', 'group')
+    list_display = ('last_name', 'first_name', 'middle_name', 'code', 'group')
     list_filter = ('group',)
-    search_fields = ('last_name', 'first_name', 'middle_name', 'code', 'sid', 'group__name', 'group__code')
+    search_fields = ('last_name', 'first_name', 'middle_name', 'code', 'group__name', 'group__code')
     list_editable = ('group',)
     
     fieldsets = (
@@ -42,6 +42,6 @@ class StudentAdmin(admin.ModelAdmin):
             'fields': ('last_name', 'first_name', 'middle_name')
         }),
         ('Учебная информация', {
-            'fields': ('code', 'sid', 'group')
+            'fields': ('code', 'group')
         }),
     )

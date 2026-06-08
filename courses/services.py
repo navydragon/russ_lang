@@ -214,14 +214,10 @@ def parse_ispring_post(post) -> dict:
 
 
 def _find_student(parsed_data: dict) -> Optional[Student]:
-    sid = parsed_data.get('sid')
-    if sid:
-        return Student.objects.filter(sid=sid).first()
-
-    user_id = parsed_data.get('user_id')
-    if user_id:
-        return Student.objects.filter(code=user_id).first()
-
+    # sid из iSpring API и user_id из email-forwarder — это код студента (Student.code)
+    student_code = parsed_data.get('sid') or parsed_data.get('user_id')
+    if student_code:
+        return Student.objects.filter(code=student_code).first()
     return None
 
 
@@ -231,8 +227,8 @@ def save_quiz_result(parsed_data: dict, html_body: Optional[str] = None) -> bool
 
     Args:
         parsed_data: Словарь с распарсенными данными:
-            - sid: ID студента во внешней системе (API QuizMaker)
-            - user_id: код студента (email-forwarder)
+            - sid: код студента из iSpring API (Student.code)
+            - user_id: код студента из email-forwarder (Student.code)
             - task_code: код задания
             - date: дата выполнения (строка или datetime)
             - score: строка с результатом (email)
@@ -245,20 +241,19 @@ def save_quiz_result(parsed_data: dict, html_body: Optional[str] = None) -> bool
         True при успешном сохранении, False при ошибке
     """
     try:
-        sid = parsed_data.get('sid')
-        user_id = parsed_data.get('user_id')
+        student_code = parsed_data.get('sid') or parsed_data.get('user_id')
         task_code = parsed_data.get('task_code')
 
-        if not task_code or (not sid and not user_id):
+        if not task_code or not student_code:
             logger.warning(
-                f"Недостаточно данных для сохранения: sid={sid}, "
-                f"user_id={user_id}, task_code={task_code}"
+                f"Недостаточно данных для сохранения: "
+                f"student_code={student_code}, task_code={task_code}"
             )
             return False
 
         student = _find_student(parsed_data)
         if not student:
-            logger.error(f"Студент не найден: sid={sid}, user_id={user_id}")
+            logger.error(f"Студент не найден по коду: {student_code}")
             return False
 
         # Находим задание по коду (точное совпадение)

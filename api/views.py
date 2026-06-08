@@ -29,7 +29,7 @@ def quiz_result(request):
         parsed_data = parse_ispring_post(request.POST)
         if not save_quiz_result(parsed_data):
             logger.warning(
-                'Не удалось сохранить результат квиза: sid=%s, task_code=%s',
+                'Не удалось сохранить результат квиза: student_code=%s, task_code=%s',
                 parsed_data.get('sid'),
                 parsed_data.get('task_code'),
             )

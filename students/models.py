@@ -55,14 +55,7 @@ class Student(models.Model):
     code = models.CharField(
         max_length=50,
         unique=True,
-        verbose_name='Код'
-    )
-    sid = models.CharField(
-        max_length=100,
-        unique=True,
-        null=True,
-        blank=True,
-        verbose_name='ID во внешней системе',
+        verbose_name='Код студента'
     )
     group = models.ForeignKey(
         Group,
