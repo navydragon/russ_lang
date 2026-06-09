@@ -1,0 +1,9 @@
+{% for block in blocks %}
+    {% if block.type == 'text' %}
+        <span>{{ block.value }}</span>
+    {% elif block.type == 'equation' %}
+        <code class="math-latex">{{ block.value }}</code>
+    {% elif block.type == 'picture' %}
+        <span class="text-muted fst-italic">[{{ block.alt_text|default:"изображение" }}]</span>
+    {% endif %}
+{% endfor %}

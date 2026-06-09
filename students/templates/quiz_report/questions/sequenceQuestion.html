@@ -1,0 +1,9 @@
+{% include "quiz_report/_question_header.html" %}
+<ol class="mb-0">
+    {% for answer in question.payload.answers %}
+    <li class="mb-1">
+        {% include "quiz_report/_text_content.html" with blocks=answer.text %}
+        <span class="small text-muted">(исходная позиция: {{ answer.original_index|add:1 }})</span>
+    </li>
+    {% endfor %}
+</ol>

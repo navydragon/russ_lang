@@ -1,0 +1,29 @@
+{% load quiz_report_tags %}
+<div class="quiz-report">
+    {% include "quiz_report/_summary.html" %}
+    {% include "quiz_report/_groups.html" %}
+
+    {% if report.questions %}
+    <h6 class="mb-3">Вопросы</h6>
+    {% for question in report.questions %}
+    <div class="card mb-3 quiz-question-card border-start border-4
+        {% if question.status == 'correct' %}border-success
+        {% elif question.status == 'incorrect' %}border-danger
+        {% elif question.status == 'partially' %}border-warning
+        {% elif question.status == 'notAnswered' %}border-secondary
+        {% else %}border-info{% endif %}">
+        <div class="card-body">
+            {% render_question question %}
+            {% if question.feedback %}
+            <div class="mt-2 p-2 bg-light rounded small">
+                <strong>Обратная связь:</strong>
+                {% include "quiz_report/_text_content.html" with blocks=question.feedback %}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    {% endfor %}
+    {% else %}
+    <p class="text-muted">В отчёте нет вопросов.</p>
+    {% endif %}
+</div>

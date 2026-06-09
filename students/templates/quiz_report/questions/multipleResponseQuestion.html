@@ -1,0 +1,12 @@
+{% include "quiz_report/_question_header.html" %}
+<ul class="list-group list-group-flush">
+    {% for answer in question.payload.answers %}
+    <li class="list-group-item d-flex align-items-center
+        {% if answer.selected and answer.correct %}list-group-item-success
+        {% elif answer.selected and not answer.correct %}list-group-item-danger
+        {% elif answer.correct %}list-group-item-success bg-opacity-25{% endif %}">
+        <span class="me-2">{% if answer.selected %}☑{% else %}☐{% endif %}</span>
+        <span>{% include "quiz_report/_text_content.html" with blocks=answer.text %}</span>
+    </li>
+    {% endfor %}
+</ul>

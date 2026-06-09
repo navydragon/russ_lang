@@ -1,0 +1,13 @@
+{% include "quiz_report/_question_header.html" %}
+<div class="quiz-fill-blank mb-2">
+    {% for part in question.payload.details %}
+        {% if part.type == 'text' %}{{ part.value }}
+        {% elif part.type == 'equation' %}<code class="math-latex">{{ part.value }}</code>
+        {% elif part.type == 'blank' %}
+            <span class="badge {% if part.correct %}bg-success{% else %}bg-danger{% endif %}">{{ part.user_answer|default:"—" }}</span>
+        {% endif %}
+    {% endfor %}
+</div>
+{% if question.payload.extra_words %}
+<p class="small text-muted mb-0"><strong>Лишние слова:</strong> {{ question.payload.extra_words|join:", " }}</p>
+{% endif %}

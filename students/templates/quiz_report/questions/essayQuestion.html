@@ -1,0 +1,4 @@
+{% include "quiz_report/_question_header.html" %}
+<div class="quiz-essay-answer p-2 bg-light rounded">
+    {{ question.payload.user_answer|linebreaksbr|default:"—" }}
+</div>

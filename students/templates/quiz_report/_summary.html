@@ -1,0 +1,22 @@
+{% if report.summary.score or report.summary.percent or report.summary.time %}
+<div class="quiz-report-summary mb-3 p-3 bg-light rounded">
+    <h6 class="mb-2">Сводка из отчёта</h6>
+    <div class="row g-2 small">
+        {% if report.summary.score is not None %}
+        <div class="col-auto"><strong>Баллы:</strong> {{ report.summary.score }}{% if report.settings.max_score %} / {{ report.settings.max_score }}{% endif %}</div>
+        {% endif %}
+        {% if report.summary.percent is not None %}
+        <div class="col-auto"><strong>Процент:</strong> {{ report.summary.percent }}%</div>
+        {% endif %}
+        {% if report.summary.time is not None %}
+        <div class="col-auto"><strong>Время:</strong> {{ report.summary.time }} сек</div>
+        {% endif %}
+        {% if report.summary.finish_timestamp %}
+        <div class="col-auto"><strong>Завершено:</strong> {{ report.summary.finish_timestamp }}</div>
+        {% endif %}
+        {% if report.settings.passing_percent %}
+        <div class="col-auto"><strong>Проходной балл:</strong> {{ report.settings.passing_percent }}%</div>
+        {% endif %}
+    </div>
+</div>
+{% endif %}

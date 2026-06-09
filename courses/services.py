@@ -6,8 +6,6 @@ from decimal import Decimal, InvalidOperation
 from typing import Any, Optional
 import re
 import logging
-import xml.etree.ElementTree as ET
-
 logger = logging.getLogger('courses')
 
 
@@ -140,44 +138,12 @@ def _to_decimal(value: Any) -> Optional[Decimal]:
         return None
 
 
-def _find_summary_element(root: ET.Element) -> Optional[ET.Element]:
-    for element in root.iter():
-        if element.tag == 'summary' or element.tag.endswith('}summary'):
-            return element
-    return None
-
-
 def parse_dr_summary(dr_xml: str) -> dict:
     """
     Извлекает summary из XML детальных результатов iSpring (поле dr).
     """
-    result = {
-        'passed': None,
-        'score': None,
-        'percent': None,
-        'finish_timestamp': None,
-    }
-    if not dr_xml:
-        return result
-
-    try:
-        root = ET.fromstring(dr_xml)
-        summary = _find_summary_element(root)
-        if summary is None:
-            logger.warning('Элемент summary не найден в dr XML')
-            return result
-
-        passed = summary.get('passed')
-        if passed is not None:
-            result['passed'] = passed.lower() == 'true'
-
-        result['score'] = summary.get('score')
-        result['percent'] = summary.get('percent')
-        result['finish_timestamp'] = summary.get('finishTimestamp')
-    except ET.ParseError as e:
-        logger.warning(f'Ошибка парсинга dr XML: {e}')
-
-    return result
+    from courses.quiz_report import parse_summary_from_xml
+    return parse_summary_from_xml(dr_xml)
 
 
 def parse_ispring_post(post) -> dict:

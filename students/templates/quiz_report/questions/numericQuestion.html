@@ -1,0 +1,18 @@
+{% include "quiz_report/_question_header.html" %}
+<p><strong>Ответ:</strong> {{ question.payload.user_answer|default:"—" }}</p>
+{% if question.payload.acceptable_answers %}
+<ul class="small text-muted mb-0">
+    {% for rule in question.payload.acceptable_answers %}
+    <li>
+        {% if rule.type == 'between' %}от {{ rule.left_operand }} до {{ rule.right_operand }}
+        {% elif rule.type == 'equal' %}= {{ rule.value }}
+        {% elif rule.type == 'greater' %}&gt; {{ rule.value }}
+        {% elif rule.type == 'greaterOrEqual' %}≥ {{ rule.value }}
+        {% elif rule.type == 'less' %}&lt; {{ rule.value }}
+        {% elif rule.type == 'lessOrEqual' %}≤ {{ rule.value }}
+        {% elif rule.type == 'notEqual' %}≠ {{ rule.value }}
+        {% endif %}
+    </li>
+    {% endfor %}
+</ul>
+{% endif %}

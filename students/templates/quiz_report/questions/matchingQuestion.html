@@ -1,0 +1,17 @@
+{% include "quiz_report/_question_header.html" %}
+<div class="table-responsive">
+    <table class="table table-sm table-bordered mb-0">
+        <thead class="table-light">
+            <tr><th>Условие</th><th>Ответ пользователя</th><th>Правильное</th></tr>
+        </thead>
+        <tbody>
+            {% for row in question.payload.rows %}
+            <tr>
+                <td>{% include "quiz_report/_text_content.html" with blocks=row.premise %}</td>
+                <td>{% include "quiz_report/_text_content.html" with blocks=row.user_response %}</td>
+                <td>{% include "quiz_report/_text_content.html" with blocks=row.correct_response %}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>

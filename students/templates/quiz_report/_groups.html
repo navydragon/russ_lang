@@ -1,0 +1,29 @@
+{% if report.groups %}
+<div class="quiz-report-groups mb-3">
+    <h6 class="mb-2">Результаты по группам</h6>
+    <div class="table-responsive">
+        <table class="table table-sm table-bordered mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>Группа</th>
+                    <th>Набрано</th>
+                    <th>Макс.</th>
+                    <th>%</th>
+                    <th>Вопросов</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for group in report.groups %}
+                <tr>
+                    <td>{{ group.name }}</td>
+                    <td>{{ group.awarded_score }}</td>
+                    <td>{{ group.max_score }}</td>
+                    <td>{{ group.awarded_percent }}%</td>
+                    <td>{{ group.answered_questions }} / {{ group.total_questions }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endif %}

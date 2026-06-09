@@ -1,0 +1,12 @@
+{% include "quiz_report/_question_header.html" %}
+<ul class="list-group list-group-flush">
+    {% for answer in question.payload.answers %}
+    <li class="list-group-item d-flex align-items-center
+        {% if forloop.counter0 == question.payload.correct_answer_index %}list-group-item-success
+        {% elif forloop.counter0 == question.payload.user_answer_index and question.payload.user_answer_index != question.payload.correct_answer_index %}list-group-item-danger
+        {% endif %}">
+        <span class="me-2">{% if forloop.counter0 == question.payload.user_answer_index %}▶{% else %}&nbsp;&nbsp;{% endif %}</span>
+        <span>{% include "quiz_report/_text_content.html" with blocks=answer %}</span>
+    </li>
+    {% endfor %}
+</ul>

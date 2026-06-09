@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load quiz_report_tags %}
 
 {% block title %}Результаты урока: {{ student }} - {{ lesson.name }}{% endblock %}
 
@@ -64,7 +65,7 @@
                                                     </div>
                                                     <hr>
                                                     <div class="attempt-results">
-                                                        {{ attempt_info.attempt.results|safe }}
+                                                        {% render_attempt_results attempt_info.attempt.results %}
                                                     </div>
                                                 </div>
                                                 <div class="modal-footer">
@@ -112,6 +113,23 @@
     }
     .attempt-results table {
         width: 100%;
+    }
+    .quiz-report .quiz-question-card .card-body {
+        padding: 1rem;
+    }
+    .quiz-report-raw {
+        white-space: pre-wrap;
+        word-break: break-word;
+        font-size: 0.85rem;
+        margin: 0;
+    }
+    .quiz-fill-blank {
+        line-height: 2;
+    }
+    .math-latex {
+        background: #f8f9fa;
+        padding: 0.1rem 0.3rem;
+        border-radius: 3px;
     }
     /* Скрытие карточек при фильтрации */
     .task-card-wrapper.d-none {

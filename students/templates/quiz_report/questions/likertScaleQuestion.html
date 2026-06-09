@@ -1,0 +1,29 @@
+{% include "quiz_report/_question_header.html" %}
+<div class="table-responsive">
+    <table class="table table-sm table-bordered mb-0">
+        <thead class="table-light">
+            <tr>
+                <th>Утверждение</th>
+                {% for label in question.payload.labels %}
+                <th class="text-center">{{ label }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for statement in question.payload.statements %}
+            <tr>
+                <td>{% include "quiz_report/_text_content.html" with blocks=statement %}</td>
+                {% for label in question.payload.labels %}
+                <td class="text-center">
+                    {% for match in question.payload.user_matches %}
+                        {% if match.statement_index == forloop.parentloop.counter0 and match.label_index == forloop.counter0 %}
+                            ●
+                        {% endif %}
+                    {% endfor %}
+                </td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>

@@ -1,0 +1,10 @@
+{% include "quiz_report/_question_header.html" %}
+<div class="quiz-fill-blank">
+    {% for part in question.payload.details %}
+        {% if part.type == 'text' %}{{ part.value }}
+        {% elif part.type == 'equation' %}<code class="math-latex">{{ part.value }}</code>
+        {% elif part.type == 'blank' %}
+            <span class="badge {% if part.is_correct %}bg-success{% else %}bg-danger{% endif %}">{{ part.user_answer_text }}</span>
+        {% endif %}
+    {% endfor %}
+</div>

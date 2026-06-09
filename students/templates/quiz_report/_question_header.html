@@ -1,0 +1,21 @@
+<div class="d-flex justify-content-between align-items-start mb-2">
+    <div class="quiz-question-direction">
+        {% include "quiz_report/_text_content.html" with blocks=question.direction %}
+    </div>
+    <span class="badge ms-2
+        {% if question.status == 'correct' %}bg-success
+        {% elif question.status == 'incorrect' %}bg-danger
+        {% elif question.status == 'partially' %}bg-warning text-dark
+        {% elif question.status == 'notAnswered' %}bg-secondary
+        {% else %}bg-info text-dark{% endif %}">
+        {% if question.status == 'correct' %}Верно
+        {% elif question.status == 'incorrect' %}Неверно
+        {% elif question.status == 'partially' %}Частично
+        {% elif question.status == 'notAnswered' %}Не отвечено
+        {% elif question.status == 'answered' %}Отвечено
+        {% else %}{{ question.status }}{% endif %}
+    </span>
+</div>
+{% if question.evaluation_enabled and question.awarded_points is not None %}
+<p class="small text-muted mb-2">Баллы: {{ question.awarded_points }}{% if question.max_points %} / {{ question.max_points }}{% endif %}</p>
+{% endif %}

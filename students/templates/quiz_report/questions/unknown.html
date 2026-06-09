@@ -1,0 +1,5 @@
+{% include "quiz_report/_question_header.html" %}
+<p class="text-muted small">Тип вопроса: {{ question.payload.original_tag|default:question.type }}</p>
+{% if question.raw_xml %}
+<pre class="quiz-report-raw small">{{ question.raw_xml }}</pre>
+{% endif %}

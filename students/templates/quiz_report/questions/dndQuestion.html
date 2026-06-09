@@ -1,0 +1,17 @@
+{% include "quiz_report/_question_header.html" %}
+<div class="table-responsive">
+    <table class="table table-sm table-bordered mb-0">
+        <thead class="table-light">
+            <tr><th>Объект</th><th>Ответ пользователя</th><th>Правильно</th></tr>
+        </thead>
+        <tbody>
+            {% for row in question.payload.rows %}
+            <tr>
+                <td>{{ row.object_text }}</td>
+                <td>{{ row.user_destination }}</td>
+                <td>{{ row.correct_destination }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>

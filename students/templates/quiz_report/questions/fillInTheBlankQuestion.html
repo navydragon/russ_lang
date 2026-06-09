@@ -1,0 +1,9 @@
+{% include "quiz_report/_question_header.html" %}
+<div class="quiz-fill-blank">
+    {% for part in question.payload.details %}
+        {% if part.type == 'text' %}{{ part.value }}
+        {% elif part.type == 'blank' %}
+            <span class="badge {% if part.correct %}bg-success{% else %}bg-danger{% endif %}">{{ part.user_answer|default:"—" }}</span>
+        {% endif %}
+    {% endfor %}
+</div>

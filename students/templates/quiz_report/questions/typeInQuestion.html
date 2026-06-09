@@ -1,0 +1,5 @@
+{% include "quiz_report/_question_header.html" %}
+<p><strong>Ответ:</strong> {{ question.payload.user_answer|default:"—" }}</p>
+{% if question.payload.acceptable_answers %}
+<p class="small text-muted mb-0"><strong>Допустимые ответы:</strong> {{ question.payload.acceptable_answers|join:", " }}</p>
+{% endif %}

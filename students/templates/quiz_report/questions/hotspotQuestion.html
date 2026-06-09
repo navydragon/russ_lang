@@ -1,0 +1,29 @@
+{% include "quiz_report/_question_header.html" %}
+{% if question.payload.user_points %}
+<p><strong>Точки пользователя:</strong></p>
+<ul class="small">
+    {% for point in question.payload.user_points %}
+    <li>x={{ point.x }}, y={{ point.y }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+{% if question.payload.hotspots %}
+<div class="table-responsive">
+    <table class="table table-sm table-bordered mb-0">
+        <thead class="table-light">
+            <tr><th>Тип</th><th>Метка</th><th>Координаты</th><th>Отмечено</th><th>Верно</th></tr>
+        </thead>
+        <tbody>
+            {% for spot in question.payload.hotspots %}
+            <tr>
+                <td>{{ spot.type }}</td>
+                <td>{{ spot.label }}</td>
+                <td>x={{ spot.x }}, y={{ spot.y }}, w={{ spot.width }}, h={{ spot.height }}</td>
+                <td>{% if spot.marked %}да{% else %}нет{% endif %}</td>
+                <td>{% if spot.correct is not None %}{% if spot.correct %}да{% else %}нет{% endif %}{% else %}—{% endif %}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endif %}
