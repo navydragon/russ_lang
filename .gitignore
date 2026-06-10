@@ -39,6 +39,9 @@ ENV/
 # Логи
 *.log
 
+# База данных
+db.sqlite3
+
 # OS
 .DS_Store
 Thumbs.db
