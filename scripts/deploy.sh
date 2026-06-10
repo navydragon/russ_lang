@@ -28,8 +28,26 @@ cd "${PROJECT_DIR}"
 log "Проект: ${PROJECT_DIR}"
 log "Ветка: ${GIT_BRANCH}"
 
+DB_FILE="${PROJECT_DIR}/db.sqlite3"
+DB_PRESERVE=""
+
+if [[ -f "${DB_FILE}" ]] && ! git check-ignore -q "${DB_FILE}" 2>/dev/null; then
+    if git status --porcelain -- "${DB_FILE}" | grep -q .; then
+        log "Сохраняем локальную db.sqlite3 перед git pull"
+        DB_PRESERVE="$(mktemp)"
+        cp "${DB_FILE}" "${DB_PRESERVE}"
+        rm -f "${DB_FILE}"
+    fi
+fi
+
 log "git pull origin ${GIT_BRANCH}"
 git pull origin "${GIT_BRANCH}"
+
+if [[ -n "${DB_PRESERVE}" && -f "${DB_PRESERVE}" ]]; then
+    log "Восстанавливаем локальную db.sqlite3"
+    cp "${DB_PRESERVE}" "${DB_FILE}"
+    rm -f "${DB_PRESERVE}"
+fi
 
 log "Активация venv и установка зависимостей"
 # shellcheck source=/dev/null
