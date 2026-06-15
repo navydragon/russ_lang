@@ -42,17 +42,18 @@
                     </div>
                     
                     <div class="mb-3">
-                        <label for="{{ form.curator.id_for_label }}" class="form-label">
-                            {{ form.curator.label }}
-                            {% if form.curator.field.required %}<span class="text-danger">*</span>{% endif %}
+                        <label for="{{ form.curators.id_for_label }}" class="form-label">
+                            {{ form.curators.label }}
+                            {% if form.curators.field.required %}<span class="text-danger">*</span>{% endif %}
                         </label>
-                        {{ form.curator }}
-                        {% if form.curator.errors %}
-                            <div class="text-danger small mt-1">{{ form.curator.errors }}</div>
+                        {{ form.curators }}
+                        {% if form.curators.errors %}
+                            <div class="text-danger small mt-1">{{ form.curators.errors }}</div>
                         {% endif %}
-                        {% if form.curator.help_text %}
-                            <div class="form-text">{{ form.curator.help_text }}</div>
+                        {% if form.curators.help_text %}
+                            <div class="form-text">{{ form.curators.help_text }}</div>
                         {% endif %}
+                        <div class="form-text">Удерживайте Ctrl (Cmd на Mac) для выбора нескольких кураторов.</div>
                     </div>
                     
                     <div class="d-flex justify-content-between">

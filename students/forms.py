@@ -11,7 +11,7 @@ class GroupForm(forms.ModelForm):
     """
     class Meta:
         model = Group
-        fields = ['name', 'code', 'curator']
+        fields = ['name', 'code', 'curators']
         widgets = {
             'name': forms.TextInput(attrs={
                 'class': 'form-control',
@@ -21,38 +21,33 @@ class GroupForm(forms.ModelForm):
                 'class': 'form-control',
                 'placeholder': 'Введите код группы'
             }),
-            'curator': forms.Select(attrs={
-                'class': 'form-select'
+            'curators': forms.SelectMultiple(attrs={
+                'class': 'form-select',
+                'size': '8',
             }),
         }
         labels = {
             'name': 'Название',
             'code': 'Код',
-            'curator': 'Куратор',
+            'curators': 'Кураторы',
         }
         help_texts = {
             'code': 'Уникальный код группы',
-            'curator': 'Выберите куратора группы (необязательно)',
+            'curators': 'Выберите одного или нескольких кураторов (необязательно)',
         }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # Фильтруем пользователей для выбора куратора (можно выбрать всех пользователей)
-        self.fields['curator'].queryset = User.objects.filter(is_staff=True).order_by('last_name', 'first_name', 'username')
-        self.fields['curator'].required = False
-        self.fields['curator'].empty_label = 'Не назначен'
+        self.fields['curators'].queryset = User.objects.filter(is_staff=True).order_by('last_name', 'first_name', 'username')
+        self.fields['curators'].required = False
 
     def clean_code(self):
         code = self.cleaned_data.get('code')
         if code:
-            # Проверка уникальности кода (исключая текущий объект при редактировании)
             qs = Group.objects.filter(code=code)
             if self.instance.pk:
                 qs = qs.exclude(pk=self.instance.pk)
             if qs.exists():
                 raise forms.ValidationError('Группа с таким кодом уже существует.')
         return code
-
-
-
 

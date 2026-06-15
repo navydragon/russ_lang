@@ -15,12 +15,10 @@ class Group(models.Model):
         unique=True,
         verbose_name='Код'
     )
-    curator = models.ForeignKey(
+    curators = models.ManyToManyField(
         settings.AUTH_USER_MODEL,
-        on_delete=models.SET_NULL,
-        null=True,
         blank=True,
-        verbose_name='Куратор',
+        verbose_name='Кураторы',
         related_name='curated_groups'
     )
 
@@ -32,6 +30,9 @@ class Group(models.Model):
 
     def __str__(self):
         return f"{self.name} ({self.code})"
+
+    def has_curator(self, user):
+        return self.curators.filter(pk=user.pk).exists()
 
 
 class Student(models.Model):

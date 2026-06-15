@@ -34,10 +34,10 @@ class MyGroupsView(LoginRequiredMixin, TemplateView):
         
         if user.is_superuser:
             # Суперпользователь видит все группы
-            groups = Group.objects.all().prefetch_related('students', 'curator')
+            groups = Group.objects.all().prefetch_related('students', 'curators')
         else:
             # Обычный пользователь видит только свои группы как куратор
-            groups = Group.objects.filter(curator=user).prefetch_related('students', 'curator')
+            groups = Group.objects.filter(curators=user).prefetch_related('students', 'curators')
         
         context['groups'] = groups
         return context
@@ -63,12 +63,12 @@ class GroupResultsView(LoginRequiredMixin, TemplateView):
         
         # Получаем группу
         group = get_object_or_404(
-            Group.objects.select_related('curator'),
+            Group.objects.prefetch_related('curators'),
             id=group_id
         )
         
         # Проверяем доступ: пользователь должен быть куратором группы или superuser
-        if not user.is_superuser and group.curator != user:
+        if not user.is_superuser and not group.has_curator(user):
             from django.core.exceptions import PermissionDenied
             raise PermissionDenied("У вас нет доступа к этой группе")
         
@@ -164,12 +164,12 @@ class StudentLessonResultsView(LoginRequiredMixin, TemplateView):
         
         # Получаем студента с оптимизацией запросов
         student = get_object_or_404(
-            Student.objects.select_related('group', 'group__curator'),
+            Student.objects.select_related('group').prefetch_related('group__curators'),
             id=student_id
         )
         
         # Проверяем доступ: пользователь должен быть куратором группы студента или superuser
-        if not user.is_superuser and student.group.curator != user:
+        if not user.is_superuser and (not student.group or not student.group.has_curator(user)):
             from django.core.exceptions import PermissionDenied
             raise PermissionDenied("У вас нет доступа к результатам этого студента")
         
@@ -244,7 +244,7 @@ class GroupManagementView(LoginRequiredMixin, UserPassesTestMixin, ListView):
     def get_queryset(self):
         return Group.objects.annotate(
             students_count=Count('students')
-        ).select_related('curator').order_by('name')
+        ).prefetch_related('curators').order_by('name')
 
 
 class GroupCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):

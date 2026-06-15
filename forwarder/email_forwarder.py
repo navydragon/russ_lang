@@ -262,7 +262,7 @@ class EmailForwarder:
     
     def find_student_by_code(self, code: str) -> Optional[Student]:
         """
-        Находит студента в базе данных по коду с загрузкой группы и куратора
+        Находит студента в базе данных по коду с загрузкой группы и кураторов
         
         Args:
             code: Код студента (ID пользователя из письма)
@@ -271,7 +271,7 @@ class EmailForwarder:
             Объект Student или None, если не найден
         """
         try:
-            student = Student.objects.select_related('group', 'group__curator').get(code=code)
+            student = Student.objects.select_related('group').prefetch_related('group__curators').get(code=code)
             logger.info(f"Студент найден по коду {code}: {student}")
             return student
         except Student.DoesNotExist:
@@ -281,54 +281,55 @@ class EmailForwarder:
             logger.error(f"Ошибка поиска студента с кодом {code}: {e}")
             return None
     
-    def find_curator_for_student(self, student: Student) -> Optional[User]:
+    def find_curators_for_student(self, student: Student) -> list:
         """
-        Находит куратора группы студента
+        Находит кураторов группы студента
         
         Args:
             student: Объект Student
             
         Returns:
-            Объект User (куратор) или None, если куратор не найден
+            Список объектов User (кураторы)
         """
         if not student.group:
             logger.warning(f"У студента {student} нет группы")
-            return None
+            return []
         
-        curator = student.group.curator
-        if not curator:
-            logger.warning(f"У группы {student.group} нет куратора")
-            return None
+        curators = list(student.group.curators.all())
+        if not curators:
+            logger.warning(f"У группы {student.group} нет кураторов")
+            return []
         
-        logger.info(f"Куратор найден для студента {student}: {curator}")
-        return curator
+        logger.info(f"Кураторы найдены для студента {student}: {curators}")
+        return curators
     
-    def get_curator_email(self, student: Student) -> Optional[str]:
+    def get_curator_emails(self, student: Student) -> list:
         """
-        Получает email куратора группы студента, если у куратора включен флаг send_emails
+        Получает email кураторов группы студента с включённым флагом send_emails
         
         Args:
             student: Объект Student
             
         Returns:
-            Email куратора или None, если куратор не найден или send_emails=False
+            Список email кураторов
         """
-        curator = self.find_curator_for_student(student)
-        if not curator:
-            logger.info(f"Куратор не найден для студента {student}, письмо не будет переслано")
-            return None
+        curators = self.find_curators_for_student(student)
+        if not curators:
+            logger.info(f"Кураторы не найдены для студента {student}, письмо не будет переслано")
+            return []
         
-        if not curator.send_emails:
-            logger.info(f"У куратора {curator} отключен флаг send_emails, письмо не будет переслано")
-            return None
+        emails = []
+        for curator in curators:
+            if not curator.send_emails:
+                logger.info(f"У куратора {curator} отключен флаг send_emails, пропуск")
+                continue
+            if not curator.email:
+                logger.warning(f"У куратора {curator} не указан email")
+                continue
+            emails.append(curator.email)
+            logger.info(f"Email куратора найден: {curator.email} (куратор: {curator})")
         
-        email = curator.email
-        if not email:
-            logger.warning(f"У куратора {curator} не указан email")
-            return None
-        
-        logger.info(f"Email куратора найден: {email} (куратор: {curator})")
-        return email
+        return emails
     
     def connect_imap(self) -> Optional[imaplib.IMAP4_SSL]:
         """Подключение к IMAP серверу"""
@@ -583,23 +584,23 @@ class EmailForwarder:
                             user_id = self.parse_user_id(text_body, html_body)
                             self.print_user_id(user_id, subject)
                             
-                            # Если найден user_id, пытаемся найти студента по code и получить email куратора
-                            curator_email = None
+                            # Если найден user_id, пытаемся найти студента по code и получить email кураторов
+                            curator_emails = []
                             if user_id:
                                 student = self.find_student_by_code(user_id)
                                 if student:
                                     logger.info(f"Используем код студента {student.code} для обработки")
-                                    curator_email = self.get_curator_email(student)
-                                    if curator_email:
-                                        logger.info(f"Письмо будет переслано куратору: {curator_email}")
+                                    curator_emails = self.get_curator_emails(student)
+                                    if curator_emails:
+                                        logger.info(f"Письмо будет переслано кураторам: {', '.join(curator_emails)}")
                                     else:
-                                        logger.info("Письмо не будет переслано: куратор не найден или send_emails=False")
+                                        logger.info("Письмо не будет переслано: кураторы не найдены или send_emails=False")
                             
-                            # Пересылаем письмо только если найден email куратора
-                            if curator_email:
-                                self.forward_email(smtp, email_message, [curator_email])
+                            # Пересылаем письмо только если найдены email кураторов
+                            if curator_emails:
+                                self.forward_email(smtp, email_message, curator_emails)
                             else:
-                                logger.info("Письмо не переслано: нет получателя (куратор не найден или send_emails=False)")
+                                logger.info("Письмо не переслано: нет получателей (кураторы не найдены или send_emails=False)")
                     
                     # Закрываем соединения
                     smtp.quit()

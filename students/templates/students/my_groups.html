@@ -17,7 +17,7 @@
                 <tr>
                     <th>Название</th>
                     <th>Код</th>
-                    <th>Куратор</th>
+                    <th>Кураторы</th>
                     <th>Количество студентов</th>
                     <th>Действия</th>
                 </tr>
@@ -28,11 +28,11 @@
                         <td>{{ group.name }}</td>
                         <td><code>{{ group.code }}</code></td>
                         <td>
-                            {% if group.curator %}
-                                {{ group.curator.get_full_name|default:group.curator.username }}
-                            {% else %}
-                                <span class="text-muted">Не назначен</span>
-                            {% endif %}
+                            {% for curator in group.curators.all %}
+                                {{ curator.get_full_name|default:curator.username }}{% if not forloop.last %}, {% endif %}
+                            {% empty %}
+                                <span class="text-muted">Не назначены</span>
+                            {% endfor %}
                         </td>
                         <td>
                             <span class="badge bg-secondary">{{ group.students.count }}</span>

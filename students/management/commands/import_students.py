@@ -73,7 +73,7 @@ def username_from_email(email, existing_usernames):
 class Command(BaseCommand):
     help = (
         'Импортирует кураторов (пользователей), группы и студентов из Excel '
-        'с корректными связями Group.curator и Student.group'
+        'с корректными связями Group.curators и Student.group'
     )
 
     def add_arguments(self, parser):
@@ -226,21 +226,21 @@ class Command(BaseCommand):
                     'display_name': row['curator'],
                 }
 
-            group_key = (row['group'], curator_email)
-            if group_key not in groups_data:
-                groups_data[group_key] = {
-                    'name': row['group'],
-                    'code': group_code_from_name(row['group']),
-                    'curator_email': curator_email,
+            group_name = row['group']
+            if group_name not in groups_data:
+                groups_data[group_name] = {
+                    'name': group_name,
+                    'code': group_code_from_name(group_name),
+                    'curator_emails': set(),
                 }
+            groups_data[group_name]['curator_emails'].add(curator_email)
 
             students_data.append({
                 'last_name': row['last_name'],
                 'first_name': row['first_name'],
                 'middle_name': row['middle_name'] or None,
                 'code': row['code'],
-                'group_name': row['group'],
-                'curator_email': curator_email,
+                'group_name': group_name,
                 'row_number': row['row_number'],
             })
 
@@ -253,8 +253,9 @@ class Command(BaseCommand):
             for email, curator in curators_data.items():
                 self.stdout.write(f'  куратор: {curator["display_name"]} <{email}>')
             for group in groups_data.values():
+                curator_list = ', '.join(sorted(group['curator_emails']))
                 self.stdout.write(
-                    f'  группа: {group["name"]} ({group["code"]}) -> {group["curator_email"]}'
+                    f'  группа: {group["name"]} ({group["code"]}) -> {curator_list}'
                 )
             self.stdout.write(self.style.SUCCESS('Dry-run завершён, изменения не сохранены'))
             return
@@ -297,10 +298,10 @@ class Command(BaseCommand):
 
                     curators_by_email[email] = user
 
-                groups_by_key = {}
+                groups_by_name = {}
                 used_codes = set(Group.objects.values_list('code', flat=True))
 
-                for group_key, group_data in groups_data.items():
+                for group_name, group_data in groups_data.items():
                     code = group_data['code']
                     if code in used_codes:
                         suffix = 2
@@ -311,17 +312,18 @@ class Command(BaseCommand):
                     group = Group.objects.create(
                         name=group_data['name'],
                         code=code,
-                        curator=curators_by_email[group_data['curator_email']],
                     )
+                    group.curators.set([
+                        curators_by_email[email] for email in group_data['curator_emails']
+                    ])
                     used_codes.add(code)
-                    groups_by_key[group_key] = group
+                    groups_by_name[group_name] = group
                     self.stdout.write(
                         f'  + создана группа: {group.name} ({group.code})'
                     )
 
                 for student_data in students_data:
-                    group_key = (student_data['group_name'], student_data['curator_email'])
-                    group = groups_by_key[group_key]
+                    group = groups_by_name[student_data['group_name']]
                     Student.objects.create(
                         last_name=student_data['last_name'],
                         first_name=student_data['first_name'],
@@ -333,7 +335,7 @@ class Command(BaseCommand):
                 self.stdout.write(
                     self.style.SUCCESS(
                         f'\nИмпорт завершён: {len(curators_by_email)} кураторов, '
-                        f'{len(groups_by_key)} групп, {len(students_data)} студентов'
+                        f'{len(groups_by_name)} групп, {len(students_data)} студентов'
                     )
                 )
 
