@@ -4,6 +4,7 @@ from pathlib import Path
 
 from django.core.management.base import BaseCommand
 from django.db import transaction
+from django.db.models import Max
 from openpyxl import load_workbook
 
 from courses.models import Lesson, Task
@@ -71,6 +72,18 @@ class Command(BaseCommand):
             return
 
         position_counters = defaultdict(int)
+        existing_codes = set()
+
+        if options['keep_existing']:
+            for item in Task.objects.filter(
+                lesson_id__in=lesson_ids
+            ).values('lesson_id').annotate(max_pos=Max('position')):
+                position_counters[item['lesson_id']] = item['max_pos'] or 0
+            existing_codes = set(
+                Task.objects.filter(lesson_id__in=lesson_ids).values_list(
+                    'lesson_id', 'code'
+                )
+            )
 
         try:
             with transaction.atomic():
@@ -81,8 +94,18 @@ class Command(BaseCommand):
                     self.stdout.write(f'Удалено заданий: {deleted}')
 
                 created = 0
+                skipped = 0
                 for row in rows:
                     lesson = lessons[row['lesson_id']]
+                    if options['keep_existing'] and (lesson.id, row['code']) in existing_codes:
+                        skipped += 1
+                        self.stdout.write(
+                            self.style.WARNING(
+                                f'  ~ пропуск {row["code"]} | урок {lesson.id} — уже существует'
+                            )
+                        )
+                        continue
+
                     position_counters[lesson.id] += 1
                     position = position_counters[lesson.id]
 
@@ -92,6 +115,7 @@ class Command(BaseCommand):
                         lesson=lesson,
                         position=position,
                     )
+                    existing_codes.add((lesson.id, row['code']))
                     created += 1
                     self.stdout.write(
                         self.style.SUCCESS(
@@ -106,6 +130,6 @@ class Command(BaseCommand):
 
         self.stdout.write(
             self.style.SUCCESS(
-                f'\nГотово: создано {created} заданий из {len(rows)} строк'
+                f'\nГотово: создано {created}, пропущено {skipped} из {len(rows)} строк'
             )
         )
