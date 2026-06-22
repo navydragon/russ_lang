@@ -1,5 +1,8 @@
 from django.contrib import admin
+from django.contrib.auth import get_user_model
 from .models import Group, Student
+
+User = get_user_model()
 
 
 @admin.register(Group)
@@ -28,6 +31,11 @@ class GroupAdmin(admin.ModelAdmin):
             c.get_full_name() or c.username for c in obj.curators.all()
         ) or '—'
     get_curators_display.short_description = 'Кураторы'
+
+    def formfield_for_manytomany(self, db_field, request, **kwargs):
+        if db_field.name == 'curators':
+            kwargs['queryset'] = User.objects.filter(is_tutor=True).order_by('last_name', 'first_name', 'username')
+        return super().formfield_for_manytomany(db_field, request, **kwargs)
 
     def get_students_count(self, obj):
         """Возвращает количество студентов в группе."""

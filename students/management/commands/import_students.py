@@ -276,7 +276,7 @@ class Command(BaseCommand):
                         user.last_name = curator['last_name'] or user.last_name
                         user.first_name = curator['first_name'] or user.first_name
                         user.middle_name = curator['middle_name'] or user.middle_name
-                        user.is_staff = True
+                        user.is_tutor = True
                         user.send_emails = True
                         user.save()
                         self.stdout.write(f'  ~ обновлён куратор: {user}')
@@ -290,7 +290,7 @@ class Command(BaseCommand):
                             last_name=curator['last_name'],
                             first_name=curator['first_name'],
                             middle_name=curator['middle_name'],
-                            is_staff=True,
+                            is_tutor=True,
                             send_emails=True,
                         )
                         created_passwords.append((user, password))

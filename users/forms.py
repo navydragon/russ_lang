@@ -44,7 +44,7 @@ class UserForm(forms.ModelForm):
     """
     class Meta:
         model = User
-        fields = ['username', 'email', 'first_name', 'last_name', 'middle_name', 'is_staff', 'is_active', 'send_emails']
+        fields = ['username', 'email', 'first_name', 'last_name', 'middle_name', 'is_staff', 'is_tutor', 'is_active', 'send_emails']
         widgets = {
             'username': forms.TextInput(attrs={
                 'class': 'form-control',
@@ -69,6 +69,9 @@ class UserForm(forms.ModelForm):
             'is_staff': forms.CheckboxInput(attrs={
                 'class': 'form-check-input'
             }),
+            'is_tutor': forms.CheckboxInput(attrs={
+                'class': 'form-check-input'
+            }),
             'is_active': forms.CheckboxInput(attrs={
                 'class': 'form-check-input'
             }),
@@ -83,6 +86,7 @@ class UserForm(forms.ModelForm):
             'last_name': 'Фамилия',
             'middle_name': 'Отчество',
             'is_staff': 'Персонал',
+            'is_tutor': 'Куратор',
             'is_active': 'Активен',
             'send_emails': 'Отправлять письма',
         }
@@ -90,6 +94,7 @@ class UserForm(forms.ModelForm):
             'username': 'Обязательное поле. Не более 150 символов. Только буквы, цифры и @/./+/-/_',
             'email': 'Email адрес пользователя',
             'is_staff': 'Определяет, может ли пользователь войти в административную панель',
+            'is_tutor': 'Определяет, может ли пользователь быть назначен куратором группы',
             'is_active': 'Определяет, считается ли этот пользователь активным. Снимите флажок вместо удаления учетной записи',
             'send_emails': 'Если включено, куратор будет получать пересылаемые письма от студентов своей группы',
         }

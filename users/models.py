@@ -27,6 +27,11 @@ class User(AbstractUser):
         blank=True,
         null=True
     )
+    is_tutor = models.BooleanField(
+        default=False,
+        verbose_name='Куратор',
+        help_text='Определяет, может ли пользователь быть назначен куратором группы'
+    )
     # Флаг для отправки писем куратору
     send_emails = models.BooleanField(
         default=False,

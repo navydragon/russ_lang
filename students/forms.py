@@ -38,7 +38,7 @@ class GroupForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['curators'].queryset = User.objects.filter(is_staff=True).order_by('last_name', 'first_name', 'username')
+        self.fields['curators'].queryset = User.objects.filter(is_tutor=True).order_by('last_name', 'first_name', 'username')
         self.fields['curators'].required = False
 
     def clean_code(self):

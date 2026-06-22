@@ -38,6 +38,9 @@
                             {% if user_item.is_staff %}
                                 <span class="badge bg-primary">Персонал</span>
                             {% endif %}
+                            {% if user_item.is_tutor %}
+                                <span class="badge bg-info">Куратор</span>
+                            {% endif %}
                             {% if user_item.is_active %}
                                 <span class="badge bg-success">Активен</span>
                             {% else %}
