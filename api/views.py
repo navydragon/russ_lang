@@ -1,12 +1,71 @@
+import json
 import logging
+from decimal import Decimal
+from typing import Optional, Tuple
 
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
+from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 
 from courses.services import parse_ispring_post, save_quiz_result
+from .story_llm import VALID_TASK_IDS, check_story
 
 logger = logging.getLogger('api')
+
+_TASK_CODE_PLACEHOLDER_PREFIX = 'REPLACE_ME_'
+
+
+def _is_usable_task_code(task_code: str) -> bool:
+    return bool(task_code) and not task_code.startswith(_TASK_CODE_PLACEHOLDER_PREFIX)
+
+
+def _persist_story_attempt(
+    student_code: str,
+    task_code: str,
+    text: str,
+    result,
+) -> Tuple[bool, Optional[str]]:
+    """Save AI check as TaskAttempt. Returns (saved, save_error)."""
+    if not student_code:
+        return False, 'student_code is required'
+    if not _is_usable_task_code(task_code):
+        return False, 'task_code is missing or still a placeholder'
+
+    payload = result.model_dump()
+    results_content = json.dumps(
+        {
+            'source': 'story_check',
+            'text': text,
+            'ok': payload.get('ok'),
+            'score': payload.get('score'),
+            'feedback': payload.get('feedback'),
+            'normalized': payload.get('normalized'),
+            'errors': payload.get('errors'),
+            'quality_notes': payload.get('quality_notes'),
+            'recommendations': payload.get('recommendations'),
+        },
+        ensure_ascii=False,
+    )
+    score = Decimal(payload.get('score') or 0)
+    parsed_data = {
+        'sid': student_code,
+        'user_id': student_code,
+        'task_code': task_code,
+        'date': timezone.now(),
+        'score_value': score,
+        'score_percent': score,
+        'result': bool(payload.get('ok')),
+        'results_content': results_content,
+    }
+    try:
+        saved = save_quiz_result(parsed_data)
+    except Exception as e:
+        logger.exception('Story attempt save failed: %s', e)
+        return False, 'save_quiz_result raised an exception'
+    if not saved:
+        return False, 'save_quiz_result returned false'
+    return True, None
 
 
 @csrf_exempt
@@ -38,3 +97,48 @@ def quiz_result(request):
     except Exception as e:
         logger.exception('Ошибка обработки quiz result: %s', e)
         return HttpResponse(f'Error: {e}', content_type='text/plain', status=500)
+
+
+@csrf_exempt
+@require_POST
+def story_check(request):
+    try:
+        body = json.loads(request.body.decode('utf-8'))
+    except (json.JSONDecodeError, UnicodeDecodeError):
+        return JsonResponse({'error': 'Invalid JSON'}, status=400)
+
+    task_id = (body.get('task_id') or '').strip()
+    text = (body.get('text') or '').strip()
+    student_code = (body.get('student_code') or '').strip()
+    task_code = (body.get('task_code') or '').strip()
+
+    if task_id not in VALID_TASK_IDS:
+        return JsonResponse(
+            {'error': f'Invalid task_id. Expected one of: {", ".join(sorted(VALID_TASK_IDS))}'},
+            status=400,
+        )
+
+    if not text:
+        return JsonResponse({'error': 'Text is required'}, status=400)
+
+    try:
+        result = check_story(task_id, text)
+    except RuntimeError as e:
+        logger.error('Story check config error: %s', e)
+        return JsonResponse({'error': str(e)}, status=500)
+    except Exception as e:
+        logger.exception('Story check LLM error: %s', e)
+        return JsonResponse({'error': 'LLM request failed'}, status=502)
+
+    response = result.model_dump()
+    saved, save_error = _persist_story_attempt(student_code, task_code, text, result)
+    response['saved'] = saved
+    if save_error:
+        response['save_error'] = save_error
+        logger.warning(
+            'Story check not persisted: student_code=%s task_code=%s reason=%s',
+            student_code or '(empty)',
+            task_code or '(empty)',
+            save_error,
+        )
+    return JsonResponse(response)

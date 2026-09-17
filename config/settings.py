@@ -121,6 +121,11 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 CORS_ALLOW_ALL_ORIGINS = os.getenv('CORS_ALLOW_ALL_ORIGINS', 'true').lower() == 'true'
 CORS_URLS_REGEX = r'^/api/.*$'
 
+# LLM (Pydantic AI, ProxyAPI — https://proxyapi.ru/docs/overview)
+LLM_BASE_URL = os.getenv('LLM_BASE_URL', 'https://api.proxyapi.ru/openai/v1')
+LLM_API_KEY = os.getenv('LLM_API_KEY', '')
+LLM_MODEL = os.getenv('LLM_MODEL', 'gpt-4o-mini')
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 

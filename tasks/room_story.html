@@ -1,0 +1,506 @@
+<!doctype html>
+<html lang="ru">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Задание — Комната</title>
+  <link rel="icon" href="data:,">
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+  <style>
+    :root {
+      --paper-bg: #fff;
+      --line: rgba(20, 33, 61, 0.10);
+      --err-bg: rgba(220, 53, 69, 0.12);
+      --err-border: rgba(220, 53, 69, 0.35);
+    }
+
+    body {
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      background: #f6f7fb;
+      min-height: 100vh;
+    }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      padding: 28px 0 18px;
+      background-image: url("./bg.jpg");
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+
+    .hero:before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.75), rgba(255, 255, 255, 0.55));
+      backdrop-filter: blur(1px);
+    }
+
+    .hero .container {
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-tags {
+      display: flex;
+      align-items: baseline;
+      gap: 18px;
+      margin-bottom: 10px;
+      font-weight: 800;
+      font-size: 14px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      user-select: none;
+    }
+
+    .hero-tag-reading {
+      color: #1d4ed8;
+    }
+
+    .hero-tag-task {
+      color: #ef4444;
+    }
+
+    .title-ru {
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin: 0;
+    }
+
+    .title-en {
+      margin: 6px 0 0;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: #1d4ed8;
+    }
+
+    .paper {
+      background: var(--paper-bg);
+      border-radius: 14px;
+      border: 1px solid rgba(0, 0, 0, 0.08);
+      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.08);
+    }
+
+    .lined {
+      width: 100%;
+      min-height: 260px;
+      resize: vertical;
+      /* Подгоняем baseline так, чтобы текст был между линиями */
+      padding: 24px 16px 16px;
+      border: 0;
+      outline: none;
+      border-radius: 14px;
+      background:
+        repeating-linear-gradient(to bottom,
+          rgba(255, 255, 255, 1) 0px,
+          rgba(255, 255, 255, 1) 24px,
+          var(--line) 25px,
+          rgba(255, 255, 255, 1) 28px);
+      line-height: 28px;
+      font-size: 16px;
+    }
+
+    .err {
+      background: var(--err-bg);
+      box-shadow: inset 0 -1px 0 var(--err-border);
+      border-radius: 4px;
+      padding: 0 1px;
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      white-space: nowrap;
+      vertical-align: middle;
+    }
+
+    .status-badge i {
+      font-size: 1rem;
+      line-height: 1;
+    }
+
+    #highlighted {
+      white-space: pre-wrap;
+      line-height: 1.7;
+      font-size: 16px;
+    }
+
+    .result-meta {
+      font-size: 0.95rem;
+    }
+
+    .result-score {
+      font-weight: 700;
+      color: #1d4ed8;
+    }
+
+    .panel-loader {
+      min-height: 5rem;
+    }
+
+    #resultCard.is-loading,
+    #errorsCard.is-loading {
+      opacity: 0.92;
+    }
+
+    #log {
+      white-space: pre-wrap;
+      background: #0b1220;
+      color: #d2ffd2;
+      padding: 10px 12px;
+      border-radius: 10px;
+    }
+  </style>
+</head>
+
+<body>
+  <section class="hero">
+    <div class="container">
+      <div class="d-flex align-items-center justify-content-between gap-3 flex-wrap">
+        <div>
+          <div class="hero-tags" aria-label="Тип задания">
+            <span class="hero-tag-reading"># ЧТЕНИЕ</span>
+            <span class="hero-tag-task">ЗАДАНИЕ №16</span>
+          </div>
+          <h1 class="h2 title-ru">Напишите ваш рассказ «Комната»</h1>
+          <h2 class="h4 title-en">Write your story «A Room»</h2>
+          <div class="mt-2 small text-muted">
+            Напишите рассказ <strong>минимум из 3 предложений</strong> и используйте <strong>минимум 3 слова</strong> по теме «Комната».
+          </div>
+        </div>
+        <div class="text-end" id="hint" aria-live="polite"></div>
+      </div>
+    </div>
+  </section>
+
+  <main class="container my-4">
+    <div class="row g-4">
+      <div class="col-12 col-lg-7">
+        <div class="paper p-3 p-md-4">
+          <textarea id="text" class="lined" placeholder="Напишите 3–6 предложений о комнате..."></textarea>
+          <div class="d-flex gap-2 mt-3">
+            <button id="btnSend" class="btn btn-primary">Отправить</button>
+            <button id="btnClear" class="btn btn-outline-secondary">Очистить</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12 col-lg-5">
+        <div id="resultCard" class="card shadow-sm mb-4">
+          <div id="resultHeader" class="card-header bg-light">
+            <strong>Результат</strong>
+            <span id="resultStatus" class="ms-2 d-none status-badge" aria-live="polite"></span>
+          </div>
+          <div class="card-body">
+            <div id="resultHint" class="mb-2 small text-muted"></div>
+            <div id="resultMeta" class="result-meta mb-3 d-none">
+              <div class="mb-2"><span class="text-muted">Оценка:</span> <span id="resultScore" class="result-score"></span>/100</div>
+              <div class="mb-2"><span class="text-muted">Итог:</span> <span id="resultFeedback"></span></div>
+              <div><span class="text-muted">Качество:</span> <span id="resultQuality"></span></div>
+              <div id="resultRecommendationsWrap" class="mt-2 d-none">
+                <span class="text-muted">Рекомендации:</span>
+                <ul id="resultRecommendations" class="mb-0 ps-3 small"></ul>
+              </div>
+            </div>
+            <div id="highlighted" class="border rounded p-3 bg-white"></div>
+          </div>
+        </div>
+
+        <div id="errorsCard" class="card shadow-sm mb-4">
+          <div class="card-header bg-light"><strong>Ошибки</strong></div>
+          <div class="card-body">
+            <ul id="errors" class="mb-0"></ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="./api-config.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+    crossorigin="anonymous"></script>
+
+  <script>
+    const textEl = document.getElementById("text");
+    const btnSend = document.getElementById("btnSend");
+    const btnClear = document.getElementById("btnClear");
+    const highlightedEl = document.getElementById("highlighted");
+    const errorsEl = document.getElementById("errors");
+    const hintEl = document.getElementById("hint");
+    const resultHintEl = document.getElementById("resultHint");
+    const resultHeaderEl = document.getElementById("resultHeader");
+    const resultStatusEl = document.getElementById("resultStatus");
+    const resultMetaEl = document.getElementById("resultMeta");
+    const resultScoreEl = document.getElementById("resultScore");
+    const resultFeedbackEl = document.getElementById("resultFeedback");
+    const resultQualityEl = document.getElementById("resultQuality");
+    const resultRecommendationsWrapEl = document.getElementById("resultRecommendationsWrap");
+    const resultRecommendationsEl = document.getElementById("resultRecommendations");
+    const resultCardEl = document.getElementById("resultCard");
+    const errorsCardEl = document.getElementById("errorsCard");
+
+    const TASK_ID = "room";
+    const TASK_CODE = "REPLACE_ME_ROOM";
+    const SEND_BTN_LABEL = "Отправить";
+    const API = (window.ANALYZER_CONFIG && window.ANALYZER_CONFIG.apiBaseUrl) ? window.ANALYZER_CONFIG.apiBaseUrl : "http://127.0.0.1:8888";
+
+    function getStudentCode() {
+      const match = document.cookie.match(/(?:^|;\s*)student_code=([^;]*)/);
+      if (!match) return "";
+      try {
+        return decodeURIComponent(match[1].trim());
+      } catch (_) {
+        return match[1].trim();
+      }
+    }
+
+    function panelLoader(message) {
+      return `<div class="panel-loader d-flex flex-column align-items-center justify-content-center text-muted py-4" aria-busy="true">
+        <div class="spinner-border text-primary mb-2" role="status" style="width: 2rem; height: 2rem;">
+          <span class="visually-hidden">Загрузка…</span>
+        </div>
+        <div class="small">${escapeHtml(message)}</div>
+      </div>`;
+    }
+
+    function setLoading(b) {
+      btnSend.disabled = b;
+      btnClear.disabled = b;
+      textEl.disabled = b;
+      if (resultCardEl) resultCardEl.classList.toggle("is-loading", b);
+      if (errorsCardEl) errorsCardEl.classList.toggle("is-loading", b);
+      if (b) {
+        btnSend.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Проверка…';
+        hintEl.innerHTML = '<span class="badge rounded-pill text-bg-info d-inline-flex align-items-center gap-1"><span class="spinner-grow spinner-grow-sm" aria-hidden="true"></span>Обработка…</span>';
+      } else {
+        btnSend.textContent = SEND_BTN_LABEL;
+        hintEl.innerHTML = "";
+      }
+    }
+
+    function showAwaitingResults() {
+      clearStatus();
+      if (resultHintEl) {
+        resultHintEl.innerHTML = '<span class="d-inline-flex align-items-center gap-2 text-primary"><span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span><span>Проверяем рассказ с помощью ИИ…</span></span>';
+      }
+      highlightedEl.innerHTML = panelLoader("Анализируем текст…");
+      errorsEl.innerHTML = `<li class="list-unstyled">${panelLoader("Ищем ошибки…")}</li>`;
+    }
+
+    function escapeHtml(s) {
+      return String(s)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function mergeErrorSpans(errors, textLen) {
+      const clean = (Array.isArray(errors) ? errors : [])
+        .map(e => ({
+          start: Number(e.start),
+          end: Number(e.end),
+          message: String(e.message || ""),
+          code: String(e.code || "")
+        }))
+        .filter(e => Number.isFinite(e.start) && Number.isFinite(e.end) && e.start >= 0 && e.end > e.start && e.end <= textLen)
+        .sort((a, b) => (a.start - b.start) || (b.end - a.end));
+
+      const merged = [];
+      for (const e of clean) {
+        const last = merged[merged.length - 1];
+        if (!last || e.start > last.end) {
+          merged.push({ start: e.start, end: e.end, items: [e] });
+          continue;
+        }
+        // overlap/adjacent: merge
+        last.end = Math.max(last.end, e.end);
+        last.items.push(e);
+      }
+      return merged;
+    }
+
+    function renderHighlightedText(text, errors) {
+      const t = String(text || "");
+      const spans = mergeErrorSpans(errors, t.length);
+      if (!t) return "";
+      if (!spans.length) return escapeHtml(t);
+
+      let out = "";
+      let cur = 0;
+      for (const s of spans) {
+        if (s.start > cur) out += escapeHtml(t.slice(cur, s.start));
+        const frag = t.slice(s.start, s.end);
+        const title = s.items.map(x => x.message).filter(Boolean).join(" • ");
+        out += `<span class="err" title="${escapeHtml(title)}">${escapeHtml(frag)}</span>`;
+        cur = s.end;
+      }
+      if (cur < t.length) out += escapeHtml(t.slice(cur));
+      return out;
+    }
+
+    function renderErrorsList(errors) {
+      const items = Array.isArray(errors) ? errors : [];
+      if (!items.length) {
+        errorsEl.innerHTML = '<li class="text-success fw-semibold">Ошибок не найдено</li>';
+        return;
+      }
+      const html = items
+        .slice(0, 200)
+        .map((e) => {
+          const msg = escapeHtml(e.message || "");
+          const code = escapeHtml(e.code || "");
+          return `<li><span class="badge text-bg-danger me-2">${code || "err"}</span>${msg}</li>`;
+        })
+        .join("");
+      errorsEl.innerHTML = html;
+    }
+
+    function setResultHeaderState(_state) { /* no-op: шапку не раскрашиваем */ }
+
+    function setStatusOk() {
+      if (!resultStatusEl) return;
+      resultStatusEl.classList.remove("d-none", "text-bg-warning");
+      resultStatusEl.classList.add("badge", "rounded-pill", "text-bg-success", "status-badge");
+      resultStatusEl.innerHTML = `<i class="bi bi-check-circle-fill" aria-hidden="true"></i><span>Успешно</span>`;
+    }
+
+    function setStatusWarn() {
+      if (!resultStatusEl) return;
+      resultStatusEl.classList.remove("d-none", "text-bg-success");
+      resultStatusEl.classList.add("badge", "rounded-pill", "text-bg-warning", "status-badge");
+      resultStatusEl.innerHTML = `<i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i><span>Есть ошибки</span>`;
+    }
+
+    function clearResultMeta() {
+      if (resultMetaEl) resultMetaEl.classList.add("d-none");
+      if (resultScoreEl) resultScoreEl.textContent = "";
+      if (resultFeedbackEl) resultFeedbackEl.textContent = "";
+      if (resultQualityEl) resultQualityEl.textContent = "";
+      if (resultRecommendationsWrapEl) resultRecommendationsWrapEl.classList.add("d-none");
+      if (resultRecommendationsEl) resultRecommendationsEl.innerHTML = "";
+    }
+
+    function renderResultMeta(data) {
+      if (!resultMetaEl) return;
+      resultMetaEl.classList.remove("d-none");
+      if (resultScoreEl) resultScoreEl.textContent = String(data.score ?? "—");
+      if (resultFeedbackEl) resultFeedbackEl.textContent = data.feedback || "";
+      if (resultQualityEl) resultQualityEl.textContent = data.quality_notes || "";
+      const recs = Array.isArray(data.recommendations) ? data.recommendations.filter(Boolean) : [];
+      if (resultRecommendationsWrapEl && resultRecommendationsEl) {
+        if (recs.length) {
+          resultRecommendationsWrapEl.classList.remove("d-none");
+          resultRecommendationsEl.innerHTML = recs
+            .map((r) => `<li>${escapeHtml(r)}</li>`)
+            .join("");
+        } else {
+          resultRecommendationsWrapEl.classList.add("d-none");
+          resultRecommendationsEl.innerHTML = "";
+        }
+      }
+    }
+
+    function clearStatus() {
+      if (resultStatusEl) {
+        resultStatusEl.classList.add("d-none");
+        resultStatusEl.innerHTML = "";
+        resultStatusEl.classList.remove("badge", "rounded-pill", "text-bg-success", "text-bg-warning");
+      }
+      if (resultHintEl) resultHintEl.textContent = "";
+      clearResultMeta();
+      setResultHeaderState("neutral");
+    }
+
+    async function sendToApi() {
+      try {
+        const text = (textEl.value || "").trim();
+        if (!text) {
+          highlightedEl.innerHTML = '<span class="text-muted">Введите текст.</span>';
+          renderErrorsList([]);
+          clearStatus();
+          return;
+        }
+
+        setLoading(true);
+        showAwaitingResults();
+
+        const payload = {
+          task_id: TASK_ID,
+          task_code: TASK_CODE,
+          student_code: getStudentCode(),
+          text,
+        };
+
+        const res = await fetch(API + "/api/story/check", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+        const raw = await res.text();
+        let data; try { data = JSON.parse(raw); } catch (_) { data = { raw }; }
+
+        if (!res.ok) {
+          const errMsg = data.error || raw;
+          highlightedEl.innerHTML = `<pre class="text-danger mb-0">HTTP ${res.status}\n${escapeHtml(errMsg)}</pre>`;
+          renderErrorsList([]);
+          clearResultMeta();
+          return;
+        }
+
+        const normalized = data.normalized || text;
+        const errors = data.errors || [];
+        highlightedEl.innerHTML = renderHighlightedText(normalized, errors);
+        renderErrorsList(errors);
+        renderResultMeta(data);
+        const ok = Boolean(data.ok);
+        if (ok) {
+          setResultHeaderState("ok");
+          setStatusOk();
+          if (resultHintEl) resultHintEl.textContent = "";
+        } else {
+          setResultHeaderState("warn");
+          setStatusWarn();
+          if (resultHintEl) {
+            resultHintEl.textContent =
+              "Наведите мышкой на выделенные слова для подробностей.";
+          }
+        }
+        if (data.saved === false && resultHintEl) {
+          const reason = data.save_error ? ` (${data.save_error})` : "";
+          const warn = `Проверка выполнена, но попытка не сохранена${reason}.`;
+          resultHintEl.textContent = resultHintEl.textContent
+            ? `${resultHintEl.textContent} ${warn}`
+            : warn;
+        }
+      } catch (e) {
+        highlightedEl.innerHTML = `<pre class="text-danger mb-0">Ошибка: ${escapeHtml(String(e))}</pre>`;
+        renderErrorsList([]);
+        clearStatus();
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    btnSend.addEventListener("click", sendToApi);
+    btnClear.addEventListener("click", () => {
+      textEl.value = "";
+      highlightedEl.innerHTML = "";
+      errorsEl.innerHTML = "";
+      hintEl.textContent = "";
+      clearStatus();
+    });
+  </script>
+</body>
+
+</html>
