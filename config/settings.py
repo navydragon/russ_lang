@@ -117,6 +117,10 @@ USE_TZ = True
 STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
+# Media (картинки уроков tasks и загружаемые файлы)
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
 # CORS: только для /api/ — внешние сайты могут вызывать API
 CORS_ALLOW_ALL_ORIGINS = os.getenv('CORS_ALLOW_ALL_ORIGINS', 'true').lower() == 'true'
 CORS_URLS_REGEX = r'^/api/.*$'
