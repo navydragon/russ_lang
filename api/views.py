@@ -9,6 +9,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 
 from courses.services import parse_ispring_post, save_quiz_result
+from .speaking_nexara import check_speaking_audio
 from .story_llm import VALID_TASK_IDS, check_story
 
 logger = logging.getLogger('api')
@@ -137,6 +138,111 @@ def story_check(request):
         response['save_error'] = save_error
         logger.warning(
             'Story check not persisted: student_code=%s task_code=%s reason=%s',
+            student_code or '(empty)',
+            task_code or '(empty)',
+            save_error,
+        )
+    return JsonResponse(response)
+
+
+def _persist_speaking_attempt(
+    student_code: str,
+    task_code: str,
+    task_id: str,
+    steps: list,
+) -> Tuple[bool, Optional[str]]:
+    if not student_code:
+        return False, 'student_code is required'
+    if not _is_usable_task_code(task_code):
+        return False, 'task_code is missing or still a placeholder'
+    if not isinstance(steps, list) or len(steps) < 3:
+        return False, 'steps must contain at least 3 successful items'
+
+    results_content = json.dumps(
+        {
+            'source': 'speaking_complete',
+            'task_id': task_id,
+            'steps': steps,
+            'ok': True,
+            'score': 100,
+        },
+        ensure_ascii=False,
+    )
+    parsed_data = {
+        'sid': student_code,
+        'user_id': student_code,
+        'task_code': task_code,
+        'date': timezone.now(),
+        'score_value': Decimal(100),
+        'score_percent': Decimal(100),
+        'result': True,
+        'results_content': results_content,
+    }
+    try:
+        saved = save_quiz_result(parsed_data)
+    except Exception as e:
+        logger.exception('Speaking attempt save failed: %s', e)
+        return False, 'save_quiz_result raised an exception'
+    if not saved:
+        return False, 'save_quiz_result returned false'
+    return True, None
+
+
+@csrf_exempt
+@require_POST
+def speaking_check(request):
+    upload = request.FILES.get('file')
+    reference = (request.POST.get('reference') or '').strip()
+    language = (request.POST.get('language') or 'ru').strip() or 'ru'
+
+    if not upload:
+        return JsonResponse({'error': 'Audio file is required'}, status=400)
+    if not reference:
+        return JsonResponse({'error': 'reference is required'}, status=400)
+
+    file_bytes = upload.read()
+    if not file_bytes:
+        return JsonResponse({'error': 'Audio file is empty'}, status=400)
+
+    try:
+        result = check_speaking_audio(
+            file_bytes=file_bytes,
+            filename=getattr(upload, 'name', None) or 'audio.webm',
+            reference=reference,
+            content_type=getattr(upload, 'content_type', None) or 'application/octet-stream',
+            language=language,
+        )
+    except RuntimeError as e:
+        logger.error('Speaking check config/ASR error: %s', e)
+        msg = str(e)
+        status = 500 if 'NEXARA_API_KEY' in msg else 502
+        return JsonResponse({'error': msg}, status=status)
+    except Exception as e:
+        logger.exception('Speaking check failed: %s', e)
+        return JsonResponse({'error': 'Transcription request failed'}, status=502)
+
+    return JsonResponse(result)
+
+
+@csrf_exempt
+@require_POST
+def speaking_complete(request):
+    try:
+        body = json.loads(request.body.decode('utf-8'))
+    except (json.JSONDecodeError, UnicodeDecodeError):
+        return JsonResponse({'error': 'Invalid JSON'}, status=400)
+
+    student_code = (body.get('student_code') or '').strip()
+    task_code = (body.get('task_code') or '').strip()
+    task_id = (body.get('task_id') or '').strip()
+    steps = body.get('steps') or []
+
+    saved, save_error = _persist_speaking_attempt(student_code, task_code, task_id, steps)
+    response = {'saved': saved, 'ok': True}
+    if save_error:
+        response['save_error'] = save_error
+        logger.warning(
+            'Speaking complete not persisted: student_code=%s task_code=%s reason=%s',
             student_code or '(empty)',
             task_code or '(empty)',
             save_error,

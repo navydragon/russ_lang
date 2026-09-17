@@ -126,6 +126,11 @@ LLM_BASE_URL = os.getenv('LLM_BASE_URL', 'https://api.proxyapi.ru/openai/v1')
 LLM_API_KEY = os.getenv('LLM_API_KEY', '')
 LLM_MODEL = os.getenv('LLM_MODEL', 'gpt-4o-mini')
 
+# Nexara ASR (https://docs.nexara.ru/) — base ends with /v1 or /api/v1
+NEXARA_BASE_URL = os.getenv('NEXARA_BASE_URL', 'https://api.nexara.ru/v1').rstrip('/')
+NEXARA_API_KEY = os.getenv('NEXARA_API_KEY', '')
+NEXARA_MODEL = os.getenv('NEXARA_MODEL', 'whisper-1')
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
