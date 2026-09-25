@@ -46,7 +46,7 @@
       position: relative;
       overflow: hidden;
       padding: 8px 12px;
-      background-image: url("/media/tasks/bg.jpg");
+      background-image: url("./bg.jpg");
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
@@ -353,9 +353,19 @@
   </div>
 
   <script>
-    const API = (window.ANALYZER_CONFIG && window.ANALYZER_CONFIG.apiBaseUrl)
-      ? window.ANALYZER_CONFIG.apiBaseUrl
-      : "https://russ.emiit.ru";
+    const API = (function resolveApiBase() {
+      const cfg = window.ANALYZER_CONFIG || {};
+      const prod = (cfg.apiBaseUrl || "https://russ.emiit.ru").replace(/\/$/, "");
+      const local = (cfg.apiBaseUrlLocal || "http://127.0.0.1:8765").replace(/\/$/, "");
+      if (location.protocol === "http:" || location.protocol === "https:") {
+        if (location.hostname === "127.0.0.1" || location.hostname === "localhost") {
+          return location.origin;
+        }
+        return prod;
+      }
+      // file:// — для iSpring-пакета и локального открытия из проводника
+      return local;
+    })();
     const TASK_ID = "university";
     const TASK_CODE = "REPLACE_ME_UNIVERSITY";
     const MAX_RECORD_SEC = 180;
@@ -383,6 +393,19 @@
     let recordStartedAt = 0;
     let timerInterval = null;
     let lastCheckResult = null;
+
+    function formatApiError(res, raw, data) {
+      if (data && typeof data.error === "string" && data.error && !/^\s*</.test(data.error)) {
+        return data.error;
+      }
+      if (res.status === 404) {
+        return "API чтения не найден (404) на " + API + ". Запустите Django на этом адресе или задеплойте /api/reading/check.";
+      }
+      if (raw && /^\s*</.test(raw)) {
+        return "Сервер вернул HTML вместо JSON (HTTP " + res.status + "). Проверьте apiBaseUrl: " + API;
+      }
+      return (data && data.error) || ("Ошибка HTTP " + res.status);
+    }
 
     function escapeHtml(s) {
       return String(s)
@@ -559,7 +582,7 @@
         let data;
         try { data = JSON.parse(raw); } catch (_) { data = { error: raw }; }
         if (!res.ok) {
-          checkMessageEl.textContent = data.error || ("Ошибка HTTP " + res.status);
+          checkMessageEl.textContent = formatApiError(res, raw, data);
           checkMessageEl.className = "mt-2 fw-semibold text-danger";
           statusBadgeEl.className = "badge rounded-pill text-bg-danger";
           statusBadgeEl.textContent = "Ошибка";

@@ -8,7 +8,7 @@ from django.views.static import serve
 
 TASKS_DIR = Path(settings.BASE_DIR) / 'tasks'
 
-_ALLOWED_SUFFIXES = {'.html', '.js', '.css', '.map'}
+_ALLOWED_SUFFIXES = {'.html', '.js', '.css', '.map', '.png', '.jpg', '.jpeg', '.webp', '.gif', '.svg'}
 
 
 def serve_task_file(request, path: str):
