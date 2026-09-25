@@ -80,20 +80,49 @@ def transcribe_audio(
     Call Nexara audio/transcriptions with response_format=verbose_json.
     Returns parsed JSON (expects at least 'text').
     """
+    try:
+        return _transcribe_audio_once(
+            file_bytes,
+            filename,
+            content_type=content_type,
+            language=language,
+            word_timestamps=word_timestamps,
+        )
+    except RuntimeError as e:
+        # Word timestamps are optional for basic ASR; retry without them.
+        if word_timestamps and 'NEXARA_API_KEY' not in str(e):
+            logger.warning('Nexara with word timestamps failed (%s); retrying without', e)
+            return _transcribe_audio_once(
+                file_bytes,
+                filename,
+                content_type=content_type,
+                language=language,
+                word_timestamps=False,
+            )
+        raise
+
+
+def _transcribe_audio_once(
+    file_bytes: bytes,
+    filename: str,
+    content_type: str = 'application/octet-stream',
+    language: str = 'ru',
+    word_timestamps: bool = False,
+) -> dict[str, Any]:
     api_key = settings.NEXARA_API_KEY
     if not api_key:
         raise RuntimeError('NEXARA_API_KEY is not configured')
 
     url = f'{settings.NEXARA_BASE_URL}/audio/transcriptions'
     headers = {'Authorization': f'Bearer {api_key}'}
-    data: list[tuple[str, str]] = [
-        ('model', settings.NEXARA_MODEL),
-        ('response_format', 'verbose_json'),
-        ('language', language or 'ru'),
-    ]
+    data: dict[str, Any] = {
+        'model': settings.NEXARA_MODEL,
+        'response_format': 'verbose_json',
+        'language': language or 'ru',
+    }
     if word_timestamps:
-        # OpenAI/Nexara multipart array form: timestamp_granularities[]=word
-        data.append(('timestamp_granularities[]', 'word'))
+        # Nexara/OpenAI: array field in multipart
+        data['timestamp_granularities[]'] = 'word'
 
     files = {
         'file': (filename or 'audio.webm', file_bytes, content_type or 'application/octet-stream'),
@@ -106,14 +135,25 @@ def transcribe_audio(
         len(file_bytes),
         word_timestamps,
     )
-    with httpx.Client(timeout=httpx.Timeout(120.0, connect=30.0)) as client:
-        response = client.post(url, headers=headers, data=data, files=files)
+    try:
+        with httpx.Client(timeout=httpx.Timeout(120.0, connect=30.0)) as client:
+            response = client.post(url, headers=headers, data=data, files=files)
+    except httpx.TimeoutException as e:
+        logger.exception('Nexara timeout: %s', e)
+        raise RuntimeError('Nexara transcription timed out') from e
+    except httpx.HTTPError as e:
+        logger.exception('Nexara transport error: %s', e)
+        raise RuntimeError(f'Nexara request failed: {e}') from e
 
     if response.status_code >= 400:
         logger.error('Nexara error HTTP %s: %s', response.status_code, response.text[:500])
         raise RuntimeError(f'Nexara transcription failed: HTTP {response.status_code}')
 
-    payload = response.json()
+    try:
+        payload = response.json()
+    except ValueError as e:
+        logger.error('Nexara non-JSON body: %s', response.text[:500])
+        raise RuntimeError('Nexara returned non-JSON body') from e
     if not isinstance(payload, dict):
         raise RuntimeError('Nexara returned non-JSON object')
     return payload

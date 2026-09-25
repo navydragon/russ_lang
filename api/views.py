@@ -334,7 +334,10 @@ def reading_check(request):
         return JsonResponse({'error': msg}, status=status)
     except Exception as e:
         logger.exception('Reading check failed: %s', e)
-        return JsonResponse({'error': 'Transcription request failed'}, status=502)
+        return JsonResponse(
+            {'error': 'Transcription request failed', 'detail': str(e)},
+            status=502,
+        )
 
     return JsonResponse(result)
 

@@ -395,6 +395,10 @@
     let lastCheckResult = null;
 
     function formatApiError(res, raw, data) {
+      if (data && typeof data.detail === "string" && data.detail) {
+        const base = (data.error && String(data.error)) || ("Ошибка HTTP " + res.status);
+        return base + ": " + data.detail;
+      }
       if (data && typeof data.error === "string" && data.error && !/^\s*</.test(data.error)) {
         return data.error;
       }
