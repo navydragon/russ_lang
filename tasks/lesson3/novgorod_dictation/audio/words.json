@@ -1,0 +1,302 @@
+[
+  {
+    "id": 1,
+    "noun": "Я студент",
+    "separator": " ",
+    "sentence_end": ".",
+    "pronunciation": [
+      {
+        "text": "Я",
+        "stressed": "я",
+        "ipa": "ja"
+      },
+      {
+        "text": "студент",
+        "stressed": "студе́нт",
+        "ipa": "stu.ˈdʲɛnt"
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "noun": "Я историк",
+    "separator": " ",
+    "sentence_end": ".",
+    "pronunciation": [
+      {
+        "text": "Я",
+        "stressed": "я",
+        "ipa": "ja"
+      },
+      {
+        "text": "историк",
+        "stressed": "исто́рик",
+        "ipa": "ɪ.ˈstɔ.rʲɪk"
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "noun": "История самая интересная наука",
+    "separator": " ",
+    "sentence_end": ".",
+    "pronunciation": [
+      {
+        "text": "История",
+        "stressed": "исто́рия",
+        "ipa": "ɪ.ˈstɔ.rʲɪ.jə"
+      },
+      {
+        "text": "самая",
+        "stressed": "са́мая",
+        "ipa": "ˈsa.mə.jə"
+      },
+      {
+        "text": "интересная",
+        "stressed": "интере́сная",
+        "ipa": "ɪn.tʲɪ.ˈrʲɛs.nə.jə"
+      },
+      {
+        "text": "наука",
+        "stressed": "нау́ка",
+        "ipa": "nʌ.ˈu.kə"
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "noun": "Мой родной город Новгород",
+    "separator": " ",
+    "sentence_end": ".",
+    "pronunciation": [
+      {
+        "text": "Мой",
+        "stressed": "мой",
+        "ipa": "mɔj"
+      },
+      {
+        "text": "родной",
+        "stressed": "родно́й",
+        "ipa": "rʌd.ˈnɔj"
+      },
+      {
+        "text": "город",
+        "stressed": "го́род",
+        "ipa": "ˈgɔ.rət"
+      },
+      {
+        "text": "Новгород",
+        "stressed": "но́вгород",
+        "ipa": "ˈnɔv.gə.rət"
+      }
+    ]
+  },
+  {
+    "id": 5,
+    "noun": "Это небольшой город но очень красивый",
+    "separator": " ",
+    "sentence_end": ".",
+    "pronunciation": [
+      {
+        "text": "Это",
+        "stressed": "э́то",
+        "ipa": "ˈɛ.tə"
+      },
+      {
+        "text": "небольшой",
+        "stressed": "небольшо́й",
+        "ipa": "nʲɪ.bʌlʲ.ˈʂɔj"
+      },
+      {
+        "text": "город",
+        "stressed": "го́род",
+        "ipa": "ˈgɔ.rət"
+      },
+      {
+        "text": "но",
+        "stressed": "но",
+        "ipa": "nɔ"
+      },
+      {
+        "text": "очень",
+        "stressed": "о́чень",
+        "ipa": "ˈɔ.t͡ɕɪnʲ"
+      },
+      {
+        "text": "красивый",
+        "stressed": "краси́вый",
+        "ipa": "krʌ.ˈsʲi.vɨj"
+      }
+    ]
+  },
+  {
+    "id": 6,
+    "noun": "Исторический центр города Кремль площадь музей",
+    "separator": " ",
+    "sentence_end": ".",
+    "pronunciation": [
+      {
+        "text": "Исторический",
+        "stressed": "истори́ческий",
+        "ipa": "ɪ.stʌ.ˈrʲi.t͡ɕɪs.kʲɪj"
+      },
+      {
+        "text": "центр",
+        "stressed": "центр",
+        "ipa": "t͡sɛntr"
+      },
+      {
+        "text": "города",
+        "stressed": "го́рода",
+        "ipa": "ˈgɔ.rə.də"
+      },
+      {
+        "text": "Кремль",
+        "stressed": "кремль",
+        "ipa": "krʲɛmlʲ"
+      },
+      {
+        "text": "площадь",
+        "stressed": "пло́щадь",
+        "ipa": "ˈplɔ.ɕːɪtʲ"
+      },
+      {
+        "text": "музей",
+        "stressed": "музе́й",
+        "ipa": "mu.ˈzʲɛj"
+      }
+    ]
+  },
+  {
+    "id": 7,
+    "noun": "Моя семья здесь",
+    "separator": " ",
+    "sentence_end": ".",
+    "pronunciation": [
+      {
+        "text": "Моя",
+        "stressed": "моя́",
+        "ipa": "mʌ.ˈja"
+      },
+      {
+        "text": "семья",
+        "stressed": "семья́",
+        "ipa": "sʲɪ.ˈmʲja"
+      },
+      {
+        "text": "здесь",
+        "stressed": "здесь",
+        "ipa": "zʲdʲɛsʲ"
+      }
+    ]
+  },
+  {
+    "id": 8,
+    "noun": "Мой отец экскурсовод",
+    "separator": " ",
+    "sentence_end": ".",
+    "pronunciation": [
+      {
+        "text": "Мой",
+        "stressed": "мой",
+        "ipa": "mɔj"
+      },
+      {
+        "text": "отец",
+        "stressed": "оте́ц",
+        "ipa": "ʌ.ˈtʲɛt͡s"
+      },
+      {
+        "text": "экскурсовод",
+        "stressed": "экскурсово́д",
+        "ipa": "ɛks.kur.sʌ.ˈvɔt"
+      }
+    ]
+  },
+  {
+    "id": 9,
+    "noun": "А это наш дом и наша улица",
+    "separator": " ",
+    "sentence_end": ".",
+    "pronunciation": [
+      {
+        "text": "А",
+        "stressed": "а",
+        "ipa": "a"
+      },
+      {
+        "text": "это",
+        "stressed": "э́то",
+        "ipa": "ˈɛ.tə"
+      },
+      {
+        "text": "наш",
+        "stressed": "наш",
+        "ipa": "naʂ"
+      },
+      {
+        "text": "дом",
+        "stressed": "дом",
+        "ipa": "dɔm"
+      },
+      {
+        "text": "и",
+        "stressed": "и",
+        "ipa": "i"
+      },
+      {
+        "text": "наша",
+        "stressed": "на́ша",
+        "ipa": "ˈna.ʂə"
+      },
+      {
+        "text": "улица",
+        "stressed": "у́лица",
+        "ipa": "ˈu.lʲɪ.t͡sə"
+      }
+    ]
+  },
+  {
+    "id": 10,
+    "noun": "Здесь есть хорошие магазины и красивый парк",
+    "separator": " ",
+    "sentence_end": ".",
+    "pronunciation": [
+      {
+        "text": "Здесь",
+        "stressed": "здесь",
+        "ipa": "zʲdʲɛsʲ"
+      },
+      {
+        "text": "есть",
+        "stressed": "есть",
+        "ipa": "jɛsʲtʲ"
+      },
+      {
+        "text": "хорошие",
+        "stressed": "хоро́шие",
+        "ipa": "xʌ.ˈrɔ.ʂɨ.jə"
+      },
+      {
+        "text": "магазины",
+        "stressed": "магази́ны",
+        "ipa": "mə.gʌ.ˈzʲi.nɨ"
+      },
+      {
+        "text": "и",
+        "stressed": "и",
+        "ipa": "i"
+      },
+      {
+        "text": "красивый",
+        "stressed": "краси́вый",
+        "ipa": "krʌ.ˈsʲi.vɨj"
+      },
+      {
+        "text": "парк",
+        "stressed": "парк",
+        "ipa": "park"
+      }
+    ]
+  }
+]

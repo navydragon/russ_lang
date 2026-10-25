@@ -2,13 +2,24 @@
 from pathlib import Path
 
 from django.conf import settings
-from django.http import Http404
+from django.http import Http404, HttpResponseRedirect
 from django.urls import re_path
 from django.views.static import serve
 
 TASKS_DIR = Path(settings.BASE_DIR) / 'tasks'
 
-_ALLOWED_SUFFIXES = {'.html', '.js', '.css', '.map', '.png', '.jpg', '.jpeg', '.webp', '.gif', '.svg'}
+_ALLOWED_SUFFIXES = {'.html', '.js', '.css', '.map', '.png', '.jpg', '.jpeg', '.webp', '.gif', '.svg', '.wav'}
+
+_LEGACY_TASK_PATHS = {
+    f'{name}.html': f'lesson1/{name}/{name}.html'
+    for name in (
+        'city_speaking', 'class_speaking', 'flat_speaking',
+        'family_story', 'room_story',
+    )
+}
+_LEGACY_TASK_PATHS['lesson3/university_reading.html'] = (
+    'lesson3/university_reading/university_reading.html'
+)
 
 
 def serve_task_file(request, path: str):
@@ -21,6 +32,13 @@ def serve_task_file(request, path: str):
         raise Http404('Not found')
     if Path(path).suffix.lower() not in _ALLOWED_SUFFIXES:
         raise Http404('Not found')
+
+    if path in _LEGACY_TASK_PATHS:
+        url = '/tasks/' + _LEGACY_TASK_PATHS[path]
+        query = request.META.get('QUERY_STRING', '')
+        if query:
+            url += '?' + query
+        return HttpResponseRedirect(url)
 
     tasks_root = TASKS_DIR.resolve()
     full = (TASKS_DIR / Path(*parts)).resolve()

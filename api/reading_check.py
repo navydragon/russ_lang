@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import re
+import math
 from typing import Any, Optional
 
 from .speaking_nexara import (
@@ -14,7 +15,17 @@ from .speaking_nexara import (
 TASK_ID_UNIVERSITY = 'university'
 MAX_DURATION_SEC = 180.0
 MIN_PAUSE_SEC = 0.30
-COVERAGE_TOKEN_RATIO = 0.85
+COVERAGE_TOKEN_RATIO = 0.60
+TASK_ID_PHOTO_ALBUM = 'photo_album'
+MIN_COMMA_PAUSE_SEC = 0.15
+MAX_COMMA_PAUSE_SEC = 0.60
+
+PHOTO_ALBUM_REFERENCE_TEXT = (
+    'Это я. Это моя семья. Это мой отец. Его зовут Владимир Петрович. Он инженер. '
+    'А это моя мать. Её зовут Тамара Ивановна. Она врач. '
+    'Это мой брат, его зовут Саша. Он студент. '
+    'А это моя сестра, её зовут Наташа. Она тоже студентка.'
+)
 
 UNIVERSITY_REFERENCE_TEXT = (
     'Вот наш университет. Это большое здание. Вот вход. Это первый этаж. '
@@ -28,7 +39,28 @@ UNIVERSITY_REFERENCE_TEXT = (
     'большая столовая и маленькое кафе.'
 )
 
+MOSCOW_REFERENCE_TEXT = (
+    'Москва – большой и красивый город. Здесь есть широкие улицы новые проспекты, '
+    'современные высокие здания, красивые площади, старые тихие улицы. Вот Красная площадь.\n'
+    'А вот Московский Кремль. Это центр города. Здесь Большой театр. Я люблю русский балет. '
+    'А это Московский университет. Здесь русские и иностранные студенты.\n'
+    'Москва – зелёный город, здесь большие парки и красивые сады. А это московское метро. '
+    'Оно самое удобное, красивое и быстрое.'
+)
+
 READING_TASKS: dict[str, dict[str, Any]] = {
+    'moscow': {
+        'title': 'Москва — столица', 'reference_text': MOSCOW_REFERENCE_TEXT,
+        'max_duration_sec': 180.0, 'coverage_ratio_min': 0.60,
+    },
+    TASK_ID_PHOTO_ALBUM: {
+        'title': 'Мой фотоальбом',
+        'reference_text': PHOTO_ALBUM_REFERENCE_TEXT,
+        'max_duration_sec': 60.0,
+        'coverage_ratio_min': 0.60,
+        'min_comma_pause_sec': MIN_COMMA_PAUSE_SEC,
+        'max_comma_pause_sec': MAX_COMMA_PAUSE_SEC,
+    },
     TASK_ID_UNIVERSITY: {
         'title': 'Наш университет',
         'reference_text': UNIVERSITY_REFERENCE_TEXT,
@@ -105,8 +137,29 @@ def score_period_pauses(
     reference_text: str,
     words: list[dict[str, Any]],
     min_pause_sec: float = MIN_PAUSE_SEC,
+    min_comma_pause_sec: Optional[float] = None,
+    max_comma_pause_sec: Optional[float] = None,
 ) -> dict[str, Any]:
     boundaries = period_boundary_token_indices(reference_text)
+    for boundary in boundaries:
+        boundary['punctuation'] = '.'
+    if min_comma_pause_sec is not None:
+        sentence_index = 0
+        token_count = 0
+        for match in re.finditer(r'\w+|[.,]', reference_text, flags=re.UNICODE):
+            item = match.group()
+            if item == ',':
+                boundaries.append({
+                    'after_sentence_index': sentence_index,
+                    'after_token_index': token_count - 1,
+                    'sentence_preview': reference_text[max(0, match.start() - 35):match.end()],
+                    'punctuation': ',',
+                })
+            elif item == '.':
+                sentence_index += 1
+            else:
+                token_count += 1
+        boundaries.sort(key=lambda b: b['after_token_index'])
     aligned = align_reference_to_words(reference_text, words)
     details: list[dict[str, Any]] = []
     all_ok = True
@@ -131,6 +184,7 @@ def score_period_pauses(
         if prev is None or nxt is None:
             all_ok = False
             details.append({
+                'punctuation': b['punctuation'],
                 'after_sentence_index': b['after_sentence_index'],
                 'sentence_preview': b['sentence_preview'],
                 'gap_sec': None,
@@ -140,15 +194,20 @@ def score_period_pauses(
             continue
 
         gap = float(nxt['start']) - float(prev['end'])
-        pause_ok = gap >= min_pause_sec
+        is_comma = b['punctuation'] == ','
+        minimum = min_comma_pause_sec if is_comma else min_pause_sec
+        maximum = max_comma_pause_sec if is_comma else None
+        pause_ok = gap >= minimum and (maximum is None or gap <= maximum)
         if not pause_ok:
             all_ok = False
         details.append({
+            'punctuation': b['punctuation'],
             'after_sentence_index': b['after_sentence_index'],
             'sentence_preview': b['sentence_preview'],
             'gap_sec': round(gap, 3),
             'ok': pause_ok,
-            'min_pause_sec': min_pause_sec,
+            'min_pause_sec': minimum,
+            'max_pause_sec': maximum,
         })
 
     return {'ok': all_ok, 'details': details, 'count': len(details)}
@@ -160,6 +219,8 @@ def score_reading_from_payload(
     max_duration_sec: float = MAX_DURATION_SEC,
     min_pause_sec: float = MIN_PAUSE_SEC,
     coverage_ratio_min: float = COVERAGE_TOKEN_RATIO,
+    min_comma_pause_sec: Optional[float] = None,
+    max_comma_pause_sec: Optional[float] = None,
 ) -> dict[str, Any]:
     recognized = extract_recognized_text(payload)
     words = extract_word_timestamps(payload)
@@ -175,7 +236,7 @@ def score_reading_from_payload(
     else:
         try:
             duration_value = float(duration)
-            duration_ok = duration_value <= max_duration_sec
+            duration_ok = math.isfinite(duration_value) and 0 < duration_value <= max_duration_sec
             if not duration_ok:
                 duration_reason = 'duration_exceeded'
         except (TypeError, ValueError):
@@ -190,7 +251,11 @@ def score_reading_from_payload(
         }
         pauses_ok = False
     else:
-        pauses = score_period_pauses(reference_text, words, min_pause_sec=min_pause_sec)
+        pauses = score_period_pauses(
+            reference_text, words, min_pause_sec=min_pause_sec,
+            min_comma_pause_sec=min_comma_pause_sec,
+            max_comma_pause_sec=max_comma_pause_sec,
+        )
         pauses_ok = bool(pauses.get('ok'))
 
     ok = coverage_ok and duration_ok and pauses_ok
@@ -230,7 +295,13 @@ def check_reading_audio(
         language=language,
         word_timestamps=True,
     )
-    result = score_reading_from_payload(payload, task['reference_text'])
+    result = score_reading_from_payload(
+        payload, task['reference_text'],
+        max_duration_sec=task.get('max_duration_sec', MAX_DURATION_SEC),
+        coverage_ratio_min=task.get('coverage_ratio_min', COVERAGE_TOKEN_RATIO),
+        min_comma_pause_sec=task.get('min_comma_pause_sec'),
+        max_comma_pause_sec=task.get('max_comma_pause_sec'),
+    )
     result['task_id'] = task_id
     result['title'] = task['title']
     language_out = payload.get('language')

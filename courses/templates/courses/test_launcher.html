@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Проверка заданий ИИ</title>
+  <style>
+    :root { color-scheme: light; font-family: system-ui, sans-serif; color: #18243a; background: #f3f5f9; }
+    * { box-sizing: border-box; }
+    body { margin: 0; }
+    main { max-width: 1120px; margin: 40px auto; padding: 0 20px 40px; }
+    h1 { font-size: 30px; margin: 0 0 12px; }
+    h2 { font-size: 21px; margin: 32px 0 14px; }
+    p { line-height: 1.6; }
+    .muted { color: #59657a; }
+    .identity, .notice { background: #fff; border: 1px solid #dce1eb; border-radius: 14px; padding: 20px; }
+    .identity { display: flex; gap: 20px; align-items: center; justify-content: space-between; flex-wrap: wrap; }
+    .identity p { margin: 4px 0; }
+    code { background: #edf0f6; border-radius: 5px; padding: 3px 7px; overflow-wrap: anywhere; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px; }
+    article { background: white; border: 1px solid #dce1eb; border-radius: 12px; padding: 18px; display: flex; flex-direction: column; align-items: flex-start; }
+    article h3 { font-size: 17px; margin: 8px 0; }
+    article p { font-size: 14px; margin: 0 0 18px; }
+    .number { color: #59657a; font-size: 13px; }
+    .button { display: inline-block; text-decoration: none; background: #2854c5; color: white; border-radius: 8px; padding: 10px 15px; font-weight: 600; font-size: 14px; }
+    article .button, article .status { margin-top: auto; }
+    a:focus-visible { outline: 3px solid #e0a400; outline-offset: 3px; }
+    .status { color: #59657a; background: #edf0f6; border-radius: 6px; padding: 8px 10px; font-size: 13px; }
+    .history { padding-left: 22px; }
+    .history li { padding: 10px 0; line-height: 1.7; }
+  </style>
+</head>
+<body>
+<main>
+  <h1>Проверка заданий ИИ</h1>
+  <p class="muted">Выберите задание, выполните его и вернитесь сюда, чтобы увидеть сохранённую попытку.</p>
+  <section class="identity" aria-label="Тестовый ученик">
+    <div>
+      <strong>{% if student %}{{ student }}{% else %}Тестовый ученик ещё не создан{% endif %}</strong>
+      <p>Код ученика: <code>{{ student_code }}</code></p>
+      <p class="muted">Тестовый код установлен в cookie этого браузера. В базе создано {{ seeded_count }} из {{ task_count }} заданий.</p>
+    </div>
+    <a class="button" href="/dev/tasks/">Обновить результаты</a>
+  </section>
+  {% if not student or seeded_count != task_count %}
+    <p class="notice">Подготовьте данные командой <code>python manage.py seed_ai_test_data</code>, затем обновите страницу.</p>
+  {% endif %}
+  <p class="muted">По HTTP задания проверяются локальным сервером, по HTTPS — сервером russ.emiit.ru. Проверки ИИ используют ключи из .env. Чтение «Наш университет» пока проверяет полноту, время и паузы.</p>
+  {% for lesson in lessons %}
+    <section aria-labelledby="lesson-{{ lesson.number }}">
+      <h2 id="lesson-{{ lesson.number }}">Урок {{ lesson.number }}</h2>
+      <div class="grid">
+        {% for row in lesson.tasks %}
+          <article>
+            <span class="number">№ {{ row.definition.number }}{% if row.definition.source_number %} · Задание {{ row.definition.source_number }}{% endif %}</span>
+            <h3>{{ row.definition.name }}</h3>
+            <p class="muted">{{ row.definition.code }}</p>
+            {% if row.can_launch %}
+              <a class="button" href="/tasks/{{ row.definition.html_path }}" target="_blank" rel="noopener">Открыть задание <span aria-hidden="true">↗</span></a>
+            {% elif row.definition.html_path %}
+              <span class="status">Нужно создать тестовые данные</span>
+            {% else %}
+              <span class="status">{% if row.definition.number == 31 %}Требования не определены{% else %}Страница ещё не создана{% endif %}</span>
+            {% endif %}
+          </article>
+        {% endfor %}
+      </div>
+    </section>
+  {% endfor %}
+  <section aria-labelledby="attempts">
+    <h2 id="attempts">Последние попытки</h2>
+    {% if attempts %}
+      <ol class="history">
+      {% for attempt in attempts %}
+        <li><strong>{{ attempt.task.name }}</strong> — {% if attempt.is_completed %}зачтено{% else %}не зачтено{% endif %}{% if attempt.score_percent != None %}, {{ attempt.score_percent }}%{% endif %}<br><span class="muted">{{ attempt.datetime|date:"d.m.Y H:i:s" }}</span></li>
+      {% endfor %}
+      </ol>
+    {% else %}
+      <p class="notice">Сохранённых попыток пока нет. Откройте задание и отправьте ответ на проверку.</p>
+    {% endif %}
+  </section>
+</main>
+</body>
+</html>

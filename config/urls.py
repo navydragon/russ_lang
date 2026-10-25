@@ -6,8 +6,10 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include, re_path
 from django.views.static import serve
+from courses.test_launcher import test_launcher
 
 urlpatterns = [
+    path('dev/tasks/', test_launcher, name='test_launcher'),
     path('admin/', admin.site.urls),
     path('api/', include('api.urls')),
     path('', include('config.task_pages')),

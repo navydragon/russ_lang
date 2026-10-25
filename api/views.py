@@ -10,6 +10,7 @@ from django.views.decorators.http import require_POST
 
 from courses.services import parse_ispring_post, save_quiz_result
 from .reading_check import READING_TASKS, check_reading_audio
+from .retelling_check import check_retelling_audio, MAX_AUDIO_BYTES, RETELLING_TASKS
 from .speaking_nexara import check_speaking_audio
 from .story_llm import VALID_TASK_IDS, check_story
 
@@ -27,6 +28,7 @@ def _persist_story_attempt(
     task_code: str,
     text: str,
     result,
+    *, source='story_check', extra_result=None,
 ) -> Tuple[bool, Optional[str]]:
     """Save AI check as TaskAttempt. Returns (saved, save_error)."""
     if not student_code:
@@ -37,7 +39,7 @@ def _persist_story_attempt(
     payload = result.model_dump()
     results_content = json.dumps(
         {
-            'source': 'story_check',
+            'source': source,
             'text': text,
             'ok': payload.get('ok'),
             'score': payload.get('score'),
@@ -46,6 +48,7 @@ def _persist_story_attempt(
             'errors': payload.get('errors'),
             'quality_notes': payload.get('quality_notes'),
             'recommendations': payload.get('recommendations'),
+            **({'speech_assessment': extra_result} if extra_result is not None else {}),
         },
         ensure_ascii=False,
     )
@@ -143,6 +146,43 @@ def story_check(request):
             task_code or '(empty)',
             save_error,
         )
+    return JsonResponse(response)
+
+
+@csrf_exempt
+@require_POST
+def retelling_check(request):
+    upload = request.FILES.get('file')
+    if not upload:
+        return JsonResponse({'error': 'Audio file is required'}, status=400)
+    if upload.size > MAX_AUDIO_BYTES:
+        return JsonResponse({'error': 'Максимальный размер записи — 20 МБ.'}, status=413)
+    task_id = request.POST.get('task_id', '').strip()
+    task_code = request.POST.get('task_code', '').strip()
+    if task_id not in RETELLING_TASKS or task_code != RETELLING_TASKS[task_id]:
+        return JsonResponse({'error': 'Неверный код задания пересказа.'}, status=400)
+    try:
+        result, speech = check_retelling_audio(
+            upload.read(), getattr(upload, 'name', 'record.webm'),
+            getattr(upload, 'content_type', 'audio/webm'),
+            task_id=task_id,
+        )
+    except ValueError as exc:
+        return JsonResponse({'error': str(exc)}, status=400)
+    except RuntimeError:
+        logger.exception('Retelling service unavailable')
+        return JsonResponse({'error': 'Сервис проверки недоступен. Проверьте настройки ASR и LLM.'}, status=502)
+    except Exception:
+        logger.exception('Retelling check failed')
+        return JsonResponse({'error': 'Не удалось проверить пересказ. Попробуйте ещё раз.'}, status=502)
+    student_code = request.POST.get('student_code', '').strip()
+    saved, save_error = _persist_story_attempt(
+        student_code, task_code, speech['recognized'], result,
+        source='retelling_check', extra_result=speech,
+    )
+    response = {**result.model_dump(), **speech, 'saved': saved}
+    if save_error:
+        response['save_error'] = save_error
     return JsonResponse(response)
 
 

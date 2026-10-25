@@ -1,0 +1,233 @@
+[
+  {
+    "id": 1,
+    "noun": "друг",
+    "pronunciation": [
+      {
+        "text": "друг",
+        "stressed": "друг",
+        "ipa": "druk"
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "noun": "брат",
+    "pronunciation": [
+      {
+        "text": "брат",
+        "stressed": "брат",
+        "ipa": "brat"
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "noun": "стул",
+    "pronunciation": [
+      {
+        "text": "стул",
+        "stressed": "стул",
+        "ipa": "stul"
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "noun": "человек",
+    "pronunciation": [
+      {
+        "text": "человек",
+        "stressed": "челове́к",
+        "ipa": "t͡ɕɪ.lʌ.ˈvʲɛk"
+      }
+    ]
+  },
+  {
+    "id": 5,
+    "noun": "ребёнок",
+    "pronunciation": [
+      {
+        "text": "ребёнок",
+        "stressed": "ребёнок",
+        "ipa": "rʲɪ.ˈbʲɔ.nək"
+      }
+    ]
+  },
+  {
+    "id": 6,
+    "noun": "дом",
+    "pronunciation": [
+      {
+        "text": "дом",
+        "stressed": "дом",
+        "ipa": "dɔm"
+      }
+    ]
+  },
+  {
+    "id": 7,
+    "noun": "поезд",
+    "pronunciation": [
+      {
+        "text": "поезд",
+        "stressed": "по́езд",
+        "ipa": "ˈpɔ.jɪst"
+      }
+    ]
+  },
+  {
+    "id": 8,
+    "noun": "вечер",
+    "pronunciation": [
+      {
+        "text": "вечер",
+        "stressed": "ве́чер",
+        "ipa": "ˈvʲɛ.t͡ɕɪr"
+      }
+    ]
+  },
+  {
+    "id": 9,
+    "noun": "профессор",
+    "pronunciation": [
+      {
+        "text": "профессор",
+        "stressed": "профе́ссор",
+        "ipa": "prʌ.ˈfʲɛ.sər"
+      }
+    ]
+  },
+  {
+    "id": 10,
+    "noun": "город",
+    "pronunciation": [
+      {
+        "text": "город",
+        "stressed": "го́род",
+        "ipa": "ˈgɔ.rət"
+      }
+    ]
+  },
+  {
+    "id": 11,
+    "noun": "год",
+    "pronunciation": [
+      {
+        "text": "год",
+        "stressed": "год",
+        "ipa": "gɔt"
+      }
+    ]
+  },
+  {
+    "id": 12,
+    "noun": "день",
+    "pronunciation": [
+      {
+        "text": "день",
+        "stressed": "день",
+        "ipa": "dʲɛnʲ"
+      }
+    ]
+  },
+  {
+    "id": 13,
+    "noun": "отец",
+    "pronunciation": [
+      {
+        "text": "отец",
+        "stressed": "оте́ц",
+        "ipa": "ʌ.ˈtʲɛt͡s"
+      }
+    ]
+  },
+  {
+    "id": 14,
+    "noun": "мать",
+    "pronunciation": [
+      {
+        "text": "мать",
+        "stressed": "мать",
+        "ipa": "matʲ"
+      }
+    ]
+  },
+  {
+    "id": 15,
+    "noun": "дочь",
+    "pronunciation": [
+      {
+        "text": "дочь",
+        "stressed": "дочь",
+        "ipa": "dɔt͡ɕ"
+      }
+    ]
+  },
+  {
+    "id": 16,
+    "noun": "дерево",
+    "pronunciation": [
+      {
+        "text": "дерево",
+        "stressed": "де́рево",
+        "ipa": "ˈdʲɛ.rʲɪ.və"
+      }
+    ]
+  },
+  {
+    "id": 17,
+    "noun": "метро",
+    "pronunciation": [
+      {
+        "text": "метро",
+        "stressed": "метро́",
+        "ipa": "mʲɪ.ˈtrɔ"
+      }
+    ]
+  },
+  {
+    "id": 18,
+    "noun": "радио",
+    "pronunciation": [
+      {
+        "text": "радио",
+        "stressed": "ра́дио",
+        "ipa": "ˈra.dʲɪ.ə"
+      }
+    ]
+  },
+  {
+    "id": 19,
+    "noun": "пальто",
+    "pronunciation": [
+      {
+        "text": "пальто",
+        "stressed": "пальто́",
+        "ipa": "pʌlʲ.ˈtɔ"
+      }
+    ]
+  },
+  {
+    "id": 20,
+    "noun": "бюро",
+    "pronunciation": [
+      {
+        "text": "бюро",
+        "stressed": "бюро́",
+        "ipa": "bʲu.ˈrɔ"
+      }
+    ]
+  },
+  {
+    "id": 21,
+    "noun": "такси",
+    "pronunciation": [
+      {
+        "text": "такси",
+        "stressed": "такси́",
+        "ipa": "tʌk.ˈsʲi"
+      }
+    ]
+  }
+]

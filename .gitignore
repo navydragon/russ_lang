@@ -48,3 +48,6 @@ Thumbs.db
 
 
 
+
+# SpeechKit synthesis cache and local audio backups
+.speechkit-cache/

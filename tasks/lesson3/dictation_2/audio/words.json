@@ -1,0 +1,274 @@
+[
+  {
+    "id": 1,
+    "noun": "лампа и карандаш",
+    "pronunciation": [
+      {
+        "text": "лампа",
+        "stressed": "ла́мпа",
+        "ipa": "ˈlam.pə"
+      },
+      {
+        "text": "карандаш",
+        "stressed": "каранда́ш",
+        "ipa": "kə.rʌn.ˈdaʂ"
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "noun": "радио и газета",
+    "pronunciation": [
+      {
+        "text": "радио",
+        "stressed": "ра́дио",
+        "ipa": "ˈra.dʲɪ.ə"
+      },
+      {
+        "text": "газета",
+        "stressed": "газе́та",
+        "ipa": "gʌ.ˈzʲɛ.tə"
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "noun": "учебник и день",
+    "pronunciation": [
+      {
+        "text": "учебник",
+        "stressed": "уче́бник",
+        "ipa": "u.ˈt͡ɕɛb.nʲɪk"
+      },
+      {
+        "text": "день",
+        "stressed": "день",
+        "ipa": "dʲɛnʲ"
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "noun": "шкаф и карта",
+    "pronunciation": [
+      {
+        "text": "шкаф",
+        "stressed": "шкаф",
+        "ipa": "ʂkaf"
+      },
+      {
+        "text": "карта",
+        "stressed": "ка́рта",
+        "ipa": "ˈkar.tə"
+      }
+    ]
+  },
+  {
+    "id": 5,
+    "noun": "портфель и тетрадь",
+    "pronunciation": [
+      {
+        "text": "портфель",
+        "stressed": "портфе́ль",
+        "ipa": "pʌrt.ˈfʲɛlʲ"
+      },
+      {
+        "text": "тетрадь",
+        "stressed": "тетра́дь",
+        "ipa": "tʲɪ.ˈtratʲ"
+      }
+    ]
+  },
+  {
+    "id": 6,
+    "noun": "пальто и костюм",
+    "pronunciation": [
+      {
+        "text": "пальто",
+        "stressed": "пальто́",
+        "ipa": "pʌlʲ.ˈtɔ"
+      },
+      {
+        "text": "костюм",
+        "stressed": "костю́м",
+        "ipa": "kʌ.ˈsʲtʲum"
+      }
+    ]
+  },
+  {
+    "id": 7,
+    "noun": "папка и словарь",
+    "pronunciation": [
+      {
+        "text": "папка",
+        "stressed": "па́пка",
+        "ipa": "ˈpap.kə"
+      },
+      {
+        "text": "словарь",
+        "stressed": "слова́рь",
+        "ipa": "slʌ.ˈvarʲ"
+      }
+    ]
+  },
+  {
+    "id": 8,
+    "noun": "дом и общежитие",
+    "pronunciation": [
+      {
+        "text": "дом",
+        "stressed": "дом",
+        "ipa": "dɔm"
+      },
+      {
+        "text": "общежитие",
+        "stressed": "общежи́тие",
+        "ipa": "ʌp.ɕːɪ.ˈʐɨ.tʲɪ.jə"
+      }
+    ]
+  },
+  {
+    "id": 9,
+    "noun": "кровать и окно",
+    "pronunciation": [
+      {
+        "text": "кровать",
+        "stressed": "крова́ть",
+        "ipa": "krʌ.ˈvatʲ"
+      },
+      {
+        "text": "окно",
+        "stressed": "окно́",
+        "ipa": "ʌk.ˈnɔ"
+      }
+    ]
+  },
+  {
+    "id": 10,
+    "noun": "журнал и картина",
+    "pronunciation": [
+      {
+        "text": "журнал",
+        "stressed": "журна́л",
+        "ipa": "ʐur.ˈnal"
+      },
+      {
+        "text": "картина",
+        "stressed": "карти́на",
+        "ipa": "kʌr.ˈtʲi.nə"
+      }
+    ]
+  },
+  {
+    "id": 11,
+    "noun": "слово и упражнение",
+    "pronunciation": [
+      {
+        "text": "слово",
+        "stressed": "сло́во",
+        "ipa": "ˈslɔ.və"
+      },
+      {
+        "text": "упражнение",
+        "stressed": "упражне́ние",
+        "ipa": "u.prʌ.ˈʐnʲɛ.nʲɪ.jə"
+      }
+    ]
+  },
+  {
+    "id": 12,
+    "noun": "книга и место",
+    "pronunciation": [
+      {
+        "text": "книга",
+        "stressed": "кни́га",
+        "ipa": "ˈknʲi.gə"
+      },
+      {
+        "text": "место",
+        "stressed": "ме́сто",
+        "ipa": "ˈmʲɛ.stə"
+      }
+    ]
+  },
+  {
+    "id": 13,
+    "noun": "машина и телевизор",
+    "pronunciation": [
+      {
+        "text": "машина",
+        "stressed": "маши́на",
+        "ipa": "mʌ.ˈʂɨ.nə"
+      },
+      {
+        "text": "телевизор",
+        "stressed": "телеви́зор",
+        "ipa": "tʲɪ.lʲɪ.ˈvʲi.zər"
+      }
+    ]
+  },
+  {
+    "id": 14,
+    "noun": "брат и отец",
+    "pronunciation": [
+      {
+        "text": "брат",
+        "stressed": "брат",
+        "ipa": "brat"
+      },
+      {
+        "text": "отец",
+        "stressed": "оте́ц",
+        "ipa": "ʌ.ˈtʲɛt͡s"
+      }
+    ]
+  },
+  {
+    "id": 15,
+    "noun": "мать и друг",
+    "pronunciation": [
+      {
+        "text": "мать",
+        "stressed": "мать",
+        "ipa": "matʲ"
+      },
+      {
+        "text": "друг",
+        "stressed": "друг",
+        "ipa": "druk"
+      }
+    ]
+  },
+  {
+    "id": 16,
+    "noun": "сестра и товарищ",
+    "pronunciation": [
+      {
+        "text": "сестра",
+        "stressed": "сестра́",
+        "ipa": "sʲɪ.ˈstra"
+      },
+      {
+        "text": "товарищ",
+        "stressed": "това́рищ",
+        "ipa": "tʌ.ˈva.rʲɪɕː"
+      }
+    ]
+  },
+  {
+    "id": 17,
+    "noun": "дочь и преподаватель",
+    "pronunciation": [
+      {
+        "text": "дочь",
+        "stressed": "дочь",
+        "ipa": "dɔt͡ɕ"
+      },
+      {
+        "text": "преподаватель",
+        "stressed": "преподава́тель",
+        "ipa": "prʲɪ.pə.dʌ.ˈva.tʲɪlʲ"
+      }
+    ]
+  }
+]

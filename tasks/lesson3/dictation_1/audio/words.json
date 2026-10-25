@@ -1,0 +1,277 @@
+[
+  {
+    "id": 1,
+    "noun": "класс",
+    "pronunciation": [
+      {
+        "text": "класс",
+        "stressed": "класс",
+        "ipa": "klas"
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "noun": "завод",
+    "pronunciation": [
+      {
+        "text": "завод",
+        "stressed": "заво́д",
+        "ipa": "zʌ.ˈvɔt"
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "noun": "урок",
+    "pronunciation": [
+      {
+        "text": "урок",
+        "stressed": "уро́к",
+        "ipa": "u.ˈrɔk"
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "noun": "машина",
+    "pronunciation": [
+      {
+        "text": "машина",
+        "stressed": "маши́на",
+        "ipa": "mʌ.ˈʂɨ.nə"
+      }
+    ]
+  },
+  {
+    "id": 5,
+    "noun": "книга",
+    "pronunciation": [
+      {
+        "text": "книга",
+        "stressed": "кни́га",
+        "ipa": "ˈknʲi.gə"
+      }
+    ]
+  },
+  {
+    "id": 6,
+    "noun": "учебник",
+    "pronunciation": [
+      {
+        "text": "учебник",
+        "stressed": "уче́бник",
+        "ipa": "u.ˈt͡ɕɛb.nʲɪk"
+      }
+    ]
+  },
+  {
+    "id": 7,
+    "noun": "журнал",
+    "pronunciation": [
+      {
+        "text": "журнал",
+        "stressed": "журна́л",
+        "ipa": "ʐur.ˈnal"
+      }
+    ]
+  },
+  {
+    "id": 8,
+    "noun": "вопрос",
+    "pronunciation": [
+      {
+        "text": "вопрос",
+        "stressed": "вопро́с",
+        "ipa": "vʌ.ˈprɔs"
+      }
+    ]
+  },
+  {
+    "id": 9,
+    "noun": "газета",
+    "pronunciation": [
+      {
+        "text": "газета",
+        "stressed": "газе́та",
+        "ipa": "gʌ.ˈzʲɛ.tə"
+      }
+    ]
+  },
+  {
+    "id": 10,
+    "noun": "глагол",
+    "pronunciation": [
+      {
+        "text": "глагол",
+        "stressed": "глаго́л",
+        "ipa": "glʌ.ˈgɔl"
+      }
+    ]
+  },
+  {
+    "id": 11,
+    "noun": "ошибка",
+    "pronunciation": [
+      {
+        "text": "ошибка",
+        "stressed": "оши́бка",
+        "ipa": "ʌ.ˈʂɨp.kə"
+      }
+    ]
+  },
+  {
+    "id": 12,
+    "noun": "ручка",
+    "pronunciation": [
+      {
+        "text": "ручка",
+        "stressed": "ру́чка",
+        "ipa": "ˈru.t͡ɕkə"
+      }
+    ]
+  },
+  {
+    "id": 13,
+    "noun": "тетрадь",
+    "pronunciation": [
+      {
+        "text": "тетрадь",
+        "stressed": "тетра́дь",
+        "ipa": "tʲɪ.ˈtratʲ"
+      }
+    ]
+  },
+  {
+    "id": 14,
+    "noun": "девочка",
+    "pronunciation": [
+      {
+        "text": "девочка",
+        "stressed": "де́вочка",
+        "ipa": "ˈdʲɛ.və.t͡ɕkə"
+      }
+    ]
+  },
+  {
+    "id": 15,
+    "noun": "девушка",
+    "pronunciation": [
+      {
+        "text": "девушка",
+        "stressed": "де́вушка",
+        "ipa": "ˈdʲɛ.vuʂ.kə"
+      }
+    ]
+  },
+  {
+    "id": 16,
+    "noun": "мальчик",
+    "pronunciation": [
+      {
+        "text": "мальчик",
+        "stressed": "ма́льчик",
+        "ipa": "ˈmalʲ.t͡ɕɪk"
+      }
+    ]
+  },
+  {
+    "id": 17,
+    "noun": "преподаватель",
+    "pronunciation": [
+      {
+        "text": "преподаватель",
+        "stressed": "преподава́тель",
+        "ipa": "prʲɪ.pə.dʌ.ˈva.tʲɪlʲ"
+      }
+    ]
+  },
+  {
+    "id": 18,
+    "noun": "студент",
+    "pronunciation": [
+      {
+        "text": "студент",
+        "stressed": "студе́нт",
+        "ipa": "stu.ˈdʲɛnt"
+      }
+    ]
+  },
+  {
+    "id": 19,
+    "noun": "студентка",
+    "pronunciation": [
+      {
+        "text": "студентка",
+        "stressed": "студе́нтка",
+        "ipa": "stu.ˈdʲɛnt.kə"
+      }
+    ]
+  },
+  {
+    "id": 20,
+    "noun": "фильм",
+    "pronunciation": [
+      {
+        "text": "фильм",
+        "stressed": "фильм",
+        "ipa": "fʲilʲm"
+      }
+    ]
+  },
+  {
+    "id": 21,
+    "noun": "магазин",
+    "pronunciation": [
+      {
+        "text": "магазин",
+        "stressed": "магази́н",
+        "ipa": "mə.gʌ.ˈzʲin"
+      }
+    ]
+  },
+  {
+    "id": 22,
+    "noun": "фабрика",
+    "pronunciation": [
+      {
+        "text": "фабрика",
+        "stressed": "фа́брика",
+        "ipa": "ˈfab.rʲɪ.kə"
+      }
+    ]
+  },
+  {
+    "id": 23,
+    "noun": "парк",
+    "pronunciation": [
+      {
+        "text": "парк",
+        "stressed": "парк",
+        "ipa": "park"
+      }
+    ]
+  },
+  {
+    "id": 24,
+    "noun": "буква",
+    "pronunciation": [
+      {
+        "text": "буква",
+        "stressed": "бу́ква",
+        "ipa": "ˈbuk.və"
+      }
+    ]
+  },
+  {
+    "id": 25,
+    "noun": "звук",
+    "pronunciation": [
+      {
+        "text": "звук",
+        "stressed": "звук",
+        "ipa": "zvuk"
+      }
+    ]
+  }
+]

@@ -1,0 +1,342 @@
+<!doctype html>
+<html lang="ru">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Диктант «Новгород»</title>
+  <link rel="icon" href="data:,">
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <style>
+    :root {
+      --paper-bg: #fff;
+      --line: rgba(20, 33, 61, 0.10);
+      --err-bg: rgba(220, 53, 69, 0.12);
+      --err-border: rgba(220, 53, 69, 0.35);
+      --shell-pad: 10px;
+      --shell-gap: 10px;
+      --header-bg: linear-gradient(135deg, rgba(255, 255, 255, 0.92), rgba(246, 247, 251, 0.88));
+    }
+
+    html,
+    body {
+      height: 100%;
+      margin: 0;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      background: #f6f7fb;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .task-shell {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    .task-header {
+      flex: 0 0 auto;
+      position: relative;
+      overflow: hidden;
+      padding: 8px 12px;
+      background-image: url("./bg.jpg");
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+    }
+
+    .task-header::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: var(--header-bg);
+      backdrop-filter: blur(1px);
+    }
+
+    .task-header-inner {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .task-header-copy {
+      min-width: 0;
+    }
+
+    .hero-tags {
+      display: flex;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 2px;
+      font-weight: 800;
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      user-select: none;
+    }
+
+    .hero-tag-reading {
+      color: #1d4ed8;
+    }
+
+    .hero-tag-task {
+      color: #ef4444;
+    }
+
+    .title-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: 6px 12px;
+    }
+
+    .title-ru {
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin: 0;
+      font-size: 1.05rem;
+      line-height: 1.25;
+    }
+
+    .title-en {
+      margin: 0;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      font-size: 0.92rem;
+      line-height: 1.25;
+      color: #1d4ed8;
+    }
+
+    .task-instruction {
+      margin-top: 2px;
+      font-size: 0.8rem;
+      line-height: 1.35;
+      color: #6c757d;
+    }
+
+    .task-header #hint {
+      flex: 0 0 auto;
+      text-align: end;
+      max-width: 40%;
+    }
+
+    .task-main {
+      flex: 1 1 auto;
+      display: flex;
+      flex-direction: row;
+      gap: var(--shell-gap);
+      min-height: 0;
+      padding: var(--shell-pad);
+      overflow: hidden;
+    }
+
+    .task-work,
+    .task-side {
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      min-width: 0;
+    }
+
+    .task-work {
+      flex: 1 1 58%;
+    }
+
+    .task-side {
+      flex: 1 1 42%;
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+
+    .paper {
+      background: var(--paper-bg);
+      border-radius: 12px;
+      border: 1px solid rgba(0, 0, 0, 0.08);
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+    }
+
+    .task-work { overflow-y: auto; }
+    .task-work-panel { min-height: 240px !important; }
+    @media (max-width: 900px) {
+      .task-main { overflow-y: auto; }
+      .task-work, .task-side { flex: none !important; overflow: visible; }
+    }
+
+    .task-work-panel {
+      display: flex;
+      flex-direction: column;
+      flex: 1 1 auto;
+      min-height: 0;
+      padding: 10px;
+    }
+
+    .task-work-panel .lined {
+      flex: 1 1 auto;
+      width: 100%;
+      min-height: 0;
+      height: auto;
+      resize: none;
+      padding: 20px 14px 12px;
+      border: 0;
+      outline: none;
+      border-radius: 10px;
+      background:
+        repeating-linear-gradient(to bottom,
+          rgba(255, 255, 255, 1) 0px,
+          rgba(255, 255, 255, 1) 24px,
+          var(--line) 25px,
+          rgba(255, 255, 255, 1) 28px);
+      line-height: 28px;
+      font-size: 15px;
+    }
+
+    .task-actions {
+      display: flex;
+      gap: 8px;
+      flex: 0 0 auto;
+      margin-top: 8px;
+    }
+
+    .task-side .card {
+      margin-bottom: 8px;
+    }
+
+    .task-side .card:last-child {
+      margin-bottom: 0;
+    }
+
+    .task-side .card-body {
+      padding: 0.75rem;
+    }
+
+    .task-side .card-header {
+      padding: 0.5rem 0.75rem;
+    }
+
+    .err {
+      background: var(--err-bg);
+      box-shadow: inset 0 -1px 0 var(--err-border);
+      border-radius: 4px;
+      padding: 0 1px;
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      white-space: nowrap;
+      vertical-align: middle;
+    }
+
+    .status-badge i {
+      font-size: 1rem;
+      line-height: 1;
+    }
+
+    #highlighted {
+      white-space: pre-wrap;
+      line-height: 1.6;
+      font-size: 14px;
+    }
+
+    .result-meta {
+      font-size: 0.9rem;
+    }
+
+    .result-score {
+      font-weight: 700;
+      color: #1d4ed8;
+    }
+
+    .panel-loader {
+      min-height: 3.5rem;
+    }
+
+    #resultCard.is-loading,
+    #errorsCard.is-loading {
+      opacity: 0.92;
+    }
+
+    @media (max-width: 900px) {
+      .task-main {
+        flex-direction: column;
+      }
+
+      .task-work,
+      .task-side {
+        flex: 1 1 50%;
+      }
+    }
+    .dictation-panel { padding: 22px; }
+    .dictation-panel h2 { font-size: 1.3rem; margin: 0 0 14px; }
+    .answer-label { display: block; font-weight: 600; margin: 18px 0 6px; }
+    #answer { font-size: 1.2rem; padding: 10px 12px; }
+    #wordFeedback { margin: 18px 0 0; line-height: 1.7; }
+    .history-list { line-height: 1.7; padding-left: 24px; }
+    .history-list li { padding: 6px 0; border-bottom: 1px solid #eee; }
+    .total { font-size: 2rem; font-weight: 800; }
+    .task-side { gap: 10px; }
+    .task-main { overflow-y: auto; }
+    @media (max-width: 900px) { .task-work, .task-side { flex: none; overflow: visible; } }
+  </style>
+</head>
+
+<body>
+<div class="task-shell">
+  <header class="task-header"><div class="task-header-inner"><div class="task-header-copy">
+    <div class="hero-tags"><span class="hero-tag-reading"># ДИКТАНТ</span><span class="hero-tag-task">УРОК 3 · AI_3_10</span></div>
+    <h1 class="title-ru">Слушайте и записывайте: «Новгород»</h1>
+    <h2 class="title-en">Listen and write each sentence</h2>
+    <div class="task-instruction">Запишите 10 предложений по очереди. Итог — доля зачтённых слов во всём тексте, от 0 до 100 баллов. Зачёт — от 60 из 100.</div>
+  </div></div></header>
+  <main class="task-main">
+    <section class="task-work">
+      <div class="paper dictation-panel">
+        <h2 id="stepTitle">Начните диктант</h2>
+        <p id="intro" class="text-muted">Предложения звучат в порядке исходного текста. Пропуск, замена или лишнее слово — одна ошибка; каждое слово имеет одинаковый вес в итоговой оценке. После проверки ответ изменить нельзя. Регистр и знаки препинания не влияют на оценку.</p>
+        <button id="start" class="btn btn-primary" type="button">Начать диктант</button>
+        <div id="question" hidden>
+          <button id="listen" class="btn btn-primary" type="button">▶ Слушать предложение</button>
+          <audio id="audio" preload="auto" hidden></audio>
+          <label class="answer-label" for="answer">Текст предложения</label>
+          <form id="answerForm">
+            <textarea class="form-control" id="answer" rows="4" maxlength="200" placeholder="Запишите услышанное предложение" autocomplete="off" spellcheck="false"></textarea>
+            <div class="d-flex gap-2 flex-wrap mt-3">
+              <button id="check" class="btn btn-primary" type="submit">Проверить</button>
+              <button id="skip" class="btn btn-outline-secondary" type="button">Пропустить — 0 баллов</button>
+              <button id="next" class="btn btn-success" type="button" hidden>Следующее предложение →</button>
+            </div>
+          </form>
+          <div id="wordFeedback" role="status" aria-live="polite"></div>
+        </div>
+        <p id="error" class="text-danger mt-3" role="alert"></p>
+      </div>
+    </section>
+    <aside class="task-side">
+      <img src="writer.gif" alt="Ученик пишет в тетради" style="width:160px;max-width:100%;align-self:center" />
+      <section class="paper dictation-panel"><h2>Результат</h2><div class="total" id="total">0 / 100</div><p id="progress">Проверено 0 из 10</p><p id="outcome" class="fw-semibold" aria-live="polite"></p><p id="saved" class="small text-muted"></p></section>
+      <section class="paper dictation-panel"><h2>Проверенные ответы</h2><ol id="history" class="history-list"></ol></section>
+    </aside>
+  </main>
+</div>
+<script src="../../api-config.js"></script>
+<script>
+const API = window.ANALYZER_CONFIG.apiBaseUrl;
+const TASK_CODE = "AI_3_10";
+</script>
+<script src="../dictation_1/dictation.js?v=singular-pairs-11"></script>
+</body></html>
