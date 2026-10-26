@@ -7,8 +7,8 @@ class CourseAdmin(admin.ModelAdmin):
     """
     Админ-интерфейс для модели Course.
     """
-    list_display = ('name', 'get_lessons_count')
-    search_fields = ('name',)
+    list_display = ('name', 'websoft_id', 'get_lessons_count')
+    search_fields = ('name', 'websoft_id')
     
     def get_lessons_count(self, obj):
         """Возвращает количество уроков в курсе."""

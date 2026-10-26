@@ -1,0 +1,6 @@
+<form method="post" action="{% if student %}{% url 'students:student_edit' group.pk student.pk %}{% else %}{% url 'students:student_create' group.pk %}{% endif %}">
+  {% csrf_token %}
+  <div class="modal-header"><h5 class="modal-title">{% if student %}Редактирование студента{% else %}Добавление студента{% endif %}</h5><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button></div>
+  <div class="modal-body">{{ form.non_field_errors }}{% for field in form %}<div class="mb-3">{{ field.label_tag }}{{ field }}{{ field.errors }}{% if field.help_text %}<small class="text-muted">{{ field.help_text }}</small>{% endif %}</div>{% endfor %}</div>
+  <div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button><button type="submit" class="btn btn-primary">Сохранить</button></div>
+</form>

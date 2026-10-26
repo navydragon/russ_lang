@@ -3,14 +3,19 @@
 {% block title %}Студенты группы "{{ group.name }}"{% endblock %}
 
 {% block content %}
-<div class="d-flex justify-content-between align-items-center mb-4">
+<div class="d-flex flex-column flex-lg-row justify-content-between align-items-start gap-3 mb-4">
     <div>
         <h2>Студенты группы "{{ group.name }}"</h2>
         <p class="text-muted mb-0">Код группы: <code>{{ group.code }}</code></p>
+        <p class="text-muted mb-0">Курсы: {% for course in group.courses.all %}{{ course.name }}{% if not forloop.last %}, {% endif %}{% empty %}не выбраны{% endfor %}</p>
     </div>
+    <div class="d-flex flex-wrap gap-2">
+      <button type="button" class="btn btn-primary" data-student-form="{% url 'students:student_create' group.pk %}">Добавить студента</button>
+      <a class="btn btn-outline-primary" href="{% url 'students:student_import' group.pk %}">Импорт из Excel</a>
     <a href="{% url 'students:group_management' %}" class="btn btn-secondary">
         Назад к списку групп
     </a>
+    </div>
 </div>
 
 <div class="card">
@@ -27,6 +32,7 @@
                             <th>Имя</th>
                             <th>Отчество</th>
                             <th>Код</th>
+                            <th>Почта</th>
                             <th>Действия</th>
                         </tr>
                     </thead>
@@ -37,7 +43,9 @@
                                 <td>{{ student.first_name }}</td>
                                 <td>{{ student.middle_name|default:"—" }}</td>
                                 <td><code>{{ student.code }}</code></td>
+                                <td>{{ student.email|default:'—' }}</td>
                                 <td>
+                                    <button type="button" class="btn btn-sm btn-outline-primary" data-student-form="{% url 'students:student_edit' group.pk student.pk %}">Редактировать</button>
                                     <button type="button" class="btn btn-sm btn-outline-danger" 
                                             data-bs-toggle="modal" 
                                             data-bs-target="#removeModal{{ student.pk }}">
@@ -82,6 +90,35 @@
         {% endif %}
     </div>
 </div>
+<div class="modal fade" id="studentFormModal" tabindex="-1" aria-label="Данные студента"><div class="modal-dialog"><div class="modal-content"></div></div></div>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const element = document.getElementById('studentFormModal');
+  const content = element.querySelector('.modal-content');
+  document.querySelectorAll('[data-student-form]').forEach(button => button.addEventListener('click', async () => {
+    button.disabled = true;
+    try {
+      const response = await fetch(button.dataset.studentForm, {credentials: 'same-origin'});
+      if (!response.ok) throw new Error('Не удалось открыть форму. Обновите страницу.');
+      content.innerHTML = await response.text();
+      bootstrap.Modal.getOrCreateInstance(element).show();
+    } catch (error) { alert(error.message); } finally { button.disabled = false; }
+  }));
+  element.addEventListener('submit', async event => {
+    event.preventDefault();
+    const form = event.target;
+    const submit = form.querySelector('[type=submit]');
+    const data = new FormData(form);
+    submit.disabled = true;
+    try {
+      const response = await fetch(form.action, {method:'POST', body:data, credentials:'same-origin'});
+      if (response.ok && response.headers.get('content-type').includes('application/json')) { location.reload(); return; }
+      if (response.status === 400) content.innerHTML = await response.text();
+      else throw new Error('Сохранение не подтверждено. Обновите страницу или повторите запрос.');
+    } catch (error) { alert(error.message); } finally { submit.disabled = false; }
+  });
+});
+</script>
 {% endblock %}
 
 

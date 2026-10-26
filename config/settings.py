@@ -16,6 +16,10 @@ LOGS_DIR.mkdir(exist_ok=True)
 # Явный путь: gunicorn/systemd могут иметь другой cwd, чем manage.py
 load_dotenv(BASE_DIR / '.env', override=True)
 
+PORTAL_ROSTER_URL = os.getenv('PORTAL_ROSTER_URL', 'https://api.emiit.ru/_wt')
+PORTAL_ROSTER_TOKEN = os.getenv('PORTAL_ROSTER_TOKEN', '')
+PORTAL_ROSTER_TIMEOUT = float(os.getenv('PORTAL_ROSTER_TIMEOUT', '10'))
+
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'django-insecure-change-this-in-production')
 

@@ -1,9 +1,14 @@
 from django.urls import path
 from . import views
+from . import management_views
 
 app_name = 'students'
 
 urlpatterns = [
+    path('groups/<int:group_id>/students/create/', management_views.student_form, name='student_create'),
+    path('groups/<int:group_id>/students/<int:student_id>/edit/', management_views.student_form, name='student_edit'),
+    path('groups/<int:group_id>/import/', management_views.import_students, name='student_import'),
+    path('groups/<int:group_id>/import/template/', management_views.import_template, name='student_import_template'),
     path('', views.index, name='index'),
     path('login/', views.CustomLoginView.as_view(), name='login'),
     path('logout/', views.CustomLogoutView.as_view(), name='logout'),

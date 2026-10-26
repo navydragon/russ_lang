@@ -18,6 +18,7 @@
                     <th>Название</th>
                     <th>Код</th>
                     <th>Кураторы</th>
+                    <th>Курсы</th>
                     <th>Количество студентов</th>
                     <th>Действия</th>
                 </tr>
@@ -34,6 +35,7 @@
                                 <span class="text-muted">Не назначены</span>
                             {% endfor %}
                         </td>
+                        <td>{% for course in group.courses.all %}{{ course.name }}{% if not forloop.last %}, {% endif %}{% empty %}<span class="text-muted">Не выбраны</span>{% endfor %}</td>
                         <td>
                             <span class="badge bg-secondary">{{ group.students_count }}</span>
                         </td>

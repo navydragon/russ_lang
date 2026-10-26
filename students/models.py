@@ -6,6 +6,8 @@ class Group(models.Model):
     """
     Модель группы студентов.
     """
+    portal_id = models.CharField(max_length=32, unique=True, null=True, blank=True, editable=False)
+    courses = models.ManyToManyField('courses.Course', blank=True, related_name='groups', verbose_name='Курсы')
     name = models.CharField(
         max_length=200,
         verbose_name='Название'
@@ -39,6 +41,8 @@ class Student(models.Model):
     """
     Модель студента.
     """
+    portal_id = models.CharField(max_length=32, unique=True, null=True, blank=True, editable=False)
+    email = models.EmailField(blank=True, verbose_name='Почта')
     last_name = models.CharField(
         max_length=150,
         verbose_name='Фамилия'

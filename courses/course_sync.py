@@ -9,6 +9,7 @@ from openpyxl import load_workbook
 
 from courses.models import Course, Lesson, Task
 from courses.task_catalog import TASK_CATALOG
+from courses.websoft import RUSSIAN_COURSE_WEBSOFT_ID
 
 
 COURSE_NAME = 'Русский язык для иностранных студентов'
@@ -71,6 +72,10 @@ def build_plan(regular_tasks):
     if len(courses) > 1:
         raise CommandError('Найдено несколько курсов с целевым названием; нужна проверка дублей.')
     course = courses[0] if courses else None
+    if course and course.websoft_id not in (None, '', RUSSIAN_COURSE_WEBSOFT_ID):
+        raise CommandError('Основной курс связан с другим ID WebSoft; проверьте привязку.')
+    if Course.objects.filter(websoft_id=RUSSIAN_COURSE_WEBSOFT_ID).exclude(pk=course.pk if course else None).exists():
+        raise CommandError('ID WebSoft основного курса уже занят другой записью.')
     lessons = {l.position: l for l in Lesson.objects.filter(course=course)} if course else {}
     missing_lessons = [n for n in range(1, 11) if n not in lessons]
     plan = SyncPlan(course.pk if course else None, lessons, missing_lessons, regular_count=len(regular_tasks))
@@ -104,7 +109,11 @@ def build_plan(regular_tasks):
 
 
 def apply_plan(plan):
-    course = Course.objects.get(pk=plan.course_id) if plan.course_id else Course.objects.create(name=COURSE_NAME)
+    course = Course.objects.get(pk=plan.course_id) if plan.course_id else Course(name=COURSE_NAME)
+    if course.websoft_id not in (None, '', RUSSIAN_COURSE_WEBSOFT_ID):
+        raise CommandError('Привязка WebSoft изменилась во время синхронизации.')
+    course.websoft_id = RUSSIAN_COURSE_WEBSOFT_ID
+    course.save()
     lessons = dict(plan.lessons)
     for number in plan.missing_lessons:
         lessons[number] = Lesson.objects.create(course=course, position=number, name=f'Урок {number}')

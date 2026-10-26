@@ -9,6 +9,8 @@ from django.urls import reverse_lazy
 from django.core.exceptions import PermissionDenied
 from .models import Group, Student
 from .forms import GroupForm
+from . import roster
+from .portal import PortalError
 from courses.models import Course, Lesson, StudentTask, TaskAttempt
 
 
@@ -244,7 +246,7 @@ class GroupManagementView(LoginRequiredMixin, UserPassesTestMixin, ListView):
     def get_queryset(self):
         return Group.objects.annotate(
             students_count=Count('students')
-        ).prefetch_related('curators').order_by('name')
+        ).prefetch_related('curators', 'courses').order_by('name')
 
 
 class GroupCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
@@ -260,8 +262,13 @@ class GroupCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
         return self.request.user.is_staff
     
     def form_valid(self, form):
+        try:
+            self.object = roster.save_group(form)
+        except PortalError as exc:
+            form.add_error(None, str(exc))
+            return self.form_invalid(form)
         messages.success(self.request, 'Группа успешно создана.')
-        return super().form_valid(form)
+        return redirect(self.success_url)
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -282,8 +289,13 @@ class GroupUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         return self.request.user.is_staff
     
     def form_valid(self, form):
+        try:
+            self.object = roster.save_group(form)
+        except PortalError as exc:
+            form.add_error(None, str(exc))
+            return self.form_invalid(form)
         messages.success(self.request, 'Группа успешно обновлена.')
-        return super().form_valid(form)
+        return redirect(self.success_url)
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -307,18 +319,19 @@ class GroupDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         return Group.objects.annotate(
             students_count=Count('students')
         )
+
+    def form_valid(self, form):
+        try:
+            roster.delete_group(self.object.pk)
+        except PortalError as exc:
+            messages.error(self.request, str(exc))
+        else:
+            messages.success(self.request, 'Группа удалена.')
+        return redirect(self.success_url)
     
     def delete(self, request, *args, **kwargs):
-        group = self.get_object()
-        if group.students_count > 0:
-            messages.error(
-                request,
-                f'Невозможно удалить группу "{group.name}". В группе есть студенты ({group.students_count}). '
-                'Сначала удалите всех студентов из группы или переместите их в другую группу.'
-            )
-            return redirect('students:group_management')
-        messages.success(request, f'Группа "{group.name}" успешно удалена.')
-        return super().delete(request, *args, **kwargs)
+        self.object = self.get_object()
+        return self.form_valid(self.get_form())
 
 
 class GroupStudentsView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
@@ -333,7 +346,7 @@ class GroupStudentsView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         group_id = kwargs.get('group_id')
-        group = get_object_or_404(Group, id=group_id)
+        group = get_object_or_404(Group.objects.prefetch_related('courses'), id=group_id)
         
         students = group.students.all().order_by('last_name', 'first_name', 'middle_name')
         
@@ -360,33 +373,23 @@ class RemoveStudentFromGroupView(LoginRequiredMixin, UserPassesTestMixin, Delete
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         group_id = self.kwargs.get('group_id')
-        group = get_object_or_404(Group, id=group_id)
+        group = get_object_or_404(Group.objects.prefetch_related('courses'), id=group_id)
         context['group'] = group
         return context
     
     def get_success_url(self):
         group_id = self.kwargs.get('group_id')
         return reverse_lazy('students:group_students', kwargs={'group_id': group_id})
+
+    def form_valid(self, form):
+        try:
+            roster.remove_student(self.kwargs['group_id'], self.object.pk)
+        except PortalError as exc:
+            messages.error(self.request, str(exc))
+        else:
+            messages.success(self.request, 'Студент исключён из группы. Пользователь и результаты сохранены.')
+        return redirect(self.get_success_url())
     
     def delete(self, request, *args, **kwargs):
-        student = self.get_object()
-        group_id = self.kwargs.get('group_id')
-        group = get_object_or_404(Group, id=group_id)
-        
-        # Проверяем, что студент действительно в этой группе
-        if student.group != group:
-            messages.error(
-                request,
-                f'Студент "{student}" не принадлежит группе "{group.name}".'
-            )
-            return redirect(self.get_success_url())
-        
-        group_name = group.name
-        student.group = None
-        student.save()
-        messages.success(
-            request,
-            f'Студент "{student}" успешно удален из группы "{group_name}".'
-        )
-        return redirect(self.get_success_url())
-
+        self.object = self.get_object()
+        return self.form_valid(self.get_form())

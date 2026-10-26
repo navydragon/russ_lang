@@ -1,11 +1,14 @@
 from django.db import models
 from students.models import Student
+from .websoft import validate_websoft_id
 
 
 class Course(models.Model):
     """
     Модель курса.
     """
+    websoft_id = models.CharField(max_length=32, null=True, blank=True, unique=True,
+                                  verbose_name='ID WebSoft', validators=[validate_websoft_id])
     name = models.CharField(
         max_length=200,
         verbose_name='Название'
@@ -19,6 +22,16 @@ class Course(models.Model):
 
     def __str__(self):
         return self.name
+
+    def clean(self):
+        super().clean()
+        self.websoft_id = (str(self.websoft_id).strip() or None) if self.websoft_id else None
+
+    def save(self, *args, **kwargs):
+        self.websoft_id = (str(self.websoft_id).strip() or None) if self.websoft_id else None
+        if self.websoft_id:
+            validate_websoft_id(self.websoft_id)
+        return super().save(*args, **kwargs)
 
 
 class Lesson(models.Model):

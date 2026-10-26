@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% block title %}Импорт студентов{% endblock %}
+{% block content %}
+<h2>Импорт в группу «{{ group.name }}»</h2>
+<p>Код группы: <code>{{ group.code }}</code>. Существующие студенты будут обновлены; их пароли сохранятся.</p>
+<div class="d-flex gap-2 mb-3"><a class="btn btn-outline-primary" href="{% url 'students:student_import_template' group.pk %}">Скачать шаблон</a><a class="btn btn-secondary" href="{% url 'students:group_students' group.pk %}">К группе</a></div>
+<p class="text-muted">XLSX до 5 МБ и 1000 студентов. code и login — одинаковые текстовые значения. Сначала проверьте файл, затем подтвердите импорт.</p>
+<form id="importForm" enctype="multipart/form-data">{% csrf_token %}<label for="studentsFile" class="form-label">Заполненный шаблон</label><input class="form-control mb-3" type="file" accept=".xlsx" id="studentsFile" name="file" required><button class="btn btn-primary" id="preview" type="submit">Проверить файл</button><button class="btn btn-success" id="execute" type="button" hidden>Подтвердить импорт</button></form>
+<div id="importMessage" role="status" class="my-3" style="white-space:pre-wrap"></div>
+<div class="table-responsive"><table class="table table-striped"><thead><tr><th>Строка</th><th>Код / логин</th><th>ФИО</th><th>Почта</th><th>Результат</th></tr></thead><tbody id="importRows"></tbody></table></div>
+<script>
+(() => {
+  const form = document.getElementById('importForm'), file = document.getElementById('studentsFile');
+  const preview = document.getElementById('preview'), execute = document.getElementById('execute');
+  const message = document.getElementById('importMessage'), tbody = document.getElementById('importRows');
+  let token = null, running = false, selectedFile = null, tableRows = new Map();
+  file.addEventListener('change', () => { token = null; execute.hidden = true; tbody.replaceChildren(); });
+  async function request(phase, offset = 0) {
+    const data = new FormData(form);
+    if (selectedFile) data.set('file', selectedFile);
+    data.set('phase', phase); data.set('offset', offset); if (token) data.set('token', token);
+    const response = await fetch(location.href, {method:'POST', body:data, credentials:'same-origin'});
+    if (!response.headers.get('content-type')?.includes('application/json')) throw new Error('Сессия истекла или сервер недоступен. Обновите страницу.');
+    const result = await response.json();
+    if (!response.ok) throw new Error(result.error || 'Не удалось выполнить запрос.');
+    return result;
+  }
+  function busy(value) { if (value) selectedFile = file.files[0]; running = value; preview.disabled = value; execute.disabled = value; file.disabled = value; }
+  form.addEventListener('submit', async event => {
+    event.preventDefault(); if (running) return;
+    busy(true); execute.hidden = true; token = null; message.textContent = 'Проверка файла…';
+    try {
+      const result = await request('preview'); token = result.token; tbody.replaceChildren(); tableRows.clear();
+      result.rows.forEach(row => {
+        const tr = document.createElement('tr');
+        [row.row_number, row.code, [row.last_name,row.first_name,row.middle_name].filter(Boolean).join(' '), row.email, row.expected].forEach(value => { const td = document.createElement('td'); td.textContent = value; tr.append(td); });
+        tbody.append(tr); tableRows.set(row.row_number, tr);
+      });
+      message.textContent = `Проверено строк: ${result.total}. Записи ещё не изменены.`; execute.hidden = false;
+    } catch (error) { message.textContent = error.message; } finally { busy(false); }
+  });
+  execute.addEventListener('click', async () => {
+    if (running || !token) return; busy(true); let offset = 0;
+    try {
+      while (true) {
+        const result = await request('execute', offset);
+        result.results.forEach(row => { const tr = tableRows.get(row.row_number); if (tr) tr.lastChild.textContent = row.message; });
+        offset = result.next_offset; message.textContent = `Обработано строк: ${offset}.`;
+        if (result.done) { if (result.remaining) message.textContent += ` Не выполнено ещё ${result.remaining}. Повторите файл после устранения ошибки.`; break; }
+      }
+      token = null; execute.hidden = true;
+      message.textContent += ' Проверьте результаты строк. Для повтора снова проверьте файл.';
+    } catch (error) { message.textContent = error.message + ' Результат последнего запроса неизвестен; повторный импорт безопасен.'; token = null; execute.hidden = true; }
+    finally { busy(false); }
+  });
+})();
+</script>
+{% endblock %}
