@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import logging
 import re
 import math
 from typing import Any, Optional
@@ -11,6 +12,8 @@ from .speaking_nexara import (
     tokenize_ru,
     transcribe_audio,
 )
+
+logger = logging.getLogger('api')
 
 TASK_ID_UNIVERSITY = 'university'
 MAX_DURATION_SEC = 180.0
@@ -221,8 +224,10 @@ def score_reading_from_payload(
     coverage_ratio_min: float = COVERAGE_TOKEN_RATIO,
     min_comma_pause_sec: Optional[float] = None,
     max_comma_pause_sec: Optional[float] = None,
+    recognized_override: Optional[str] = None,
 ) -> dict[str, Any]:
-    recognized = extract_recognized_text(payload)
+    recognized_raw = extract_recognized_text(payload)
+    recognized = (recognized_override if recognized_override is not None else recognized_raw) or ''
     words = extract_word_timestamps(payload)
     ratio = coverage_ratio(recognized, reference_text)
     coverage_ok = ratio >= coverage_ratio_min
@@ -261,7 +266,8 @@ def score_reading_from_payload(
     ok = coverage_ok and duration_ok and pauses_ok
     return {
         'ok': ok,
-        'recognized': recognized,
+        'recognized': recognized_raw,
+        'recognized_for_score': recognized,
         'duration': duration_value,
         'coverage': {
             'ok': coverage_ok,
@@ -277,6 +283,43 @@ def score_reading_from_payload(
     }
 
 
+READING_CORRECT_SCHEMA: dict[str, Any] = {
+    'type': 'object',
+    'properties': {
+        'corrected_text': {
+            'type': 'string',
+            'description': 'Исправленная расшифровка чтения по эталону',
+        },
+    },
+    'required': ['corrected_text'],
+}
+
+
+def build_reading_correct_prompt(reference_text: str) -> str:
+    ref = (reference_text or '').strip()
+    if len(ref) > 1400:
+        ref = ref[:1400]
+    return (
+        'Ученик читал вслух русский учебный текст. '
+        'Исправь ошибки распознавания речи по эталону: замени слова ASR на слова эталона, '
+        'если они похожи по звучанию (например «этап»→«этаж», «конкретикет»→«университет», '
+        '«ход»→«вход»). Не добавляй предложения, которых нет в эталоне. '
+        'В corrected_text верни только исправленный текст чтения.\n\n'
+        f'Эталон:\n{ref}'
+    )
+
+
+def extract_corrected_text(payload: dict[str, Any]) -> Optional[str]:
+    llm = payload.get('_llm_output')
+    if isinstance(llm, dict):
+        text = llm.get('corrected_text')
+        if isinstance(text, str) and text.strip():
+            return text.strip()
+    if isinstance(llm, str) and llm.strip():
+        return llm.strip()
+    return None
+
+
 def check_reading_audio(
     file_bytes: bytes,
     filename: str,
@@ -288,20 +331,39 @@ def check_reading_audio(
     if not task:
         raise ValueError(f'Unknown reading task_id: {task_id}')
 
-    payload = transcribe_audio(
-        file_bytes,
-        filename,
-        content_type=content_type,
-        language=language,
-        word_timestamps=True,
-    )
+    reference_text = task['reference_text']
+    try:
+        payload = transcribe_audio(
+            file_bytes,
+            filename,
+            content_type=content_type,
+            language=language,
+            word_timestamps=True,
+            prompt=build_reading_correct_prompt(reference_text),
+            json_schema=READING_CORRECT_SCHEMA,
+        )
+    except RuntimeError as e:
+        # LLM-анализ Nexara опционален: без него всё равно считаем по сырому ASR
+        logger.warning('Reading ASR with LLM correct failed (%s); fallback plain ASR', e)
+        payload = transcribe_audio(
+            file_bytes,
+            filename,
+            content_type=content_type,
+            language=language,
+            word_timestamps=True,
+        )
+
+    corrected = extract_corrected_text(payload)
     result = score_reading_from_payload(
         payload, task['reference_text'],
         max_duration_sec=task.get('max_duration_sec', MAX_DURATION_SEC),
         coverage_ratio_min=task.get('coverage_ratio_min', COVERAGE_TOKEN_RATIO),
         min_comma_pause_sec=task.get('min_comma_pause_sec'),
         max_comma_pause_sec=task.get('max_comma_pause_sec'),
+        recognized_override=corrected,
     )
+    if corrected:
+        result['recognized_corrected'] = corrected
     result['task_id'] = task_id
     result['title'] = task['title']
     language_out = payload.get('language')

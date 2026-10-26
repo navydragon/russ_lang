@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 import logging
 import re
 from typing import Any
@@ -30,9 +31,28 @@ def reference_matched(recognized: str, reference: str) -> bool:
 
 def extract_recognized_text(payload: dict[str, Any]) -> str:
     text = payload.get('text')
-    if isinstance(text, str):
+    if isinstance(text, str) and text.strip():
         return text.strip()
+    transcription = payload.get('transcription')
+    if isinstance(transcription, dict):
+        inner = transcription.get('text')
+        if isinstance(inner, str):
+            return inner.strip()
     return ''
+
+
+def normalize_nexara_payload(payload: dict[str, Any]) -> dict[str, Any]:
+    """
+    Flatten Nexara LLM-analysis envelope:
+    {transcription: {...}, llm_output: ...} -> transcription fields + _llm_output.
+    """
+    transcription = payload.get('transcription')
+    if isinstance(transcription, dict) and 'text' in transcription:
+        flat = dict(transcription)
+        if 'llm_output' in payload:
+            flat['_llm_output'] = payload.get('llm_output')
+        return flat
+    return payload
 
 
 def extract_word_timestamps(payload: dict[str, Any]) -> list[dict[str, Any]]:
@@ -75,30 +95,38 @@ def transcribe_audio(
     content_type: str = 'application/octet-stream',
     language: str = 'ru',
     word_timestamps: bool = False,
+    prompt: str | None = None,
+    json_schema: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     """
     Call Nexara audio/transcriptions with response_format=verbose_json.
-    Returns parsed JSON (expects at least 'text').
+    Returns a flattened payload (always has top-level `text` when available).
     """
     try:
-        return _transcribe_audio_once(
+        payload = _transcribe_audio_once(
             file_bytes,
             filename,
             content_type=content_type,
             language=language,
             word_timestamps=word_timestamps,
+            prompt=prompt,
+            json_schema=json_schema,
         )
+        return normalize_nexara_payload(payload)
     except RuntimeError as e:
         # Word timestamps are optional for basic ASR; retry without them.
         if word_timestamps and 'NEXARA_API_KEY' not in str(e):
             logger.warning('Nexara with word timestamps failed (%s); retrying without', e)
-            return _transcribe_audio_once(
+            payload = _transcribe_audio_once(
                 file_bytes,
                 filename,
                 content_type=content_type,
                 language=language,
                 word_timestamps=False,
+                prompt=prompt,
+                json_schema=json_schema,
             )
+            return normalize_nexara_payload(payload)
         raise
 
 
@@ -108,6 +136,8 @@ def _transcribe_audio_once(
     content_type: str = 'application/octet-stream',
     language: str = 'ru',
     word_timestamps: bool = False,
+    prompt: str | None = None,
+    json_schema: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     api_key = settings.NEXARA_API_KEY
     if not api_key:
@@ -123,17 +153,22 @@ def _transcribe_audio_once(
     if word_timestamps:
         # Nexara/OpenAI: array field in multipart
         data['timestamp_granularities[]'] = 'word'
+    if prompt:
+        data['prompt'] = prompt
+    if json_schema is not None:
+        data['json_schema'] = json.dumps(json_schema, ensure_ascii=False)
 
     files = {
         'file': (filename or 'audio.webm', file_bytes, content_type or 'application/octet-stream'),
     }
 
     logger.info(
-        'Nexara transcription: url=%s filename=%s bytes=%d word_timestamps=%s',
+        'Nexara transcription: url=%s filename=%s bytes=%d word_timestamps=%s prompt=%s',
         url,
         filename,
         len(file_bytes),
         word_timestamps,
+        bool(prompt),
     )
     try:
         with httpx.Client(timeout=httpx.Timeout(120.0, connect=30.0)) as client:

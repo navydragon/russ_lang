@@ -78,6 +78,18 @@ class PhotoAlbumReadingTests(SimpleTestCase):
         self.assertEqual(result['task_id'], 'photo_album')
         self.assertTrue(transcribe.call_args.kwargs['word_timestamps'])
 
+    def test_corrected_transcript_keeps_task_limits_and_comma_checks(self):
+        payload = reading_payload(comma_gap=0.7)
+        payload['text'] = 'ошибка распознавания'
+        payload['_llm_output'] = {'corrected_text': PHOTO_ALBUM_REFERENCE_TEXT}
+        with patch('api.reading_check.transcribe_audio', return_value=payload):
+            result = check_reading_audio(b'audio', 'record.webm', task_id='photo_album')
+        self.assertEqual(result['recognized'], 'ошибка распознавания')
+        self.assertEqual(result['recognized_corrected'], PHOTO_ALBUM_REFERENCE_TEXT)
+        self.assertEqual(result['coverage']['ratio'], 1.0)
+        self.assertEqual(result['duration_check']['max_sec'], 60)
+        self.assertFalse(result['pauses']['ok'])
+
     def test_university_keeps_three_minute_limit_and_period_only_checks(self):
         with patch('api.reading_check.transcribe_audio', return_value=reading_payload(
             text=UNIVERSITY_REFERENCE_TEXT, comma_gap=0, duration=170,

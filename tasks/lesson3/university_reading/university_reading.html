@@ -310,8 +310,10 @@
             <span id="statusBadge" class="badge rounded-pill text-bg-light">Готово</span>
           </div>
           <div class="card-body">
-            <div class="small text-muted mb-1">Распознано</div>
+            <div class="small text-muted mb-1">Распознано (ASR)</div>
             <div id="recognized" class="border rounded p-2 bg-white small">—</div>
+            <div class="small text-muted mt-2 mb-1">Для проверки (после правки)</div>
+            <div id="recognizedCorrected" class="border rounded p-2 bg-white small">—</div>
             <div class="small text-muted mt-2 mb-1">Покрытие текста</div>
             <div id="coverageMsg" class="fw-semibold">—</div>
             <div class="small text-muted mt-2 mb-1">Время</div>
@@ -360,6 +362,7 @@
 
     const hintEl = document.getElementById("hint");
     const recognizedEl = document.getElementById("recognized");
+    const recognizedCorrectedEl = document.getElementById("recognizedCorrected");
     const coverageMsgEl = document.getElementById("coverageMsg");
     const durationMsgEl = document.getElementById("durationMsg");
     const pausesListEl = document.getElementById("pausesList");
@@ -492,6 +495,10 @@
 
     function renderResult(data) {
       recognizedEl.textContent = data.recognized || "—";
+      const corrected = data.recognized_corrected || data.recognized_for_score || "";
+      if (recognizedCorrectedEl) {
+        recognizedCorrectedEl.textContent = corrected || "—";
+      }
       const cov = data.coverage || {};
       const ratioPct = cov.ratio != null ? Math.round(Number(cov.ratio) * 100) : "—";
       coverageMsgEl.textContent = (cov.ok ? "✓" : "✗") + " " + ratioPct + "% токенов эталона (нужно ≥ "
