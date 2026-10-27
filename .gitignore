@@ -1,6 +1,10 @@
 # Файл конфигурации с паролями
 .env
 
+# Учётные данные git (пароли/tokens) — никогда не коммитить!
+.git-credentials
+.ssh/
+
 # Python
 __pycache__/
 *.py[cod]
