@@ -80,7 +80,9 @@ class LessonFourReadingTests(SimpleTestCase):
             self.assertEqual(self.check(source)['coverage']['ok'], expected)
         source = payload()
         source.pop('words')
-        self.assertFalse(self.check(source)['ok'])
+        with patch('api.reading_check.transcribe_audio', return_value=source):
+            with self.assertRaisesRegex(RuntimeError, 'Паузы не оценены'):
+                check_reading_audio(b'audio', 'record.webm', task_id='lesson4_university')
 
     def test_missing_word_does_not_discard_later_alignment(self):
         words = payload()['words']

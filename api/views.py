@@ -241,8 +241,7 @@ def speaking_check(request):
     if not reference:
         return JsonResponse({'error': 'reference is required'}, status=400)
 
-    limit = READING_TASKS[task_id].get('max_audio_bytes')
-    if limit and upload.size > limit:
+    if upload.size > MAX_AUDIO_BYTES:
         return JsonResponse({'error': 'Максимальный размер записи — 20 МБ.'}, status=413)
 
     file_bytes = upload.read()

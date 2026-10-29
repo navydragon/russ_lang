@@ -78,6 +78,31 @@ class PhotoAlbumReadingTests(SimpleTestCase):
         self.assertEqual(result['task_id'], 'photo_album')
         self.assertTrue(transcribe.call_args.kwargs['word_timestamps'])
 
+    def test_llm_correction_without_timestamps_fetches_plain_timing(self):
+        corrected = reading_payload()
+        corrected.pop('words')
+        corrected['_llm_output'] = {'corrected_text': PHOTO_ALBUM_REFERENCE_TEXT}
+        corrected['text'] = 'распознано с ошибками'
+        plain = reading_payload()
+        with patch('api.reading_check.transcribe_audio', side_effect=[corrected, plain]) as transcribe:
+            result = check_reading_audio(b'audio', 'record.webm', task_id='photo_album')
+        self.assertEqual(transcribe.call_count, 2)
+        self.assertTrue(result['ok'])
+        self.assertEqual(result['recognized_corrected'], PHOTO_ALBUM_REFERENCE_TEXT)
+        self.assertEqual(result['coverage']['ratio'], 1.0)
+        self.assertGreater(result['pauses']['count'], 0)
+
+    def test_no_timing_after_retry_is_service_error_not_student_failure(self):
+        without_words = reading_payload()
+        without_words.pop('words')
+        with patch('api.reading_check.transcribe_audio', return_value=without_words):
+            response = self.client.post('/api/reading/check', {
+                'task_id': 'photo_album',
+                'file': SimpleUploadedFile('record.webm', b'audio', content_type='audio/webm'),
+            })
+        self.assertEqual(response.status_code, 502)
+        self.assertIn('Паузы не оценены', response.json()['error'])
+
     def test_corrected_transcript_keeps_task_limits_and_comma_checks(self):
         payload = reading_payload(comma_gap=0.7)
         payload['text'] = 'ошибка распознавания'

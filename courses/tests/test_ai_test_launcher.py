@@ -1,7 +1,9 @@
 from io import StringIO
+from html.parser import HTMLParser
 from pathlib import Path
 from types import SimpleNamespace
 from unittest.mock import patch
+from urllib.parse import unquote, urlsplit
 
 from django.conf import settings
 from django.core.management import call_command
@@ -11,6 +13,16 @@ from django.test import TestCase, override_settings
 from courses.models import Course, Lesson, StudentTask, Task, TaskAttempt
 from courses.task_catalog import TASK_CATALOG, TEST_COURSE_NAME, TEST_STUDENT_CODE
 from students.models import Group, Student
+
+
+class _TaskAssetParser(HTMLParser):
+    def __init__(self):
+        super().__init__()
+        self.references = []
+
+    def handle_starttag(self, tag, attrs):
+        attributes = dict(attrs)
+        self.references.extend(attributes[key] for key in ('src', 'href') if attributes.get(key))
 
 
 @override_settings(DEBUG=True)
@@ -69,6 +81,27 @@ class AITestLauncherTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'seed_ai_test_data')
         self.assertNotContains(response, 'Открыть задание')
+
+    def test_every_ready_task_uses_shared_launch_config_and_has_local_assets(self):
+        root = Path(settings.BASE_DIR) / 'tasks'
+        for definition in TASK_CATALOG:
+            if not definition.html_path:
+                continue
+            with self.subTest(task=definition.code):
+                page = root / definition.html_path
+                html = page.read_text(encoding='utf-8')
+                self.assertIn('../../api-config.js', html)
+                self.assertIn('const API = window.ANALYZER_CONFIG.apiBaseUrl;', html)
+                self.assertIn(f'const TASK_CODE = "{definition.code}";', html)
+                parser = _TaskAssetParser()
+                parser.feed(html)
+                for reference in parser.references:
+                    parsed = urlsplit(reference)
+                    if parsed.scheme or reference.startswith(('/', '#', 'data:')):
+                        continue
+                    asset = (page.parent / unquote(parsed.path)).resolve()
+                    self.assertTrue(asset.is_relative_to(root.resolve()))
+                    self.assertTrue(asset.is_file(), f'Missing {reference} for {definition.code}')
 
     @override_settings(DEBUG=False)
     def test_test_tools_disabled_outside_debug(self):

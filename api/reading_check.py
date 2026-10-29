@@ -428,6 +428,26 @@ def check_reading_audio(
             word_timestamps=True,
         )
 
+    if not extract_word_timestamps(payload):
+        # Nexara's LLM-corrected response can omit `words` even when requested.
+        # Obtain timing separately and preserve the corrected transcript for coverage.
+        corrected_output = payload.get('_llm_output')
+        timing_payload = transcribe_audio(
+            file_bytes,
+            filename,
+            content_type=content_type,
+            language=language,
+            word_timestamps=True,
+        )
+        if not extract_word_timestamps(timing_payload):
+            raise RuntimeError(
+                'Сервис распознавания не вернул время произнесения слов. '
+                'Паузы не оценены; попробуйте проверить запись позже.'
+            )
+        payload = timing_payload
+        if corrected_output is not None:
+            payload['_llm_output'] = corrected_output
+
     corrected = extract_corrected_text(payload)
     result = score_reading_from_payload(
         payload, task['reference_text'],

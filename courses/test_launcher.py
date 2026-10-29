@@ -24,7 +24,7 @@ def test_launcher(request):
         student=student, task__lesson__course__name=TEST_COURSE_NAME,
     ).select_related('task').order_by('-datetime', '-pk')[:20]) if student else []
     lessons = []
-    for number in range(1, 5):
+    for number in sorted({definition.lesson for definition in TASK_CATALOG}):
         rows = []
         for definition in TASK_CATALOG:
             if definition.lesson != number:
