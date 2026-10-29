@@ -3,6 +3,7 @@ from __future__ import annotations
 import logging
 import re
 import math
+from difflib import SequenceMatcher
 from typing import Any, Optional
 
 from .speaking_nexara import (
@@ -51,7 +52,39 @@ MOSCOW_REFERENCE_TEXT = (
     'Оно самое удобное, красивое и быстрое.'
 )
 
+LESSON4_UNIVERSITY_REFERENCE_PARTS = ('Это мой университет. Здесь мои друзья. Это Антон, Виктор и Андрей.\nЯ студент и мои друзья тоже студенты. Вот наша аудитория, здесь утром мы работаем.\nСправа наш преподаватель, он понятно объясняет урок, а мы внимательно слушаем, как говорит преподаватель.\nПотом преподаватель спрашивает: «Вы всё понимаете?»\nАнна спрашивает: «Что значит слово „глагол“?» Преподаватель отвечает: «Глаголы — это слова, они отвечают на вопрос: что делать? Например: что делать? — писать». «Спасибо, — отвечает Анна, — сейчас я всё понимаю».\nВот справа наш спортзал. Здесь после урока наши студенты и студентки играют в баскетбол. Мой друг Виктор — футболист, он и его друзья часто вечером играют в футбол тут.', 'Слева находится наша библиотека. Здесь все студенты занимаются после урока. Вот столы, лампы, книги, учебники, тетради, словари и журналы.\nЗдесь Виктор и Антон делают уроки, они читают тексты, пишут упражнения, учат слова. Они — друзья, и они помогают друг другу.\nА это наша столовая. Тут утром мы завтракаем, днём обедаем, а вечером ужинаем. Вот наш стол. Сейчас обед, здесь суп, борщ, салат, мясо, рыба, хлеб, сок.\nТам наше общежитие. Здесь все мои друзья отдыхают после урока. Это наша комната № 5.\nСправа наш шкаф, тут мой пиджак, брюки, куртка и пальто. Там наш стол, здесь наши книги и тетради. Слева окно, тут моя кровать, это моя подушка и моё одеяло. Мы любим наш университет.')
+LESSON4_UNIVERSITY_REFERENCE_TEXT = "\n\n".join(LESSON4_UNIVERSITY_REFERENCE_PARTS)
+
+NEIGHBORHOOD_REFERENCE_TEXT = 'Это наш район, здесь наш дом. Район красивый, зелёный, недалеко находится лес, мы часто гуляем вместе там. Наш район новый, но здесь уже есть метро, это очень удобно.\nА это наша улица. Дома здесь новые, высокие. Вот больница номер двадцать три. Здесь работает Нина Петровна. Слева двадцатая школа, где учится Таня. Она любит изучать иностранный язык, Таня уже хорошо говорит по-английски и переводит английские тексты.\nСправа находятся магазины и кинотеатр. Вот одиннадцатый дом, где мы живём, а там дом номер двенадцать, где живут мои друзья. Я иногда бываю там.'
+
+DIALOGUE_REFERENCES = ('Вы говорите по-русски?\nДа, говорю. Где группа номер четыре?\nЯ не понимаю, когда вы говорите быстро.', 'Ребята! Когда вы обедаете?\nОбычно мы обедаем после урока.\nЧто вы делаете потом?\nГуляем. Почему ты спрашиваешь?\nПотому что сегодня днём футбол.', 'Что это? Аудитория?\nНет, это деканат.\nГде аудитория номер три?\nСправа.', 'Лилия, ты ещё учишь слова?\nНет, я уже делаю упражнение.\nА я перевожу текст. Не знаю, что значит это слово. Ты не знаешь?\nТоже не знаю.')
+
+LESSON4_INTRODUCTION_DIALOGUE = 'Здравствуйте, Сергей Иванович!\nЗдравствуйте!\nСергей Иванович, познакомьтесь, пожалуйста. Это мой друг Джон. Джон, это мой русский преподаватель, Сергей Иванович.\nОчень приятно!\nОчень приятно!\nДжон, вы студент?\nНет, я уже работаю. Я инженер.\nДрузья, вы любите кофе?\nДа, конечно.\nВот, пожалуйста.\nБольшое спасибо.'
+
+LESSON4_FREE_TIME_DIALOGUE = 'Что вы делаете в свободное время?\nЧитаем. Слушаем музыку.\nСмотрим фильм.\nА вы смотрите русские фильмы?\nИногда.\nЯ думаю, что вы часто смотрите спорт.\nКонечно. Особенно футбол.\nДжон, вы неплохо говорите по-русски. Вы давно изучаете русский язык?\nНет, нет. Что вы! Я плохо говорю, но я работаю. Читаю по-русски, слушаю, смотрю фильмы.\nИ всё понимаете?\nКонечно, нет.'
+
 READING_TASKS: dict[str, dict[str, Any]] = {
+    'lesson4_free_time_dialogue': {'title': 'Свободное время', 'reference_text': LESSON4_FREE_TIME_DIALOGUE, 'max_duration_sec': 120.0, 'coverage_ratio_min': 0.60, 'sentence_endings': '.?!', 'max_audio_bytes': 20 * 1024 * 1024},
+    'lesson4_introduction_dialogue': {'title': 'Знакомство', 'reference_text': LESSON4_INTRODUCTION_DIALOGUE, 'max_duration_sec': 120.0, 'coverage_ratio_min': 0.60, 'sentence_endings': '.?!', 'max_audio_bytes': 20 * 1024 * 1024},
+    'lesson4_dialogue_1': {'title': 'Диалог 1', 'reference_text': DIALOGUE_REFERENCES[0], 'max_duration_sec': 120.0, 'coverage_ratio_min': 0.60, 'sentence_endings': '.?!', 'max_audio_bytes': 20 * 1024 * 1024},
+    'lesson4_dialogue_2': {'title': 'Диалог 2', 'reference_text': DIALOGUE_REFERENCES[1], 'max_duration_sec': 120.0, 'coverage_ratio_min': 0.60, 'sentence_endings': '.?!', 'max_audio_bytes': 20 * 1024 * 1024},
+    'lesson4_dialogue_3': {'title': 'Диалог 3', 'reference_text': DIALOGUE_REFERENCES[2], 'max_duration_sec': 120.0, 'coverage_ratio_min': 0.60, 'sentence_endings': '.?!', 'max_audio_bytes': 20 * 1024 * 1024},
+    'lesson4_dialogue_4': {'title': 'Диалог 4', 'reference_text': DIALOGUE_REFERENCES[3], 'max_duration_sec': 120.0, 'coverage_ratio_min': 0.60, 'sentence_endings': '.?!', 'max_audio_bytes': 20 * 1024 * 1024},
+    'neighborhood_reading': {
+        'title': 'Наш район и наша улица', 'reference_text': NEIGHBORHOOD_REFERENCE_TEXT,
+        'max_duration_sec': None, 'coverage_ratio_min': 0.60,
+        'sentence_endings': '.?!', 'max_audio_bytes': 20 * 1024 * 1024,
+    },
+    'lesson4_university': {
+        'title': 'Мой университет — часть 1', 'reference_text': LESSON4_UNIVERSITY_REFERENCE_PARTS[0],
+        'max_duration_sec': None, 'coverage_ratio_min': 0.60,
+        'sentence_endings': '.?!', 'max_audio_bytes': 20 * 1024 * 1024,
+    },
+    'lesson4_university_part2': {
+        'title': 'Мой университет — часть 2', 'reference_text': LESSON4_UNIVERSITY_REFERENCE_PARTS[1],
+        'max_duration_sec': None, 'coverage_ratio_min': 0.60,
+        'sentence_endings': '.?!', 'max_audio_bytes': 20 * 1024 * 1024,
+    },
     'moscow': {
         'title': 'Москва — столица', 'reference_text': MOSCOW_REFERENCE_TEXT,
         'max_duration_sec': 180.0, 'coverage_ratio_min': 0.60,
@@ -136,16 +169,48 @@ def align_reference_to_words(
     return aligned
 
 
+def sentence_boundary_token_indices(reference_text: str, endings: str) -> list[dict[str, Any]]:
+    tokens = list(re.finditer(r'\w+|[.?!]', reference_text, re.UNICODE))
+    boundaries = []
+    word_count = 0
+    sentence_index = 0
+    total_words = len(tokenize_ru(reference_text))
+    for token in tokens:
+        value = token.group()
+        if value in endings:
+            if word_count and word_count < total_words:
+                boundaries.append({'after_sentence_index': sentence_index,
+                                   'after_token_index': word_count - 1,
+                                   'sentence_preview': reference_text[max(0, token.start()-70):token.end()],
+                                   'punctuation': value})
+            sentence_index += 1
+        elif re.match(r'\w', value):
+            word_count += 1
+    return boundaries
+
+
+def align_reference_with_gaps(reference_text, words):
+    # A missed word must not consume the remainder of the ASR transcript.
+    ref = tokenize_ru(reference_text)
+    actual = [normalize_ru(word['word']) for word in words]
+    aligned = [None] * len(ref)
+    for match in SequenceMatcher(None, ref, actual, autojunk=False).get_matching_blocks():
+        for offset in range(match.size):
+            aligned[match.a + offset] = words[match.b + offset]
+    return aligned
+
+
 def score_period_pauses(
     reference_text: str,
     words: list[dict[str, Any]],
     min_pause_sec: float = MIN_PAUSE_SEC,
     min_comma_pause_sec: Optional[float] = None,
     max_comma_pause_sec: Optional[float] = None,
+    sentence_endings: str = '.',
 ) -> dict[str, Any]:
-    boundaries = period_boundary_token_indices(reference_text)
+    boundaries = period_boundary_token_indices(reference_text) if sentence_endings == '.' else sentence_boundary_token_indices(reference_text, sentence_endings)
     for boundary in boundaries:
-        boundary['punctuation'] = '.'
+        boundary.setdefault('punctuation', '.')
     if min_comma_pause_sec is not None:
         sentence_index = 0
         token_count = 0
@@ -163,7 +228,8 @@ def score_period_pauses(
             else:
                 token_count += 1
         boundaries.sort(key=lambda b: b['after_token_index'])
-    aligned = align_reference_to_words(reference_text, words)
+    aligned = (align_reference_with_gaps(reference_text, words) if sentence_endings != "."
+               else align_reference_to_words(reference_text, words))
     details: list[dict[str, Any]] = []
     all_ok = True
 
@@ -219,12 +285,13 @@ def score_period_pauses(
 def score_reading_from_payload(
     payload: dict[str, Any],
     reference_text: str,
-    max_duration_sec: float = MAX_DURATION_SEC,
+    max_duration_sec: Optional[float] = MAX_DURATION_SEC,
     min_pause_sec: float = MIN_PAUSE_SEC,
     coverage_ratio_min: float = COVERAGE_TOKEN_RATIO,
     min_comma_pause_sec: Optional[float] = None,
     max_comma_pause_sec: Optional[float] = None,
     recognized_override: Optional[str] = None,
+    sentence_endings: str = '.',
 ) -> dict[str, Any]:
     recognized_raw = extract_recognized_text(payload)
     recognized = (recognized_override if recognized_override is not None else recognized_raw) or ''
@@ -236,7 +303,14 @@ def score_reading_from_payload(
     duration_ok = False
     duration_reason: Optional[str] = None
     duration_value: Optional[float] = None
-    if duration is None:
+    if max_duration_sec is None:
+        duration_ok = True
+        try:
+            candidate = float(duration)
+            duration_value = candidate if math.isfinite(candidate) and candidate > 0 else None
+        except (TypeError, ValueError):
+            pass
+    elif duration is None:
         duration_reason = 'duration_missing'
     else:
         try:
@@ -259,7 +333,7 @@ def score_reading_from_payload(
         pauses = score_period_pauses(
             reference_text, words, min_pause_sec=min_pause_sec,
             min_comma_pause_sec=min_comma_pause_sec,
-            max_comma_pause_sec=max_comma_pause_sec,
+            max_comma_pause_sec=max_comma_pause_sec, sentence_endings=sentence_endings,
         )
         pauses_ok = bool(pauses.get('ok'))
 
@@ -277,6 +351,7 @@ def score_reading_from_payload(
         'duration_check': {
             'ok': duration_ok,
             'max_sec': max_duration_sec,
+            'required': max_duration_sec is not None,
             'reason': duration_reason,
         },
         'pauses': pauses,
@@ -297,8 +372,8 @@ READING_CORRECT_SCHEMA: dict[str, Any] = {
 
 def build_reading_correct_prompt(reference_text: str) -> str:
     ref = (reference_text or '').strip()
-    if len(ref) > 1400:
-        ref = ref[:1400]
+    if len(ref) > 8000:
+        ref = ref[:8000]
     return (
         'Ученик читал вслух русский учебный текст. '
         'Исправь ошибки распознавания речи по эталону: замени слова ASR на слова эталона, '
@@ -361,11 +436,14 @@ def check_reading_audio(
         min_comma_pause_sec=task.get('min_comma_pause_sec'),
         max_comma_pause_sec=task.get('max_comma_pause_sec'),
         recognized_override=corrected,
+        sentence_endings=task.get('sentence_endings', '.'),
     )
     if corrected:
         result['recognized_corrected'] = corrected
     result['task_id'] = task_id
     result['title'] = task['title']
+    if task_id in ('lesson4_university', 'lesson4_university_part2', 'neighborhood_reading', 'lesson4_introduction_dialogue', 'lesson4_free_time_dialogue') or task_id.startswith('lesson4_dialogue_'):
+        result['assessment_limits'] = {name: 'not_assessed' for name in ('stress', 'intonation', 'word_endings')}
     language_out = payload.get('language')
     if language_out:
         result['language'] = language_out

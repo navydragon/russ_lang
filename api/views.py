@@ -241,6 +241,10 @@ def speaking_check(request):
     if not reference:
         return JsonResponse({'error': 'reference is required'}, status=400)
 
+    limit = READING_TASKS[task_id].get('max_audio_bytes')
+    if limit and upload.size > limit:
+        return JsonResponse({'error': 'Максимальный размер записи — 20 МБ.'}, status=413)
+
     file_bytes = upload.read()
     if not file_bytes:
         return JsonResponse({'error': 'Audio file is empty'}, status=400)
@@ -407,4 +411,31 @@ def reading_complete(request):
             task_code or '(empty)',
             save_error,
         )
+    return JsonResponse(response)
+
+
+@csrf_exempt
+@require_POST
+def neighborhood_verbs_check(request):
+    import re
+    from .reading_check import NEIGHBORHOOD_REFERENCE_TEXT
+    from .story_llm import StoryCheckResult
+    try:
+        body = json.loads(request.body.decode('utf-8'))
+        selected = body.get('selected')
+        student_code = body.get('student_code', '')
+        words = re.findall(r'[А-Яа-яЁё]+', NEIGHBORHOOD_REFERENCE_TEXT)
+        expected = {i for i, word in enumerate(words) if word.casefold() in {'находится', 'учится', 'любит', 'говорит', 'переводит', 'находятся'}}
+        if not isinstance(selected, list) or any(type(i) is not int or i < 0 or i >= len(words) for i in selected) or not isinstance(student_code, str):
+            raise ValueError()
+        chosen = set(selected)
+    except (ValueError, TypeError, UnicodeDecodeError, json.JSONDecodeError, AttributeError):
+        return JsonResponse({'error': 'Некорректный ответ'}, status=400)
+    correct = len(chosen & expected)
+    wrong = len(chosen - expected)
+    score = round(100 * max(0, correct - wrong) / len(expected))
+    result = StoryCheckResult(ok=score >= 60, score=score, feedback=f'Найдено: {correct} из {len(expected)}. Лишних слов: {wrong}.', normalized='', errors=[], quality_notes='', recommendations=[])
+    saved, error = _persist_story_attempt(student_code.strip(), 'AI_4_17', ', '.join(words[i] for i in sorted(chosen)), result, source='neighborhood_verbs_check')
+    response = {**result.model_dump(), 'saved': saved, 'correct': correct, 'total': len(expected), 'wrong': wrong}
+    if error: response['save_error'] = error
     return JsonResponse(response)

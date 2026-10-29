@@ -29,7 +29,7 @@ class AITestLauncherTests(TestCase):
         self.seed()
         self.assertEqual(Course.objects.count(), 1)
         self.assertEqual(Lesson.objects.count(), 4)
-        self.assertEqual(Task.objects.count(), 31)
+        self.assertEqual(Task.objects.count(), 34)
         self.assertEqual(Student.objects.count(), 1)
         self.assertEqual(Group.objects.count(), 1)
         self.assertTrue(TaskAttempt.objects.filter(pk=attempt.pk, score=70).exists())
@@ -53,7 +53,7 @@ class AITestLauncherTests(TestCase):
         self.assertEqual(response.cookies['student_code']['path'], '/')
         self.assertFalse(response.cookies['student_code']['httponly'])
         self.assertEqual(response['Cache-Control'], 'no-store')
-        self.assertContains(response, 'Открыть задание', count=17)
+        self.assertContains(response, 'Открыть задание', count=33)
         for definition in TASK_CATALOG:
             if definition.html_path:
                 self.assertContains(response, '/tasks/' + definition.html_path)

@@ -38,7 +38,7 @@ class CourseSyncTests(TestCase):
         self.assertEqual(snapshot, list(Task.objects.order_by('pk').values_list('pk', 'code', 'position')))
         self.assertEqual(Course.objects.count(), 1)
         self.assertEqual(Lesson.objects.count(), 10)
-        self.assertEqual(Task.objects.count(), len(read_regular_tasks(DEFAULT_TASKS_FILE)) + 31 + 1)
+        self.assertEqual(Task.objects.count(), len(read_regular_tasks(DEFAULT_TASKS_FILE)) + 34 + 1)
         self.assertTrue(TaskAttempt.objects.filter(pk=attempt.pk, score=87).exists())
         self.assertTrue(StudentTask.objects.filter(pk=completion.pk).exists())
         lesson.refresh_from_db()
@@ -76,7 +76,7 @@ class CourseSyncTests(TestCase):
         self.assertEqual(Task.objects.get(pk=task.pk).name, 'Занятый код')
 
     def test_catalog_codes_are_unique_and_sequential_per_lesson(self):
-        self.assertEqual(len({d.code for d in TASK_CATALOG}), 31)
+        self.assertEqual(len({d.code for d in TASK_CATALOG}), 34)
         for lesson in range(1, 11):
             definitions = [d for d in TASK_CATALOG if d.lesson == lesson]
             self.assertEqual([d.code for d in definitions], [f'AI_{lesson}_{n}' for n in range(1, max((d.position for d in definitions), default=0) + 1) if f'AI_{lesson}_{n}' != 'AI_3_3'])

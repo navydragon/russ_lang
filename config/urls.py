@@ -7,9 +7,11 @@ from django.contrib import admin
 from django.urls import path, include, re_path
 from django.views.static import serve
 from courses.test_launcher import test_launcher
+from courses.author_review import author_assignments
 
 urlpatterns = [
     path('dev/tasks/', test_launcher, name='test_launcher'),
+    path('authors/assignments/', author_assignments, name='author_assignments'),
     path('admin/', admin.site.urls),
     path('api/', include('api.urls')),
     path('', include('config.task_pages')),
