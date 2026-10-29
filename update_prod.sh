@@ -6,7 +6,8 @@
 # Шаги: git pull → pip install → migrate → collectstatic → restart gunicorn (systemd).
 #
 # Переменные в .env (опционально):
-#   GUNICORN_SERVICE=russ_lang   — имя systemd unit (по умолчанию)
+#   GUNICORN_SERVICE=gunicorn_russ_lang   — имя systemd unit
+#     (если не задано: пробуется russ_lang, затем gunicorn_russ_lang)
 #
 # Альтернатива: scripts/deploy.sh (тот же сервис russ_lang).
 
@@ -35,7 +36,7 @@ usage() {
   ./update_prod.sh
 
 Переменные в .env:
-  GUNICORN_SERVICE=russ_lang
+  GUNICORN_SERVICE=gunicorn_russ_lang
 EOF
 }
 
@@ -108,9 +109,38 @@ if [[ ! -f "${PROJECT_DIR}/manage.py" ]]; then
 fi
 
 GUNICORN_SERVICE="$(read_env_value GUNICORN_SERVICE || true)"
-GUNICORN_SERVICE="${GUNICORN_SERVICE:-russ_lang}"
 # systemctl принимает и russ_lang, и russ_lang.service
 GUNICORN_SERVICE="${GUNICORN_SERVICE%.service}"
+
+if [[ -n "$GUNICORN_SERVICE" ]]; then
+  # Имя задано явно в .env — используем его как есть.
+  SERVICE_EXPLICIT=1
+else
+  # Дефолт: на сервере юниты называются gunicorn_russ_lang, gunicorn_edtech и т.п.
+  GUNICORN_SERVICE="russ_lang"
+  SERVICE_EXPLICIT=0
+fi
+
+unit_exists() {
+  systemctl cat "$1.service" &>/dev/null
+}
+
+# Проверяем юнит ДО git pull / migrate: лучше упасть сразу, чем в самом конце.
+if ! unit_exists "$GUNICORN_SERVICE"; then
+  if [[ "$SERVICE_EXPLICIT" -eq 0 ]] && unit_exists "gunicorn_${GUNICORN_SERVICE}"; then
+    log_warn "Unit ${GUNICORN_SERVICE}.service не найден — использую gunicorn_${GUNICORN_SERVICE}.service"
+    GUNICORN_SERVICE="gunicorn_${GUNICORN_SERVICE}"
+  else
+    log_error "Systemd unit ${GUNICORN_SERVICE}.service не найден."
+    log_error "Доступные юниты:"
+    systemctl list-unit-files --type=service --no-legend 2>/dev/null \
+      | awk '{print $1}' \
+      | grep -iE 'gunicorn|uwsgi|russ' \
+      | sed 's/^/  /' || true
+    log_error "Задайте правильное имя в .env: GUNICORN_SERVICE=gunicorn_russ_lang"
+    exit 1
+  fi
+fi
 
 log_info "Директория проекта: ${PROJECT_DIR}"
 log_info "Systemd unit: ${GUNICORN_SERVICE}"
