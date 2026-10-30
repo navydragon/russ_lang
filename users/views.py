@@ -5,8 +5,7 @@ from django.contrib import messages
 from django.views.generic import TemplateView, UpdateView, ListView, CreateView, DeleteView
 from django.urls import reverse_lazy
 from django.contrib.auth import get_user_model
-from django.utils.crypto import get_random_string
-from .forms import ProfileEditForm, UserForm, UserPasswordChangeForm
+from .forms import ProfileEditForm, UserForm, UserCreateForm, UserPasswordChangeForm
 
 User = get_user_model()
 
@@ -147,7 +146,7 @@ class UserCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     Представление для создания нового пользователя.
     """
     model = User
-    form_class = UserForm
+    form_class = UserCreateForm
     template_name = 'users/user_form.html'
     success_url = reverse_lazy('users:user_management')
     
@@ -155,15 +154,9 @@ class UserCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
         return self.request.user.is_staff
     
     def form_valid(self, form):
-        # Генерируем случайный пароль для нового пользователя
-        password = get_random_string(length=12)
-        user = form.save(commit=False)
-        user.set_password(password)
-        user.save()
-        
         messages.success(
             self.request,
-            f'Пользователь "{user.username}" успешно создан. Временный пароль: {password}'
+            f'Пользователь "{form.instance.username}" успешно создан.'
         )
         return super().form_valid(form)
     

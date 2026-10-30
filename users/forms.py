@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth import get_user_model
-from django.contrib.auth.forms import AdminPasswordChangeForm
+from django.contrib.auth.forms import AdminPasswordChangeForm, UserCreationForm
 
 User = get_user_model()
 
@@ -120,6 +120,21 @@ class UserForm(forms.ModelForm):
             if qs.exists():
                 raise forms.ValidationError('Пользователь с таким email уже существует.')
         return email
+
+
+class UserCreateForm(UserCreationForm, UserForm):
+    """Создание пользователя с вводом и подтверждением пароля."""
+
+    class Meta(UserForm.Meta):
+        pass
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for name in ('password1', 'password2'):
+            self.fields[name].widget.attrs.update({
+                'class': 'form-control',
+                'autocomplete': 'new-password',
+            })
 
 
 class UserPasswordChangeForm(AdminPasswordChangeForm):
