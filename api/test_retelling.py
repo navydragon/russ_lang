@@ -137,3 +137,40 @@ class NovgorodRetellingTests(SimpleTestCase):
             'task_id': 'novgorod_retelling', 'task_code': 'AI_3_11', 'text': 'Готовый текст.'
         }, content_type='application/json')
         self.assertEqual(response.status_code, 400)
+
+
+class VDNHRetellingTests(SimpleTestCase):
+    def test_audio_uses_vdnh_rubric_and_actual_transcript(self):
+        transcript = 'Олег прислал письмо из Москвы. На выставке он познакомился с Раджем.'
+        with patch('api.retelling_check.transcribe_audio', return_value={
+            'text': transcript, 'duration': 48,
+        }), patch('api.retelling_check.check_story', return_value=retelling_result(72)) as grader:
+            result, details = check_retelling_audio(b'audio', 'record.webm', task_id='vdnh_retelling')
+        grader.assert_called_once_with('vdnh_retelling', transcript)
+        self.assertTrue(result.ok)
+        self.assertEqual(details['recognized'], transcript)
+        self.assertEqual(details['stress_check']['status'], 'not_assessed')
+
+    def test_rubric_contains_source_verb_table_and_pass_boundary(self):
+        prompt = _build_user_prompt('vdnh_retelling', 'Олег работал на ВДНХ.')
+        for fragment in ('Сергей Иванович', 'Юрий Гагарин', 'Радж',
+                         'получать/получить', 'знакомиться/познакомиться',
+                         'пяти смысловых блоков', 'Проходной балл: 60'):
+            self.assertIn(fragment, prompt)
+        for score, expected in ((59, False), (60, True)):
+            result = retelling_result(score)
+            result.ok = not expected
+            self.assertEqual(_sanitize_result(result, result.normalized, 'vdnh_retelling').ok, expected)
+
+    def test_wrong_code_and_written_bypass_are_rejected(self):
+        with patch('api.views.check_retelling_audio') as checker:
+            response = self.client.post('/api/retelling/check', {
+                'task_id': 'vdnh_retelling', 'task_code': 'AI_7_2',
+                'file': SimpleUploadedFile('record.webm', b'audio'),
+            })
+        self.assertEqual(response.status_code, 400)
+        checker.assert_not_called()
+        response = self.client.post('/api/story/check', {
+            'task_id': 'vdnh_retelling', 'task_code': 'AI_7_1', 'text': 'Олег был на ВДНХ.',
+        }, content_type='application/json')
+        self.assertEqual(response.status_code, 400)

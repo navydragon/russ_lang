@@ -3,12 +3,14 @@ from unittest.mock import patch
 
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import SimpleTestCase
+from decimal import Decimal
 
 from api.reading_check import (
     PHOTO_ALBUM_REFERENCE_TEXT, UNIVERSITY_REFERENCE_TEXT, MOSCOW_REFERENCE_TEXT,
     check_reading_audio, score_reading_from_payload,
 )
 from api.story_llm import TASK_CONFIGS, StoryCheckResult, StoryError, _build_user_prompt, _sanitize_result
+from api.views import _persist_reading_attempt
 
 
 def reading_payload(text=PHOTO_ALBUM_REFERENCE_TEXT, comma_gap=0.25, period_gap=0.5, duration=45):
@@ -41,11 +43,12 @@ class PhotoAlbumReadingTests(SimpleTestCase):
         self.assertTrue(all(p['ok'] for p in commas))
         self.assertEqual(result['coverage']['ratio'], 1.0)
 
-    def test_missing_or_long_comma_pause_fails(self):
+    def test_missing_or_long_comma_pause_only_reduces_score(self):
         for gap in (0, 0.1, 0.7):
             with self.subTest(gap=gap):
                 result = self.score(reading_payload(comma_gap=gap))
-                self.assertFalse(result['ok'])
+                self.assertTrue(result['ok'])
+                self.assertLess(result['score'], 100)
                 self.assertFalse(result['pauses']['ok'])
 
     def test_missing_period_pause_fails(self):
@@ -57,17 +60,44 @@ class PhotoAlbumReadingTests(SimpleTestCase):
         self.assertFalse(result['ok'])
         self.assertEqual(result['duration_check']['reason'], 'duration_exceeded')
 
-    def test_missing_word_timestamps_fails(self):
+    def test_missing_word_timestamps_has_no_pause_points(self):
         payload = reading_payload()
         payload.pop('words')
         result = self.score(payload)
-        self.assertFalse(result['ok'])
+        self.assertTrue(result['ok'])
+        self.assertEqual(result['score'], 90)
         self.assertEqual(result['pauses']['error'], 'word_timestamps_missing')
 
     def test_incomplete_reading_fails_coverage(self):
-        payload = reading_payload()
-        payload['text'] = 'Это моя семья.'
+        payload = reading_payload(text='Это моя семья.')
         self.assertFalse(self.score(payload)['coverage']['ok'])
+
+    def test_wrong_word_loses_points_even_when_llm_corrects_it(self):
+        source = reading_payload()
+        source['text'] = source['text'].replace('Она врач.', 'Она грач.')
+        for word in source['words']:
+            if word['word'] == 'врач':
+                word['word'] = 'грач'
+        result = score_reading_from_payload(
+            source, PHOTO_ALBUM_REFERENCE_TEXT, max_duration_sec=60,
+            min_comma_pause_sec=0.15, max_comma_pause_sec=0.6,
+        )
+        self.assertTrue(result['ok'])
+        self.assertLess(result['score'], 100)
+        self.assertIn('грач', result['recognized_scored'])
+
+    def test_all_missing_pauses_still_passes_full_reading(self):
+        result = self.score(reading_payload(comma_gap=0, period_gap=0))
+        self.assertEqual(result['score'], 90)
+        self.assertTrue(result['ok'])
+
+    def test_saved_attempt_uses_earned_score(self):
+        result = self.score(reading_payload(comma_gap=0, period_gap=0))
+        with patch('api.views.save_quiz_result', return_value=True) as save:
+            saved, error = _persist_reading_attempt('test-student', 'AI_2_1', 'photo_album', result)
+        self.assertTrue(saved)
+        self.assertIsNone(error)
+        self.assertEqual(save.call_args.args[0]['score_value'], Decimal('90.0'))
 
     def test_backend_uses_photo_album_limits_and_reference(self):
         with patch('api.reading_check.transcribe_audio', return_value=reading_payload()) as transcribe:
@@ -92,7 +122,7 @@ class PhotoAlbumReadingTests(SimpleTestCase):
         self.assertEqual(result['coverage']['ratio'], 1.0)
         self.assertGreater(result['pauses']['count'], 0)
 
-    def test_no_timing_after_retry_is_service_error_not_student_failure(self):
+    def test_no_timing_after_retry_scores_words_without_pause_points(self):
         without_words = reading_payload()
         without_words.pop('words')
         with patch('api.reading_check.transcribe_audio', return_value=without_words):
@@ -100,8 +130,10 @@ class PhotoAlbumReadingTests(SimpleTestCase):
                 'task_id': 'photo_album',
                 'file': SimpleUploadedFile('record.webm', b'audio', content_type='audio/webm'),
             })
-        self.assertEqual(response.status_code, 502)
-        self.assertIn('Паузы не оценены', response.json()['error'])
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.json()['ok'])
+        self.assertEqual(response.json()['score'], 90)
+        self.assertEqual(response.json()['pauses']['error'], 'word_timestamps_missing')
 
     def test_corrected_transcript_keeps_task_limits_and_comma_checks(self):
         payload = reading_payload(comma_gap=0.7)
@@ -133,6 +165,16 @@ class PhotoAlbumReadingTests(SimpleTestCase):
                     reading_payload(text=recognized), reference, coverage_ratio_min=0.60,
                 )
                 self.assertEqual(result['coverage']['ok'], expected)
+
+    def test_score_passes_at_exactly_sixty_without_pauses(self):
+        reference = 'Раз два три.'
+        for spoken, score, passed in [('Раз два', 60, True), ('Раз', 30, False)]:
+            with self.subTest(spoken=spoken):
+                result = score_reading_from_payload(
+                    reading_payload(text=spoken, period_gap=0), reference,
+                )
+                self.assertEqual(result['score'], score)
+                self.assertEqual(result['ok'], passed)
 
     def test_reading_endpoint_accepts_photo_album_task(self):
         with patch('api.reading_check.transcribe_audio', return_value=reading_payload()):
@@ -233,9 +275,11 @@ class MoscowReadingTests(SimpleTestCase):
         self.assertEqual(result['coverage']['min_ratio'], 0.60)
         self.assertTrue(all(x['punctuation'] == '.' for x in result['pauses']['details']))
 
-    def test_moscow_rejects_excess_duration_or_missing_period_pauses(self):
+    def test_moscow_rejects_excess_duration_but_not_missing_period_pauses(self):
         self.assertFalse(self.check(duration=180.1)['ok'])
-        self.assertFalse(self.check(period_gap=0.1)['ok'])
+        result = self.check(period_gap=0.1)
+        self.assertTrue(result['ok'])
+        self.assertEqual(result['score'], 90)
 
     def test_moscow_is_available_through_reading_endpoint(self):
         with patch('api.reading_check.transcribe_audio', return_value=reading_payload(text=MOSCOW_REFERENCE_TEXT)):

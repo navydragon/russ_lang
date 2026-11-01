@@ -1,4 +1,6 @@
 from io import StringIO
+from pathlib import Path
+import re
 
 from django.core.management import call_command
 from django.core.management.base import CommandError
@@ -12,6 +14,39 @@ from students.models import Student
 
 
 class CourseSyncTests(TestCase):
+    def test_explicit_course_is_idempotent_and_keeps_binding(self):
+        course = Course.objects.create(name='Выбранный курс', websoft_id='123456')
+        output = StringIO()
+        call_command('sync_russian_course', course_id=course.pk, stdout=output)
+        self.assertEqual(Lesson.objects.count(), 0)
+        call_command('sync_russian_course', course_id=course.pk, apply=True, stdout=StringIO())
+        snapshot = list(Task.objects.order_by('pk').values_list('pk', 'code', 'position'))
+        output = StringIO()
+        call_command('sync_russian_course', course_id=course.pk, apply=True, stdout=output)
+        self.assertIn('заданий 0; обновить кодов 0', output.getvalue())
+        self.assertEqual(snapshot, list(Task.objects.order_by('pk').values_list('pk', 'code', 'position')))
+        course.refresh_from_db()
+        self.assertEqual((course.name, course.websoft_id), ('Выбранный курс', '123456'))
+        self.assertEqual(course.lessons.count(), 10)
+        self.assertTrue(all(Task.objects.filter(lesson__course=course, code=item.code).exists() for item in TASK_CATALOG))
+
+    def test_explicit_missing_course_and_foreign_code_are_rejected(self):
+        with self.assertRaises(CommandError):
+            call_command('sync_russian_course', course_id=999, apply=True, stdout=StringIO())
+        course = Course.objects.create(name='Выбранный')
+        other = Course.objects.create(name='Другой')
+        lesson = Lesson.objects.create(course=other, position=1, name='Урок')
+        Task.objects.create(lesson=lesson, position=1, code='AI_1_1', name='Занят')
+        with self.assertRaises(CommandError):
+            call_command('sync_russian_course', course_id=course.pk, apply=True, stdout=StringIO())
+        self.assertEqual(course.lessons.count(), 0)
+
+    def test_registry_codes_match_catalog(self):
+        source = (Path(__file__).resolve().parents[2] / 'tasks' / 'AI_ASSIGNMENTS.md').read_text(encoding='utf-8')
+        codes = re.findall(r'^\|\s*\d+\s*\|\s*\d+\s*\|\s*`(AI_\d+_\d+)`', source, re.MULTILINE)
+        self.assertEqual(set(codes), {item.code for item in TASK_CATALOG})
+        self.assertEqual(len(codes), len(set(codes)))
+
     def run_sync(self, apply=False):
         output = StringIO()
         call_command('sync_russian_course', apply=apply, stdout=output)
@@ -38,7 +73,7 @@ class CourseSyncTests(TestCase):
         self.assertEqual(snapshot, list(Task.objects.order_by('pk').values_list('pk', 'code', 'position')))
         self.assertEqual(Course.objects.count(), 1)
         self.assertEqual(Lesson.objects.count(), 10)
-        self.assertEqual(Task.objects.count(), len(read_regular_tasks(DEFAULT_TASKS_FILE)) + 34 + 1)
+        self.assertEqual(Task.objects.count(), len(read_regular_tasks(DEFAULT_TASKS_FILE)) + 40 + 1)
         self.assertTrue(TaskAttempt.objects.filter(pk=attempt.pk, score=87).exists())
         self.assertTrue(StudentTask.objects.filter(pk=completion.pk).exists())
         lesson.refresh_from_db()
@@ -76,7 +111,7 @@ class CourseSyncTests(TestCase):
         self.assertEqual(Task.objects.get(pk=task.pk).name, 'Занятый код')
 
     def test_catalog_codes_are_unique_and_sequential_per_lesson(self):
-        self.assertEqual(len({d.code for d in TASK_CATALOG}), 34)
+        self.assertEqual(len({d.code for d in TASK_CATALOG}), 40)
         for lesson in range(1, 11):
             definitions = [d for d in TASK_CATALOG if d.lesson == lesson]
             self.assertEqual([d.code for d in definitions], [f'AI_{lesson}_{n}' for n in range(1, max((d.position for d in definitions), default=0) + 1) if f'AI_{lesson}_{n}' != 'AI_3_3'])

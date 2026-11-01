@@ -11,7 +11,8 @@ from pydantic_ai import Agent
 from pydantic_ai.models.openai import OpenAIChatModel
 from pydantic_ai.providers.openai import OpenAIProvider
 
-from .reading_check import LESSON4_UNIVERSITY_REFERENCE_PARTS
+from .reading_check import LESSON4_UNIVERSITY_REFERENCE_PARTS, FACULTY_SOURCE, FACULTY_REFERENCE_TEXT
+from .excursion import SOURCE as EXCURSION_SOURCE, REFERENCE_TEXT as EXCURSION_REFERENCE_TEXT
 
 TASK_CODE = 'AI_4_3'
 PASSING_SCORE = 60
@@ -72,11 +73,42 @@ LIBRARY_MODEL_ANSWERS = (
     'Здесь шкаф, стол и кровать.',
     'Например: мои учебники, тетради и словари лежат на столе. Возможен свой ответ.',
 )
+EXCURSION_QUESTIONS = tuple(zip(EXCURSION_SOURCE['questions'], (
+    '900 квадратных километров.',
+    'В Москве 75 университетов, 1200 школ, Академия наук и МГУ; там учатся и работают многие студенты и преподаватели. Достаточно назвать одно-два подтверждения из текста.',
+    'В библиотеке МГУ 6 миллионов книг.',
+    'Студенты весело отдыхают; в университете есть стадионы, бассейны и Дом культуры. Достаточно одного подходящего ответа.',
+    'Метро работает с 5:30 утра до часа ночи; поезда подходят через 90 секунд, путь между станциями занимает 2–3 минуты. Достаточно одного из этих фактов.',
+    'Летом в метро прохладно — около 20 градусов, зимой тепло — 16–18 градусов. Достаточно передать это словами или числами.',
+)))
+EXCURSION_MODEL_ANSWERS = (
+    'Площадь Москвы — 900 квадратных километров.',
+    'В Москве много университетов и школ, находятся Академия наук и МГУ.',
+    'В библиотеке университета 6 миллионов книг.',
+    'Студенты отдыхают на стадионах, в бассейнах и Доме культуры.',
+    'Метро открывается в 5:30, закрывается в час ночи; поезда подходят через 90 секунд.',
+    'Летом в метро прохладно, а зимой тепло.',
+)
+FACULTY_GUIDANCE = (
+    'Скоро будет студенческий вечер на подготовительном факультете.',
+    'Вечер называется «Мы говорим по-русски».',
+    'Студенты-иностранцы и российские преподаватели; также группа рассказчика.',
+    'Марсела будет читать стихи А. С. Пушкина.',
+    'Ки Чжун будет петь песню «Катюша».',
+    'Да, студенты-африканцы будут танцевать африканский и русский народный танец.',
+    'Ахмед расскажет, как он живёт и учится в Москве.',
+    'Также будут выступать российские преподаватели и петь песню о Москве.',
+    'В тексте имя Аманды не названо. Рассказчик будет фотографировать выступающих, но связывать рассказчика с Амандой нельзя. Принимай ответ, что об Аманде в тексте не сказано.',
+)
+FACULTY_QUESTIONS = tuple(zip(FACULTY_SOURCE['questions'], FACULTY_GUIDANCE))
 TASKS = {
+    'AI_7_6': {'count': 9, 'questions': FACULTY_QUESTIONS, 'examples': FACULTY_GUIDANCE, 'source': FACULTY_REFERENCE_TEXT, 'directory': None},
     TASK_CODE: {'count': 10, 'questions': QUESTIONS, 'examples': MODEL_ANSWERS,
                 'source': LESSON4_UNIVERSITY_REFERENCE_PARTS[0], 'directory': 'university_questions'},
     LIBRARY_TASK_CODE: {'count': 10, 'questions': LIBRARY_QUESTIONS, 'examples': LIBRARY_MODEL_ANSWERS,
                         'source': '\n\n'.join(LESSON4_UNIVERSITY_REFERENCE_PARTS), 'directory': 'library_questions'},
+    'AI_7_4': {'count': 6, 'questions': EXCURSION_QUESTIONS, 'examples': EXCURSION_MODEL_ANSWERS,
+               'source': EXCURSION_REFERENCE_TEXT, 'directory': None},
 }
 
 
@@ -140,22 +172,24 @@ def grade_answer(question_id, text, task_code=TASK_CODE):
 
 
 def run_score(run):
-    return sum(answer['score'] for answer in run['answers'])
+    raw = sum(answer['score'] for answer in run['answers'])
+    return round(raw * 100 / (TASKS[run['task_code']]['count'] * 10))
 
 
 def public_state(run_id, run):
     task_code = run['task_code']
     config = TASKS[task_code]
     answered = len(run['answers'])
-    completed = answered == 10
+    completed = answered == config['count']
     question_id = None if completed else run['words'][answered]
     current = None if completed else {
         'index': answered, 'question': config['questions'][question_id-1][0],
-        'audio_path': f"/tasks/lesson4/{config['directory']}/audio/{question_id:02d}.wav",
+        'audio_path': (f"/tasks/lesson4/{config['directory']}/audio/{question_id:02d}.wav"
+                       if config['directory'] else None),
     }
     score = run_score(run)
     return {'run_id': run_id, 'task_code': task_code, 'student_code': run['student_code'],
-            'word_count': 10, 'answered': answered, 'current': current, 'answers': run['answers'],
+            'word_count': config['count'], 'answered': answered, 'current': current, 'answers': run['answers'],
             'score': score, 'max_score': 100, 'passing_score': PASSING_SCORE,
             'completed': completed, 'ok': completed and score >= PASSING_SCORE,
             'saved': run.get('saved', False), 'save_error': run.get('save_error')}

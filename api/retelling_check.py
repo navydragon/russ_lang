@@ -4,7 +4,12 @@ from .story_llm import check_story
 
 
 TASK_ID = 'university_retelling'
-RETELLING_TASKS = {'university_retelling': 'AI_3_2', 'moscow_retelling': 'AI_3_6', 'novgorod_retelling': 'AI_3_11'}
+RETELLING_TASKS = {
+    'university_retelling': 'AI_3_2',
+    'moscow_retelling': 'AI_3_6',
+    'novgorod_retelling': 'AI_3_11',
+    'vdnh_retelling': 'AI_7_1',
+}
 MAX_AUDIO_BYTES = 20 * 1024 * 1024
 
 

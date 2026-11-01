@@ -13,6 +13,7 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument('--apply', action='store_true', help='Применить план одной транзакцией.')
         parser.add_argument('--tasks-file', default=str(DEFAULT_TASKS_FILE))
+        parser.add_argument('--course-id', type=int, help='Внутренний ID существующего курса.')
 
     def handle(self, *args, **options):
         regular = read_regular_tasks(options['tasks_file'])
@@ -28,8 +29,8 @@ class Command(BaseCommand):
                             cursor.execute('LOCK TABLE courses_course, courses_lesson, courses_task IN SHARE ROW EXCLUSIVE MODE')
                         else:
                             cursor.execute('SET TRANSACTION READ ONLY')
-                plan = build_plan(regular)
-                self.stdout.write(f'Курс: {COURSE_NAME}')
+                plan = build_plan(regular, course_id=options['course_id'])
+                self.stdout.write(f'Курс: {COURSE_NAME}' if not plan.explicit_course else f'Курс: ID {plan.course_id}')
                 self.stdout.write(
                     f'Добавить: курсов {int(plan.course_id is None)}, уроков {len(plan.missing_lessons)}, '
                     f'заданий {len(plan.new_tasks)}; обновить кодов {len(plan.code_updates)}; '

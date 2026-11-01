@@ -185,3 +185,10 @@ python scripts/generate_yandex_reading_audio.py --publish
 Озвучка: `python scripts/generate_yandex_question_audio.py --task library_questions`.
 
 - [AI_4_4 — письменный пересказ «Мой университет»](lesson4/university_retelling/university_retelling.html): содержание, порядок слов и заглавные буквы; проходной балл — 60.
+
+## Урок 7
+
+- [AI_7_1 — устный пересказ истории о ВДНХ](lesson7/vdnh_retelling/vdnh_retelling.html): текст с исходного слайда, таблица видов глаголов, запись пересказа и проверка содержания, форм глаголов и связности; зачёт от 60 баллов. Для ответа нужен микрофон и доступ к ASR/LLM.
+- [AI_7_2 — подчеркнуть формы и выражения времени](lesson7/excursion_highlight/excursion_highlight.html): две категории выделения в тексте «Экскурсия по Москве», серверный эталон и зачёт от 60.
+- [AI_7_3 — чтение «Экскурсии по Москве»](lesson7/excursion_reading/excursion_reading.html): запись чтения полного текста, лимит 5 минут, проверка полноты и пауз.
+- [AI_7_4 — письменные ответы по «Экскурсии по Москве»](lesson7/excursion_questions/excursion_questions.html): шесть вопросов, за каждый проверяются содержание и написание.

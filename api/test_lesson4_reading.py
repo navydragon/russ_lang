@@ -73,16 +73,19 @@ class LessonFourReadingTests(SimpleTestCase):
         self.assertTrue(self.check(payload())['pauses']['ok'])
 
     def test_coverage_threshold_and_missing_timestamps(self):
-        distinct = sorted(set(tokenize_ru(REFERENCE)))
-        for size, expected in ((math.ceil(len(distinct)*.6), True), (math.ceil(len(distinct)*.6)-1, False)):
+        reference_words = tokenize_ru(REFERENCE)
+        for size, expected in ((math.ceil(len(reference_words)*.6), True), (math.ceil(len(reference_words)*.6)-1, False)):
             source = payload()
-            source['text'] = ' '.join(distinct[:size])
+            source['words'] = source['words'][:size]
+            source['text'] = ' '.join(reference_words[:size])
             self.assertEqual(self.check(source)['coverage']['ok'], expected)
         source = payload()
         source.pop('words')
         with patch('api.reading_check.transcribe_audio', return_value=source):
-            with self.assertRaisesRegex(RuntimeError, 'Паузы не оценены'):
-                check_reading_audio(b'audio', 'record.webm', task_id='lesson4_university')
+            result = check_reading_audio(b'audio', 'record.webm', task_id='lesson4_university')
+        self.assertTrue(result['ok'])
+        self.assertEqual(result['score'], 90)
+        self.assertEqual(result['pauses']['error'], 'word_timestamps_missing')
 
     def test_missing_word_does_not_discard_later_alignment(self):
         words = payload()['words']

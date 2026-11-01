@@ -1,6 +1,6 @@
 import json
 import logging
-from decimal import Decimal
+from decimal import Decimal, InvalidOperation
 from typing import Optional, Tuple
 
 from django.http import HttpResponse, JsonResponse
@@ -13,6 +13,7 @@ from .reading_check import READING_TASKS, check_reading_audio
 from .retelling_check import check_retelling_audio, MAX_AUDIO_BYTES, RETELLING_TASKS
 from .speaking_nexara import check_speaking_audio
 from .story_llm import VALID_TASK_IDS, check_story
+from .excursion import score_selection, words_and_targets
 
 logger = logging.getLogger('api')
 
@@ -307,12 +308,19 @@ def _persist_reading_attempt(
     if not check_result.get('ok'):
         return False, 'reading check was not successful'
 
+    try:
+        score = Decimal(str(check_result.get('score', 100)))
+    except (InvalidOperation, ValueError, TypeError):
+        return False, 'invalid reading score'
+    if not score.is_finite() or score < 60 or score > 100:
+        return False, 'invalid reading score'
+
     results_content = json.dumps(
         {
             'source': 'reading_complete',
             'task_id': task_id,
             'ok': True,
-            'score': 100,
+            'score': float(score),
             'recognized': check_result.get('recognized'),
             'duration': check_result.get('duration'),
             'coverage': check_result.get('coverage'),
@@ -326,8 +334,8 @@ def _persist_reading_attempt(
         'user_id': student_code,
         'task_code': task_code,
         'date': timezone.now(),
-        'score_value': Decimal(100),
-        'score_percent': Decimal(100),
+        'score_value': score,
+        'score_percent': score,
         'result': True,
         'results_content': results_content,
     }
@@ -437,4 +445,33 @@ def neighborhood_verbs_check(request):
     saved, error = _persist_story_attempt(student_code.strip(), 'AI_4_17', ', '.join(words[i] for i in sorted(chosen)), result, source='neighborhood_verbs_check')
     response = {**result.model_dump(), 'saved': saved, 'correct': correct, 'total': len(expected), 'wrong': wrong}
     if error: response['save_error'] = error
+    return JsonResponse(response)
+
+
+@csrf_exempt
+@require_POST
+def excursion_highlight_check(request):
+    from .story_llm import StoryCheckResult
+    try:
+        body = json.loads(request.body.decode('utf-8'))
+        if not isinstance(body, dict) or body.get('task_code') != 'AI_7_2':
+            raise ValueError('Неверный код задания.')
+        student_code = body.get('student_code', '')
+        if not isinstance(student_code, str) or len(student_code) > 50:
+            raise ValueError('Неверный код ученика.')
+        result = score_selection(body.get('selected'))
+    except (ValueError, TypeError, UnicodeDecodeError, json.JSONDecodeError) as exc:
+        return JsonResponse({'error': str(exc) or 'Некорректный ответ.'}, status=400)
+    words, _ = words_and_targets()
+    selected = body['selected']
+    answer = json.dumps({category: [words[i] for i in indexes] for category, indexes in selected.items()}, ensure_ascii=False)
+    grade = StoryCheckResult(ok=result['ok'], score=result['score'], normalized=answer,
+                             feedback='Проверены формы родительного падежа множественного числа и выражения времени.',
+                             errors=[], quality_notes='Каждая категория даёт до 50 баллов; лишние слова снижают балл.',
+                             recommendations=[])
+    saved, error = _persist_story_attempt(student_code.strip(), 'AI_7_2', answer, grade,
+                                          source='excursion_highlight_check', extra_result=result)
+    response = {**result, 'saved': saved}
+    if error:
+        response['save_error'] = error
     return JsonResponse(response)

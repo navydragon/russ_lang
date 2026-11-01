@@ -10,7 +10,7 @@ from students.models import Group, Student
 
 
 class Command(BaseCommand):
-    help = 'Создаёт локальный тестовый курс, 4 урока, 31 задание и тестового ученика.'
+    help = 'Создаёт локальный тестовый курс, 10 уроков, задания ИИ и тестового ученика.'
 
     @transaction.atomic
     def handle(self, *args, **options):
@@ -57,7 +57,7 @@ class Command(BaseCommand):
 
         course, _ = Course.objects.get_or_create(name=TEST_COURSE_NAME)
         lessons = {}
-        for position in range(1, 5):
+        for position in range(1, 11):
             lessons[position], _ = Lesson.objects.get_or_create(
                 course=course, position=position,
                 defaults={'name': f'Урок {position}'},
@@ -81,7 +81,7 @@ class Command(BaseCommand):
             created_count += int(created)
 
         self.stdout.write(self.style.SUCCESS(
-            f'Готово: 4 урока, {len(TASK_CATALOG)} заданий '
+            f'Готово: 10 уроков, {len(TASK_CATALOG)} заданий '
             f'(новых: {created_count}), student_code={student.code}. '
             'Существующие попытки сохранены.'
         ))

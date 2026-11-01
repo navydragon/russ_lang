@@ -59,4 +59,10 @@ TASK_CATALOG = (
     TaskDefinition(32, 4, 15, 'lesson4_university_reading_part2', 'Чтение «Мой университет» — часть 2', '3.2', 'lesson4/university_reading_part2/university_reading_part2.html'),
     TaskDefinition(33, 4, 16, 'lesson4_library_questions', 'Вопросы: библиотека, столовая и общежитие', html_path='lesson4/library_questions/library_questions.html'),
     TaskDefinition(34, 4, 17, 'lesson4_conjugation', 'Глаголы второго спряжения', html_path='lesson4/neighborhood_verbs/neighborhood_verbs.html'),
+    TaskDefinition(35, 7, 1, 'vdnh_retelling', 'Пересказ истории о ВДНХ по таблице глаголов', '14.3', 'lesson7/vdnh_retelling/vdnh_retelling.html'),
+    TaskDefinition(36, 7, 2, 'excursion_highlight', 'Родительный множественного и выражения времени', 'Задание № 26', 'lesson7/excursion_highlight/excursion_highlight.html'),
+    TaskDefinition(37, 7, 3, 'excursion_moscow', 'Чтение «Экскурсия по Москве»', '29.1', 'lesson7/excursion_reading/excursion_reading.html'),
+    TaskDefinition(38, 7, 4, 'excursion_questions', 'Письменные ответы по тексту «Экскурсия по Москве»', '29.1', 'lesson7/excursion_questions/excursion_questions.html'),
+    TaskDefinition(39, 7, 5, 'faculty_evening', 'Чтение «Вечер на факультете»', '29.12', 'lesson7/faculty_reading/faculty_reading.html'),
+    TaskDefinition(40, 7, 6, 'faculty_questions', 'Вопросы по тексту «Вечер на факультете»', '30.1', 'lesson7/faculty_questions/faculty_questions.html'),
 )

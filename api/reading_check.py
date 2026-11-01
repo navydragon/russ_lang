@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import logging
+import json
+from pathlib import Path
 import re
 import math
 from difflib import SequenceMatcher
@@ -13,6 +15,7 @@ from .speaking_nexara import (
     tokenize_ru,
     transcribe_audio,
 )
+from .excursion import REFERENCE_TEXT as EXCURSION_REFERENCE_TEXT
 
 logger = logging.getLogger('api')
 
@@ -20,6 +23,8 @@ TASK_ID_UNIVERSITY = 'university'
 MAX_DURATION_SEC = 180.0
 MIN_PAUSE_SEC = 0.30
 COVERAGE_TOKEN_RATIO = 0.60
+READING_PASS_SCORE = 60
+READING_PAUSE_POINTS = 10
 TASK_ID_PHOTO_ALBUM = 'photo_album'
 MIN_COMMA_PAUSE_SEC = 0.15
 MAX_COMMA_PAUSE_SEC = 0.60
@@ -63,7 +68,16 @@ LESSON4_INTRODUCTION_DIALOGUE = 'Здравствуйте, Сергей Иван
 
 LESSON4_FREE_TIME_DIALOGUE = 'Что вы делаете в свободное время?\nЧитаем. Слушаем музыку.\nСмотрим фильм.\nА вы смотрите русские фильмы?\nИногда.\nЯ думаю, что вы часто смотрите спорт.\nКонечно. Особенно футбол.\nДжон, вы неплохо говорите по-русски. Вы давно изучаете русский язык?\nНет, нет. Что вы! Я плохо говорю, но я работаю. Читаю по-русски, слушаю, смотрю фильмы.\nИ всё понимаете?\nКонечно, нет.'
 
+FACULTY_SOURCE = json.loads((Path(__file__).resolve().parent.parent / 'tasks/lesson7/faculty_text.json').read_text(encoding='utf-8'))
+FACULTY_REFERENCE_TEXT = '\n\n'.join(FACULTY_SOURCE['paragraphs'])
+
 READING_TASKS: dict[str, dict[str, Any]] = {
+    'faculty_evening': {'title': 'Вечер на факультете', 'reference_text': FACULTY_REFERENCE_TEXT, 'max_duration_sec': 240.0, 'coverage_ratio_min': 0.60, 'sentence_endings': '.?!', 'max_audio_bytes': 40 * 1024 * 1024},
+    'excursion_moscow': {
+        'title': 'Экскурсия по Москве', 'reference_text': EXCURSION_REFERENCE_TEXT,
+        'max_duration_sec': 300.0, 'coverage_ratio_min': 0.60,
+        'sentence_endings': '.?!', 'max_audio_bytes': 40 * 1024 * 1024,
+    },
     'lesson4_free_time_dialogue': {'title': 'Свободное время', 'reference_text': LESSON4_FREE_TIME_DIALOGUE, 'max_duration_sec': 120.0, 'coverage_ratio_min': 0.60, 'sentence_endings': '.?!', 'max_audio_bytes': 20 * 1024 * 1024},
     'lesson4_introduction_dialogue': {'title': 'Знакомство', 'reference_text': LESSON4_INTRODUCTION_DIALOGUE, 'max_duration_sec': 120.0, 'coverage_ratio_min': 0.60, 'sentence_endings': '.?!', 'max_audio_bytes': 20 * 1024 * 1024},
     'lesson4_dialogue_1': {'title': 'Диалог 1', 'reference_text': DIALOGUE_REFERENCES[0], 'max_duration_sec': 120.0, 'coverage_ratio_min': 0.60, 'sentence_endings': '.?!', 'max_audio_bytes': 20 * 1024 * 1024},
@@ -136,12 +150,14 @@ def period_boundary_token_indices(reference_text: str) -> list[dict[str, Any]]:
 
 
 def coverage_ratio(recognized: str, reference_text: str) -> float:
-    ref_tokens = set(tokenize_ru(reference_text))
+    ref_tokens = tokenize_ru(reference_text)
     if not ref_tokens:
         return 0.0
-    rec_tokens = set(tokenize_ru(recognized))
-    hit = sum(1 for t in ref_tokens if t in rec_tokens)
-    return hit / len(ref_tokens)
+    rec_tokens = tokenize_ru(recognized)
+    matched = sum(block.size for block in SequenceMatcher(
+        None, ref_tokens, rec_tokens, autojunk=False,
+    ).get_matching_blocks())
+    return matched / len(ref_tokens)
 
 
 def align_reference_to_words(
@@ -228,8 +244,7 @@ def score_period_pauses(
             else:
                 token_count += 1
         boundaries.sort(key=lambda b: b['after_token_index'])
-    aligned = (align_reference_with_gaps(reference_text, words) if sentence_endings != "."
-               else align_reference_to_words(reference_text, words))
+    aligned = align_reference_with_gaps(reference_text, words)
     details: list[dict[str, Any]] = []
     all_ok = True
 
@@ -290,13 +305,15 @@ def score_reading_from_payload(
     coverage_ratio_min: float = COVERAGE_TOKEN_RATIO,
     min_comma_pause_sec: Optional[float] = None,
     max_comma_pause_sec: Optional[float] = None,
-    recognized_override: Optional[str] = None,
     sentence_endings: str = '.',
+    pause_points: float = READING_PAUSE_POINTS,
 ) -> dict[str, Any]:
     recognized_raw = extract_recognized_text(payload)
-    recognized = (recognized_override if recognized_override is not None else recognized_raw) or ''
     words = extract_word_timestamps(payload)
-    ratio = coverage_ratio(recognized, reference_text)
+    # Score the actual ASR words. The optional LLM transcript is useful for display,
+    # but can silently replace a mispronounced word with the reference word.
+    score_text = ' '.join(word['word'] for word in words) if words else recognized_raw
+    ratio = coverage_ratio(score_text, reference_text)
     coverage_ok = ratio >= coverage_ratio_min
 
     duration = payload.get('duration')
@@ -337,11 +354,22 @@ def score_reading_from_payload(
         )
         pauses_ok = bool(pauses.get('ok'))
 
-    ok = coverage_ok and duration_ok and pauses_ok
+    pause_details = pauses.get('details') or []
+    pause_ratio = (sum(1 for item in pause_details if item['ok']) / len(pause_details)
+                   if pause_details else 0.0)
+    word_points = round((100 - pause_points) * ratio, 1)
+    earned_pause_points = round(pause_points * pause_ratio, 1)
+    score = round(word_points + earned_pause_points, 1)
+    ok = score >= READING_PASS_SCORE and duration_ok
     return {
         'ok': ok,
+        'score': score,
+        'max_score': 100,
+        'pass_score': READING_PASS_SCORE,
+        'score_breakdown': {'words': word_points, 'pauses': earned_pause_points},
         'recognized': recognized_raw,
-        'recognized_for_score': recognized,
+        'recognized_for_score': score_text,
+        'recognized_scored': score_text,
         'duration': duration_value,
         'coverage': {
             'ok': coverage_ok,
@@ -439,11 +467,6 @@ def check_reading_audio(
             language=language,
             word_timestamps=True,
         )
-        if not extract_word_timestamps(timing_payload):
-            raise RuntimeError(
-                'Сервис распознавания не вернул время произнесения слов. '
-                'Паузы не оценены; попробуйте проверить запись позже.'
-            )
         payload = timing_payload
         if corrected_output is not None:
             payload['_llm_output'] = corrected_output
@@ -455,8 +478,8 @@ def check_reading_audio(
         coverage_ratio_min=task.get('coverage_ratio_min', COVERAGE_TOKEN_RATIO),
         min_comma_pause_sec=task.get('min_comma_pause_sec'),
         max_comma_pause_sec=task.get('max_comma_pause_sec'),
-        recognized_override=corrected,
         sentence_endings=task.get('sentence_endings', '.'),
+        pause_points=task.get('pause_points', READING_PAUSE_POINTS),
     )
     if corrected:
         result['recognized_corrected'] = corrected

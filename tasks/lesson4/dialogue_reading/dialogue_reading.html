@@ -262,7 +262,7 @@
           </div>
           <div class="task-instruction">
             Прослушайте образец, повторите за диктором и запишите чтение текста.
-            Время чтения — не более двух минут. Автоматически проверяются полнота (не менее 60% разных слов) и паузы после предложений.
+            Время чтения — не более двух минут. Слова и паузы оцениваются вместе: до 90 баллов за слова и до 10 за паузы. Зачёт от 60 баллов.
             Ударение, интонация и чёткость окончаний требуют отдельной проверки преподавателем.
           </div>
         </div>
@@ -514,7 +514,7 @@
       recognizedEl.textContent = data.recognized || "—";
       const cov = data.coverage || {};
       const ratioPct = cov.ratio != null ? Math.round(Number(cov.ratio) * 100) : "—";
-      coverageMsgEl.textContent = (cov.ok ? "✓" : "✗") + " " + ratioPct + "% разных слов текста (нужно ≥ "
+      coverageMsgEl.textContent = (cov.ok ? "✓" : "✗") + " " + ratioPct + "% слов в правильном порядке (ориентир ≥ "
         + Math.round((cov.min_ratio ?? 0.60) * 100) + "%)";
       coverageMsgEl.className = "fw-semibold " + (cov.ok ? "text-success" : "text-danger");
 
@@ -528,7 +528,7 @@
       if (pauses.error) {
         const li = document.createElement("li");
         li.className = "pause-item fail";
-        li.textContent = "Ошибка: " + pauses.error;
+        li.textContent = "Сервис не вернул время слов: паузы не оценены (0 из 10 баллов).";
         pausesListEl.appendChild(li);
       } else if (Array.isArray(pauses.details) && pauses.details.length) {
         pauses.details.forEach((d, i) => {
@@ -544,9 +544,7 @@
         pausesListEl.appendChild(li);
       }
 
-      checkMessageEl.textContent = data.ok
-        ? "Зачёт: полнота чтения и паузы в норме."
-        : "Не зачёт: исправьте замечания выше и запишите снова.";
+      checkMessageEl.textContent = (data.ok ? "Зачёт" : "Незачёт") + ": " + data.score + " из 100 баллов (проходной 60; слова — " + (data.score_breakdown?.words ?? "—") + ", паузы — " + (data.score_breakdown?.pauses ?? "—") + ").";
       checkMessageEl.className = "mt-2 fw-semibold " + (data.ok ? "text-success" : "text-danger");
       statusBadgeEl.className = "badge rounded-pill " + (data.ok ? "text-bg-success" : "text-bg-warning");
       statusBadgeEl.textContent = data.ok ? "Зачёт" : "Не зачёт";

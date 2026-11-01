@@ -110,7 +110,9 @@ def answer(request):
         summary = StoryCheckResult(
             ok=passed, score=score, normalized='\n'.join(a['answer'] for a in run['answers']),
             feedback='Зачёт.' if passed else 'Незачёт. Попробуйте ещё раз.',
-            errors=[], recommendations=[], quality_notes='5 баллов за содержание и 5 за правильность написания каждого ответа.',
+            errors=[], recommendations=[], quality_notes=(
+                f'Каждый ответ: 5 баллов за содержание и 5 за написание. '
+                f'Итог: {word_count} ответов приведены к шкале 0–100.'),
         )
         run['saved'], run['save_error'] = _persist_story_attempt(
             run['student_code'], task_code, summary.normalized, summary,
