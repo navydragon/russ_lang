@@ -23,7 +23,9 @@
     article p { font-size: 14px; margin: 0 0 18px; }
     .number { color: #59657a; font-size: 13px; }
     .button { display: inline-block; text-decoration: none; background: #2854c5; color: white; border-radius: 8px; padding: 10px 15px; font-weight: 600; font-size: 14px; }
-    article .button, article .status { margin-top: auto; }
+    .card-actions { margin-top: auto; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+    .review-confirmation label { white-space: nowrap; }
+    .review-confirmation [role=status] { display: block; font-size: 12px; }
     a:focus-visible { outline: 3px solid #e0a400; outline-offset: 3px; }
     .status { color: #59657a; background: #edf0f6; border-radius: 6px; padding: 8px 10px; font-size: 13px; }
     .history { padding-left: 22px; }
@@ -55,6 +57,13 @@
             <span class="number">№ {{ row.definition.number }}{% if row.definition.source_number %} · Задание {{ row.definition.source_number }}{% endif %}</span>
             <h3>{{ row.definition.name }}</h3>
             <p class="muted">{{ row.definition.code }}</p>
+            {% if row.change_date %}<p class="muted">Внесены правки · {{ row.change_date|date:"d.m.Y" }}</p>{% endif %}
+            <div class="card-actions">
+            <form class="review-confirmation" method="post" action="{% url 'set_review_confirmation' %}">
+              {% csrf_token %}<input type="hidden" name="task_code" value="{{ row.definition.code }}">
+              <label><input type="checkbox" name="confirmed" {% if row.confirmed %}checked{% endif %}> Подтверждено</label>
+              <span role="status" aria-live="polite"></span>
+            </form>
             {% if row.can_launch %}
               <a class="button" href="/tasks/{{ row.definition.html_path }}" target="_blank" rel="noopener">Открыть задание <span aria-hidden="true">↗</span></a>
             {% elif row.definition.html_path %}
@@ -62,6 +71,7 @@
             {% else %}
               <span class="status">{% if row.definition.number == 31 %}Требования не определены{% else %}Страница ещё не создана{% endif %}</span>
             {% endif %}
+            </div>
           </article>
         {% endfor %}
       </div>
@@ -80,5 +90,20 @@
     {% endif %}
   </section>
 </main>
+<script>
+document.querySelectorAll('.review-confirmation').forEach(form => {
+  const box = form.querySelector('input[type=checkbox]'), message = form.querySelector('[role=status]');
+  box.addEventListener('change', async () => {
+    const previous = !box.checked; box.disabled = true; message.textContent = 'Сохранение…';
+    const data = new FormData(form); data.set('confirmed', String(box.checked));
+    try {
+      const response = await fetch(form.action, {method: 'POST', body: data, credentials: 'same-origin'});
+      if (!response.ok) throw new Error();
+      const result = await response.json(); box.checked = result.confirmed; message.textContent = 'Сохранено';
+    } catch (_) { box.checked = previous; message.textContent = 'Не удалось сохранить. Попробуйте ещё раз.'; }
+    finally { box.disabled = false; }
+  });
+});
+</script>
 </body>
 </html>

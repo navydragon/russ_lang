@@ -184,3 +184,9 @@ class TaskAttempt(models.Model):
     def __str__(self):
         status = "✓" if self.is_completed else "✗"
         return f"{self.student} - {self.task} [{status}] {self.datetime.strftime('%Y-%m-%d %H:%M')}"
+
+
+class AssignmentReviewConfirmation(models.Model):
+    """Общее подтверждение проверки задания по его коду."""
+    task_code = models.CharField(max_length=64, unique=True)
+    confirmed = models.BooleanField(default=False)

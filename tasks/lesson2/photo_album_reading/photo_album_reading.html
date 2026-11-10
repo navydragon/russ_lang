@@ -506,10 +506,10 @@
 
       const dur = data.duration_check || {};
       const durVal = data.duration != null ? Number(data.duration).toFixed(1) + " с" : "—";
-      durationMsgEl.textContent = (dur.ok ? "✓" : "✗") + " " + durVal
+      durationMsgEl.textContent = dur.reason === "duration_missing" ? "Длительность не получена от сервиса; проверить лимит не удалось." : (dur.ok ? "✓" : "✗") + " " + durVal
         + " (лимит " + (dur.max_sec || MAX_RECORD_SEC) + " с"
         + (dur.reason === "duration_exceeded" ? "; время превышено" : "") + ")";
-      durationMsgEl.className = "fw-semibold " + (dur.ok ? "text-success" : "text-danger");
+      durationMsgEl.className = "fw-semibold " + (dur.reason === "duration_missing" ? "text-warning" : dur.ok ? "text-success" : "text-danger");
 
       pausesListEl.innerHTML = "";
       const pauses = data.pauses || {};
@@ -537,7 +537,7 @@
       checkMessageEl.textContent = (data.ok ? "Зачёт" : "Незачёт") + ": " + data.score + " из 100 баллов (проходной 60; слова — " + (data.score_breakdown?.words ?? "—") + ", паузы — " + (data.score_breakdown?.pauses ?? "—") + ").";
       checkMessageEl.className = "mt-2 fw-semibold " + (data.ok ? "text-success" : "text-danger");
       statusBadgeEl.className = "badge rounded-pill " + (data.ok ? "text-bg-success" : "text-bg-warning");
-      statusBadgeEl.textContent = data.ok ? "Зачёт" : "Не зачёт";
+      statusBadgeEl.textContent = data.ok ? "Зачёт" : "Незачёт";
     }
 
     async function persistComplete(result) {

@@ -41,7 +41,7 @@ def payload(gap=.4, duration=400, reference=REFERENCE):
 
 class LessonFourReadingTests(SimpleTestCase):
     def check(self, source):
-        with patch('api.reading_check.transcribe_audio', return_value=source) as asr:
+        with patch('api.reading_check.measure_audio_duration', return_value=45), patch('api.reading_check.transcribe_audio', return_value=source) as asr:
             result = check_reading_audio(b'audio', 'record.webm', task_id='lesson4_university')
         self.assertTrue(asr.call_args.kwargs['word_timestamps'])
         self.assertIn('играют в футбол тут.', asr.call_args.kwargs['prompt'])
@@ -81,7 +81,7 @@ class LessonFourReadingTests(SimpleTestCase):
             self.assertEqual(self.check(source)['coverage']['ok'], expected)
         source = payload()
         source.pop('words')
-        with patch('api.reading_check.transcribe_audio', return_value=source):
+        with patch('api.reading_check.measure_audio_duration', return_value=45), patch('api.reading_check.transcribe_audio', return_value=source):
             result = check_reading_audio(b'audio', 'record.webm', task_id='lesson4_university')
         self.assertTrue(result['ok'])
         self.assertEqual(result['score'], 90)
@@ -105,7 +105,7 @@ class LessonFourReadingTests(SimpleTestCase):
         self.assertNotIn('3 минуты', page)
 
     def test_endpoint_uses_lesson_four_reference(self):
-        with patch('api.reading_check.transcribe_audio', return_value=payload()):
+        with patch('api.reading_check.measure_audio_duration', return_value=45), patch('api.reading_check.transcribe_audio', return_value=payload()):
             response = self.client.post('/api/reading/check', {
                 'task_id': 'lesson4_university', 'file': SimpleUploadedFile('record.webm', b'audio'),
             })
@@ -118,7 +118,7 @@ class LessonFourReadingTests(SimpleTestCase):
 class LessonFourReadingPersistenceTests(TestCase):
     def test_result_saves_to_lesson_four_and_source_audio_is_served(self):
         call_command('seed_ai_test_data', stdout=StringIO())
-        with patch('api.reading_check.transcribe_audio', return_value=payload()):
+        with patch('api.reading_check.measure_audio_duration', return_value=45), patch('api.reading_check.transcribe_audio', return_value=payload()):
             result = check_reading_audio(b'audio', 'record.webm', task_id='lesson4_university')
         response = self.client.post('/api/reading/complete', {
             'task_id': 'lesson4_university', 'task_code': 'AI_4_1',
@@ -141,7 +141,7 @@ class LessonFourSplitReadingTests(TestCase):
         self.assertNotIn('Анна спрашивает', second)
         self.assertEqual(second, LESSON4_UNIVERSITY_REFERENCE_PARTS[1])
         call_command('seed_ai_test_data', stdout=StringIO())
-        with patch('api.reading_check.transcribe_audio', return_value=payload(reference=second)) as asr:
+        with patch('api.reading_check.measure_audio_duration', return_value=45), patch('api.reading_check.transcribe_audio', return_value=payload(reference=second)) as asr:
             result = check_reading_audio(b'audio', 'record.webm', task_id='lesson4_university_part2')
         self.assertTrue(result['ok'])
         self.assertIn('Мы любим наш университет.', asr.call_args.kwargs['prompt'])

@@ -16,6 +16,7 @@ from .speaking_nexara import (
     transcribe_audio,
 )
 from .excursion import REFERENCE_TEXT as EXCURSION_REFERENCE_TEXT
+from .audio_duration import measure_audio_duration
 
 logger = logging.getLogger('api')
 
@@ -307,6 +308,7 @@ def score_reading_from_payload(
     max_comma_pause_sec: Optional[float] = None,
     sentence_endings: str = '.',
     pause_points: float = READING_PAUSE_POINTS,
+    allow_missing_duration: bool = False,
 ) -> dict[str, Any]:
     recognized_raw = extract_recognized_text(payload)
     words = extract_word_timestamps(payload)
@@ -328,6 +330,7 @@ def score_reading_from_payload(
         except (TypeError, ValueError):
             pass
     elif duration is None:
+        duration_ok = allow_missing_duration
         duration_reason = 'duration_missing'
     else:
         try:
@@ -435,6 +438,7 @@ def check_reading_audio(
         raise ValueError(f'Unknown reading task_id: {task_id}')
 
     reference_text = task['reference_text']
+    measured_duration = measure_audio_duration(file_bytes, filename)
     try:
         payload = transcribe_audio(
             file_bytes,
@@ -472,6 +476,7 @@ def check_reading_audio(
             payload['_llm_output'] = corrected_output
 
     corrected = extract_corrected_text(payload)
+    payload['duration'] = measured_duration
     result = score_reading_from_payload(
         payload, task['reference_text'],
         max_duration_sec=task.get('max_duration_sec', MAX_DURATION_SEC),
@@ -480,6 +485,7 @@ def check_reading_audio(
         max_comma_pause_sec=task.get('max_comma_pause_sec'),
         sentence_endings=task.get('sentence_endings', '.'),
         pause_points=task.get('pause_points', READING_PAUSE_POINTS),
+        allow_missing_duration=False,
     )
     if corrected:
         result['recognized_corrected'] = corrected

@@ -28,7 +28,7 @@ TASK_CATALOG = (
     TaskDefinition(1, 1, 1, 'family_story', 'Рассказ «Семья»', html_path='lesson1/family_story/family_story.html'),
     TaskDefinition(2, 1, 2, 'room_story', 'Рассказ «Комната»', html_path='lesson1/room_story/room_story.html'),
     TaskDefinition(3, 1, 3, 'city_speaking', 'Говорение «Город»', html_path='lesson1/city_speaking/city_speaking.html'),
-    TaskDefinition(4, 1, 4, 'class_speaking', 'Говорение «Класс»', html_path='lesson1/class_speaking/class_speaking.html'),
+    TaskDefinition(4, 1, 4, 'class_speaking', 'Говорение «Аудитория»', html_path='lesson1/class_speaking/class_speaking.html'),
     TaskDefinition(5, 1, 5, 'flat_speaking', 'Говорение «Квартира»', html_path='lesson1/flat_speaking/flat_speaking.html'),
     TaskDefinition(6, 2, 1, 'photo_album_reading', 'Чтение «Мой фотоальбом»', '2.2', 'lesson2/photo_album_reading/photo_album_reading.html'),
     TaskDefinition(7, 2, 2, 'family_retelling', 'Рассказ о своей семье по фотографии', '2.4', 'lesson2/family_retelling/family_retelling.html'),

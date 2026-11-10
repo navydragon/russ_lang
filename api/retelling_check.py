@@ -1,6 +1,7 @@
 """Устный пересказ: ASR и проверка содержания, без имитации оценки ударения."""
 from .speaking_nexara import transcribe_audio, extract_recognized_text
 from .story_llm import check_story
+from .audio_duration import measure_audio_duration
 
 
 TASK_ID = 'university_retelling'
@@ -20,6 +21,7 @@ def check_retelling_audio(file_bytes, filename, content_type='audio/webm', *, ta
         raise ValueError('Аудиозапись пуста.')
     if len(file_bytes) > MAX_AUDIO_BYTES:
         raise ValueError('Аудиозапись слишком большая. Максимум — 20 МБ.')
+    measured_duration = measure_audio_duration(file_bytes, filename)
     payload = transcribe_audio(file_bytes, filename, content_type=content_type, language='ru')
     recognized = extract_recognized_text(payload)
     if not recognized:
@@ -27,7 +29,7 @@ def check_retelling_audio(file_bytes, filename, content_type='audio/webm', *, ta
     result = check_story(task_id, recognized)
     return result, {
         'recognized': recognized,
-        'duration': payload.get('duration'),
+        'duration': measured_duration,
         'passing_score': 60,
         'stress_check': {
             'status': 'not_assessed',

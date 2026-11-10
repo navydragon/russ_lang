@@ -60,6 +60,15 @@ class PhotoAlbumReadingTests(SimpleTestCase):
         self.assertFalse(result['ok'])
         self.assertEqual(result['duration_check']['reason'], 'duration_exceeded')
 
+    def test_photo_album_uses_file_duration_when_asr_omits_duration(self):
+        payload = reading_payload()
+        payload.pop('duration')
+        with patch('api.reading_check.measure_audio_duration', return_value=45), patch('api.reading_check.transcribe_audio', return_value=payload):
+            result = check_reading_audio(b'audio', 'record.webm', task_id='photo_album')
+        self.assertTrue(result['ok'])
+        self.assertEqual(result['duration'], 45)
+        self.assertTrue(result['duration_check']['ok'])
+
     def test_missing_word_timestamps_has_no_pause_points(self):
         payload = reading_payload()
         payload.pop('words')
@@ -100,7 +109,7 @@ class PhotoAlbumReadingTests(SimpleTestCase):
         self.assertEqual(save.call_args.args[0]['score_value'], Decimal('90.0'))
 
     def test_backend_uses_photo_album_limits_and_reference(self):
-        with patch('api.reading_check.transcribe_audio', return_value=reading_payload()) as transcribe:
+        with patch('api.reading_check.measure_audio_duration', return_value=45), patch('api.reading_check.transcribe_audio', return_value=reading_payload()) as transcribe:
             result = check_reading_audio(b'audio', 'record.webm', task_id='photo_album')
         self.assertTrue(result['ok'])
         self.assertEqual(result['duration_check']['max_sec'], 60)
@@ -114,7 +123,7 @@ class PhotoAlbumReadingTests(SimpleTestCase):
         corrected['_llm_output'] = {'corrected_text': PHOTO_ALBUM_REFERENCE_TEXT}
         corrected['text'] = 'распознано с ошибками'
         plain = reading_payload()
-        with patch('api.reading_check.transcribe_audio', side_effect=[corrected, plain]) as transcribe:
+        with patch('api.reading_check.measure_audio_duration', return_value=45), patch('api.reading_check.transcribe_audio', side_effect=[corrected, plain]) as transcribe:
             result = check_reading_audio(b'audio', 'record.webm', task_id='photo_album')
         self.assertEqual(transcribe.call_count, 2)
         self.assertTrue(result['ok'])
@@ -125,7 +134,7 @@ class PhotoAlbumReadingTests(SimpleTestCase):
     def test_no_timing_after_retry_scores_words_without_pause_points(self):
         without_words = reading_payload()
         without_words.pop('words')
-        with patch('api.reading_check.transcribe_audio', return_value=without_words):
+        with patch('api.reading_check.measure_audio_duration', return_value=45), patch('api.reading_check.transcribe_audio', return_value=without_words):
             response = self.client.post('/api/reading/check', {
                 'task_id': 'photo_album',
                 'file': SimpleUploadedFile('record.webm', b'audio', content_type='audio/webm'),
@@ -139,7 +148,7 @@ class PhotoAlbumReadingTests(SimpleTestCase):
         payload = reading_payload(comma_gap=0.7)
         payload['text'] = 'ошибка распознавания'
         payload['_llm_output'] = {'corrected_text': PHOTO_ALBUM_REFERENCE_TEXT}
-        with patch('api.reading_check.transcribe_audio', return_value=payload):
+        with patch('api.reading_check.measure_audio_duration', return_value=45), patch('api.reading_check.transcribe_audio', return_value=payload):
             result = check_reading_audio(b'audio', 'record.webm', task_id='photo_album')
         self.assertEqual(result['recognized'], 'ошибка распознавания')
         self.assertEqual(result['recognized_corrected'], PHOTO_ALBUM_REFERENCE_TEXT)
@@ -148,7 +157,7 @@ class PhotoAlbumReadingTests(SimpleTestCase):
         self.assertFalse(result['pauses']['ok'])
 
     def test_university_keeps_three_minute_limit_and_period_only_checks(self):
-        with patch('api.reading_check.transcribe_audio', return_value=reading_payload(
+        with patch('api.reading_check.measure_audio_duration', return_value=45), patch('api.reading_check.transcribe_audio', return_value=reading_payload(
             text=UNIVERSITY_REFERENCE_TEXT, comma_gap=0, duration=170,
         )):
             result = check_reading_audio(b'audio', 'record.webm', task_id='university')
@@ -177,7 +186,7 @@ class PhotoAlbumReadingTests(SimpleTestCase):
                 self.assertEqual(result['ok'], passed)
 
     def test_reading_endpoint_accepts_photo_album_task(self):
-        with patch('api.reading_check.transcribe_audio', return_value=reading_payload()):
+        with patch('api.reading_check.measure_audio_duration', return_value=45), patch('api.reading_check.transcribe_audio', return_value=reading_payload()):
             response = self.client.post('/api/reading/check', {
                 'task_id': 'photo_album',
                 'file': SimpleUploadedFile('record.webm', b'audio', content_type='audio/webm'),
@@ -262,7 +271,7 @@ class MyUniversityWritingTests(SimpleTestCase):
 class MoscowReadingTests(SimpleTestCase):
     def check(self, **kwargs):
         payload = reading_payload(text=MOSCOW_REFERENCE_TEXT, **kwargs)
-        with patch('api.reading_check.transcribe_audio', return_value=payload) as asr:
+        with patch('api.reading_check.measure_audio_duration', return_value=kwargs.get('duration', 45)), patch('api.reading_check.transcribe_audio', return_value=payload) as asr:
             result = check_reading_audio(b'audio', 'record.webm', task_id='moscow')
         self.assertTrue(asr.call_args.kwargs['word_timestamps'])
         return result
@@ -282,7 +291,7 @@ class MoscowReadingTests(SimpleTestCase):
         self.assertEqual(result['score'], 90)
 
     def test_moscow_is_available_through_reading_endpoint(self):
-        with patch('api.reading_check.transcribe_audio', return_value=reading_payload(text=MOSCOW_REFERENCE_TEXT)):
+        with patch('api.reading_check.measure_audio_duration', return_value=45), patch('api.reading_check.transcribe_audio', return_value=reading_payload(text=MOSCOW_REFERENCE_TEXT)):
             response = self.client.post('/api/reading/check', {
                 'task_id': 'moscow', 'file': SimpleUploadedFile('record.webm', b'audio'),
             })

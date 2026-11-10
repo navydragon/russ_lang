@@ -18,7 +18,7 @@ def retelling_result(score=75):
 class RetellingTests(SimpleTestCase):
     def test_moscow_audio_uses_its_own_rubric(self):
         transcript = 'Москва — красивый город. В центре Кремль. В Москве удобное метро.'
-        with patch('api.retelling_check.transcribe_audio', return_value={'text': transcript}), patch(
+        with patch('api.retelling_check.measure_audio_duration', return_value=42), patch('api.retelling_check.transcribe_audio', return_value={'text': transcript}), patch(
             'api.retelling_check.check_story', return_value=retelling_result(),
         ) as grader:
             result, details = check_retelling_audio(b'audio', 'record.webm', task_id='moscow_retelling')
@@ -46,7 +46,7 @@ class RetellingTests(SimpleTestCase):
 
     def test_asr_text_goes_to_semantic_check_and_stress_is_not_fabricated(self):
         transcript = 'Вот наш университет. Рядом общежитие.'
-        with patch('api.retelling_check.transcribe_audio', return_value={
+        with patch('api.retelling_check.measure_audio_duration', return_value=42), patch('api.retelling_check.transcribe_audio', return_value={
             'text': transcript, 'duration': 42,
         }) as asr, patch('api.retelling_check.check_story', return_value=retelling_result()) as grader:
             result, details = check_retelling_audio(b'audio', 'record.webm')
@@ -58,7 +58,7 @@ class RetellingTests(SimpleTestCase):
         self.assertNotIn('word_timestamps', asr.call_args.kwargs)
 
     def test_no_speech_does_not_call_grader(self):
-        with patch('api.retelling_check.transcribe_audio', return_value={'text': ' '}) as asr, patch('api.retelling_check.check_story') as grader:
+        with patch('api.retelling_check.measure_audio_duration', return_value=42), patch('api.retelling_check.transcribe_audio', return_value={'text': ' '}) as asr, patch('api.retelling_check.check_story') as grader:
             with self.assertRaises(ValueError):
                 check_retelling_audio(b'audio', 'record.webm')
         grader.assert_not_called()
@@ -102,7 +102,7 @@ class RetellingTests(SimpleTestCase):
 class NovgorodRetellingTests(SimpleTestCase):
     def test_audio_uses_novgorod_rubric_and_actual_transcript(self):
         transcript = 'Я студент и историк. Мой родной город Новгород.'
-        with patch('api.retelling_check.transcribe_audio', return_value={'text': transcript, 'duration': 30}), patch(
+        with patch('api.retelling_check.measure_audio_duration', return_value=42), patch('api.retelling_check.transcribe_audio', return_value={'text': transcript, 'duration': 30}), patch(
             'api.retelling_check.check_story', return_value=retelling_result(),
         ) as grader:
             result, details = check_retelling_audio(b'audio', 'record.webm', task_id='novgorod_retelling')
@@ -142,7 +142,7 @@ class NovgorodRetellingTests(SimpleTestCase):
 class VDNHRetellingTests(SimpleTestCase):
     def test_audio_uses_vdnh_rubric_and_actual_transcript(self):
         transcript = 'Олег прислал письмо из Москвы. На выставке он познакомился с Раджем.'
-        with patch('api.retelling_check.transcribe_audio', return_value={
+        with patch('api.retelling_check.measure_audio_duration', return_value=42), patch('api.retelling_check.transcribe_audio', return_value={
             'text': transcript, 'duration': 48,
         }), patch('api.retelling_check.check_story', return_value=retelling_result(72)) as grader:
             result, details = check_retelling_audio(b'audio', 'record.webm', task_id='vdnh_retelling')

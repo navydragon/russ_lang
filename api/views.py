@@ -11,6 +11,7 @@ from django.views.decorators.http import require_POST
 from courses.services import parse_ispring_post, save_quiz_result
 from .reading_check import READING_TASKS, check_reading_audio
 from .retelling_check import check_retelling_audio, MAX_AUDIO_BYTES, RETELLING_TASKS
+from .audio_duration import AudioDurationError
 from .speaking_nexara import check_speaking_audio
 from .story_llm import VALID_TASK_IDS, check_story
 from .excursion import score_selection, words_and_targets
@@ -170,6 +171,8 @@ def retelling_check(request):
         )
     except ValueError as exc:
         return JsonResponse({'error': str(exc)}, status=400)
+    except AudioDurationError as exc:
+        return JsonResponse({'error': str(exc)}, status=502)
     except RuntimeError:
         logger.exception('Retelling service unavailable')
         return JsonResponse({'error': 'Сервис проверки недоступен. Проверьте настройки ASR и LLM.'}, status=502)

@@ -277,3 +277,23 @@ class AITestLauncherTests(TestCase):
         attempts = TaskAttempt.objects.filter(task__code='AI_3_11').order_by('pk')
         self.assertEqual(list(attempts.values_list('score', flat=True)), [59, 60])
         self.assertEqual(list(attempts.values_list('is_completed', flat=True)), [False, True])
+
+
+class AssignmentReviewConfirmationTests(TestCase):
+    @override_settings(DEBUG=True)
+    def test_confirmation_shared_persistent_and_reversible(self):
+        from django.test import Client
+        first, second = Client(), Client()
+        url = '/dev/tasks/confirmation/'
+        self.assertEqual(first.post(url, {'task_code': 'AI_1_4', 'confirmed': 'true'}).status_code, 200)
+        self.assertEqual(first.post(url, {'task_code': 'AI_1_4', 'confirmed': 'true'}).status_code, 200)
+        response = second.get('/dev/tasks/')
+        self.assertContains(response, 'Внесены правки · 10.11.2026')
+        self.assertContains(response, 'name="confirmed" checked')
+        self.assertEqual(second.post(url, {'task_code': 'AI_1_4', 'confirmed': 'false'}).status_code, 200)
+        self.assertNotContains(first.get('/dev/tasks/'), 'name="confirmed" checked')
+        self.assertEqual(first.post(url, {'task_code': 'unknown', 'confirmed': 'true'}).status_code, 400)
+
+    @override_settings(DEBUG=False)
+    def test_confirmation_disabled_without_debug(self):
+        self.assertEqual(self.client.post('/dev/tasks/confirmation/', {'task_code': 'AI_1_4', 'confirmed': 'true'}).status_code, 404)
