@@ -5,9 +5,12 @@ from pathlib import Path
 
 from django.conf import settings
 from django.shortcuts import render
-from django.views.decorators.http import require_GET
+from django.http import JsonResponse
+from django.views.decorators.http import require_GET, require_POST
 
 from .task_catalog import TASK_CATALOG
+from .models import AssignmentReviewConfirmation
+from .review_dates import REVIEW_CHANGE_DATES
 
 
 # Короткое описание помогает авторам быстро понять механику до открытия задания.
@@ -82,6 +85,7 @@ def _assignment_details() -> dict[int, str]:
 @require_GET
 def author_assignments(request):
     details = _assignment_details()
+    confirmed = set(AssignmentReviewConfirmation.objects.filter(confirmed=True).values_list("task_code", flat=True))
     lessons = []
     for number in sorted({item.lesson for item in TASK_CATALOG if item.html_path}):
         tasks = []
@@ -91,6 +95,8 @@ def author_assignments(request):
             student_action, ai_action = TASK_SUMMARIES[item.code]
             tasks.append({
                 'definition': item,
+                'change_date': REVIEW_CHANGE_DATES.get(item.code),
+                'confirmed': item.code in confirmed,
                 'student_action': student_action,
                 'ai_action': ai_action,
                 'details': details.get(item.number, ''),
@@ -100,3 +106,13 @@ def author_assignments(request):
         'lessons': lessons,
         'task_count': sum(len(lesson['tasks']) for lesson in lessons),
     })
+
+
+@require_POST
+def author_set_confirmation(request):
+    code = request.POST.get('task_code', '')
+    value = request.POST.get('confirmed', '')
+    if code not in {item.code for item in TASK_CATALOG if item.html_path} or value not in ('true', 'false'):
+        return JsonResponse({'error': 'Некорректные данные подтверждения.'}, status=400)
+    record, _ = AssignmentReviewConfirmation.objects.update_or_create(task_code=code, defaults={'confirmed': value == 'true'})
+    return JsonResponse({'confirmed': record.confirmed})

@@ -7,12 +7,13 @@ from django.contrib import admin
 from django.urls import path, include, re_path
 from django.views.static import serve
 from courses.test_launcher import test_launcher, set_review_confirmation
-from courses.author_review import author_assignments
+from courses.author_review import author_assignments, author_set_confirmation
 
 urlpatterns = [
     path('dev/tasks/', test_launcher, name='test_launcher'),
     path('dev/tasks/confirmation/', set_review_confirmation, name='set_review_confirmation'),
     path('authors/assignments/', author_assignments, name='author_assignments'),
+    path('authors/assignments/confirmation/', author_set_confirmation, name='author_set_confirmation'),
     path('admin/', admin.site.urls),
     path('api/', include('api.urls')),
     path('', include('config.task_pages')),

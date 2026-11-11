@@ -36,6 +36,9 @@
     .description p { margin: 0; }
     .bottom { margin-top: auto; padding-top: 16px; }
     .open { display: inline-block; background: #1554b4; color: #fff; text-decoration: none; border-radius: 9px; padding: 10px 13px; font-weight: 700; }
+    .card-actions { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+    .review-confirmation label { white-space: nowrap; }
+    .review-confirmation [role=status] { display: block; font-size: .8rem; }
     .open:hover { background: #0d3e8d; }
     details { border-top: 1px solid #e8ecf3; margin-top: 16px; padding-top: 13px; }
     summary { cursor: pointer; color: #1554b4; font-weight: 650; }
@@ -74,7 +77,15 @@
         <div class="description"><span class="row-label">Что делает студент</span><p>{{ row.student_action }}</p></div>
         <div class="description"><span class="row-label">Что делает ИИ</span><p>{{ row.ai_action }}</p></div>
         <div class="bottom">
-          <a class="open" href="/tasks/{{ row.definition.html_path }}" target="_blank" rel="noopener noreferrer" aria-label="Открыть задание {{ row.definition.code }} в новой вкладке">Открыть задание ↗</a>
+          {% if row.change_date %}<p class="subtle">Внесены правки · {{ row.change_date|date:"d.m.Y" }}</p>{% endif %}
+          <div class="card-actions">
+            <a class="open" href="/tasks/{{ row.definition.html_path }}" target="_blank" rel="noopener noreferrer" aria-label="Открыть задание {{ row.definition.code }} в новой вкладке">Открыть задание ↗</a>
+            <form class="review-confirmation" method="post" action="{% url 'author_set_confirmation' %}">
+              {% csrf_token %}<input type="hidden" name="task_code" value="{{ row.definition.code }}">
+              <label><input type="checkbox" name="confirmed" {% if row.confirmed %}checked{% endif %}> Подтверждено</label>
+              <span role="status" aria-live="polite"></span>
+            </form>
+          </div>
           {% if row.details %}<details><summary>Подробное описание и критерии</summary><div class="details-text">{{ row.details }}</div></details>{% endif %}
         </div>
       </article>
@@ -84,6 +95,19 @@
   {% endfor %}
 </main>
 <script>
+  document.querySelectorAll('.review-confirmation').forEach(form => {
+    const box = form.querySelector('input[type=checkbox]'), message = form.querySelector('[role=status]');
+    box.addEventListener('change', async () => {
+      const previous = !box.checked; box.disabled = true; message.textContent = 'Сохранение…';
+      const data = new FormData(form); data.set('confirmed', String(box.checked));
+      try {
+        const response = await fetch(form.action, {method: 'POST', body: data, credentials: 'same-origin'});
+        if (!response.ok) throw new Error();
+        const result = await response.json(); box.checked = result.confirmed; message.textContent = 'Сохранено';
+      } catch (_) { box.checked = previous; message.textContent = 'Не удалось сохранить. Попробуйте ещё раз.'; }
+      finally { box.disabled = false; }
+    });
+  });
   const search = document.getElementById('search');
   const cards = [...document.querySelectorAll('article[data-search]')];
   const lessons = [...document.querySelectorAll('.lesson')];
