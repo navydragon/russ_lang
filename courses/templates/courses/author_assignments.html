@@ -37,7 +37,8 @@
     .bottom { margin-top: auto; padding-top: 16px; }
     .open { display: inline-block; background: #1554b4; color: #fff; text-decoration: none; border-radius: 9px; padding: 10px 13px; font-weight: 700; }
     .card-actions { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
-    .review-confirmation label { white-space: nowrap; }
+    .review-confirmation .confirmation-pill { display: inline-flex; align-items: center; gap: 7px; white-space: nowrap; padding: 6px 10px; border: 1px solid #cbd5e1; border-radius: 999px; background: #f1f5f9; color: #475569; font-size: .86rem; font-weight: 650; transition: background-color .15s, border-color .15s, color .15s; }
+    .review-confirmation .confirmation-pill.is-confirmed { border-color: #86efac; background: #dcfce7; color: #166534; }
     .review-confirmation [role=status] { display: block; font-size: .8rem; }
     .open:hover { background: #0d3e8d; }
     details { border-top: 1px solid #e8ecf3; margin-top: 16px; padding-top: 13px; }
@@ -52,8 +53,8 @@
 <header>
   <div class="wrap">
     <h1>Задания с проверкой ИИ</h1>
-    <p class="lead">Обзор для авторов курса: где находится каждое готовое задание, что делает студент и как проверяется результат. Страницы заданий открываются в новой вкладке.</p>
-    <div class="overview"><span class="chip">{{ task_count }} готовых заданий</span><span class="chip">Уроки 1–4</span><span class="chip">Без входа в систему</span></div>
+    <p class="lead">Обзор готовых и запланированных заданий для авторов курса. Страницы готовых заданий открываются в новой вкладке.</p>
+    <div class="overview"><span class="chip">{{ task_count }} готовых заданий</span><span class="chip">{{ planned_count }} запланировано</span><span class="chip">Без входа в систему</span></div>
   </div>
 </header>
 <main class="wrap">
@@ -82,12 +83,20 @@
             <a class="open" href="/tasks/{{ row.definition.html_path }}" target="_blank" rel="noopener noreferrer" aria-label="Открыть задание {{ row.definition.code }} в новой вкладке">Открыть задание ↗</a>
             <form class="review-confirmation" method="post" action="{% url 'author_set_confirmation' %}">
               {% csrf_token %}<input type="hidden" name="task_code" value="{{ row.definition.code }}">
-              <label><input type="checkbox" name="confirmed" {% if row.confirmed %}checked{% endif %}> Подтверждено</label>
+              <label class="confirmation-pill{% if row.confirmed %} is-confirmed{% endif %}"><input type="checkbox" name="confirmed" {% if row.confirmed %}checked{% endif %}> Подтверждено</label>
               <span role="status" aria-live="polite"></span>
             </form>
           </div>
           {% if row.details %}<details><summary>Подробное описание и критерии</summary><div class="details-text">{{ row.details }}</div></details>{% endif %}
         </div>
+      </article>
+      {% endfor %}
+      {% for item in lesson.planned %}
+      <article data-search="{{ item.code }} {{ item.name }} {{ item.source_number }} {{ item.student_action }} {{ item.missing }} запланировано">
+        <div class="meta">{% if item.code %}<span>{{ item.code }}</span>{% endif %}<span>Запланировано</span><span>Часть урока: {{ item.source_number }}</span></div>
+        <h3>{{ item.name }}</h3>
+        <div class="description"><span class="row-label">Что делает студент</span><p>{{ item.student_action }}</p></div>
+        <div class="description"><span class="row-label">Что нужно</span><p>{{ item.missing }}</p></div>
       </article>
       {% endfor %}
     </div>
@@ -103,7 +112,9 @@
       try {
         const response = await fetch(form.action, {method: 'POST', body: data, credentials: 'same-origin'});
         if (!response.ok) throw new Error();
-        const result = await response.json(); box.checked = result.confirmed; message.textContent = 'Сохранено';
+        const result = await response.json(); box.checked = result.confirmed;
+        form.querySelector('.confirmation-pill').classList.toggle('is-confirmed', result.confirmed);
+        message.textContent = 'Сохранено';
       } catch (_) { box.checked = previous; message.textContent = 'Не удалось сохранить. Попробуйте ещё раз.'; }
       finally { box.disabled = false; }
     });

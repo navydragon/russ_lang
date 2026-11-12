@@ -151,10 +151,10 @@ class VDNHRetellingTests(SimpleTestCase):
         self.assertEqual(details['recognized'], transcript)
         self.assertEqual(details['stress_check']['status'], 'not_assessed')
 
-    def test_rubric_contains_source_verb_table_and_pass_boundary(self):
+    def test_rubric_contains_source_support_phrases_and_pass_boundary(self):
         prompt = _build_user_prompt('vdnh_retelling', 'Олег работал на ВДНХ.')
         for fragment in ('Сергей Иванович', 'Юрий Гагарин', 'Радж',
-                         'получать/получить', 'знакомиться/познакомиться',
+                         'получить письмо', 'познакомиться', 'Не требуй всех выражений',
                          'пяти смысловых блоков', 'Проходной балл: 60'):
             self.assertIn(fragment, prompt)
         for score, expected in ((59, False), (60, True)):

@@ -10,6 +10,7 @@ RETELLING_TASKS = {
     'moscow_retelling': 'AI_3_6',
     'novgorod_retelling': 'AI_3_11',
     'vdnh_retelling': 'AI_7_1',
+    'lesson7_fairytale_retelling': 'AI_7_11',
 }
 MAX_AUDIO_BYTES = 20 * 1024 * 1024
 

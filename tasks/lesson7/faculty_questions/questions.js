@@ -15,7 +15,11 @@ async function request(path, body) {
     method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body),
   });
   const data = await response.json();
-  if (!response.ok) throw new Error(data.error || "Не удалось выполнить запрос.");
+  if (!response.ok) {
+    const error = new Error(data.error || "Не удалось выполнить запрос.");
+    error.restartRequired = data.restart_required;
+    throw error;
+  }
   return data;
 }
 function feedbackText(item) {
@@ -84,6 +88,7 @@ async function submit(text) {
   } catch (error) {
     el("wordFeedback").textContent = "";
     el("error").textContent = error.message;
+    if (error.restartRequired) { run = null; el("question").hidden = true; el("start").hidden = false; el("start").textContent = "Начать заново"; }
     el("check").disabled = false; el("skip").disabled = false;
   } finally { busy = false; }
 }
@@ -106,6 +111,6 @@ el("listen").addEventListener("click", async () => {
   try {
     const existing = await request("state?run_id=" + encodeURIComponent(id));
     if (existing.student_code === studentCode() && existing.task_code === TASK_CODE) { run = existing; showCurrent(); }
-  } catch (_) { /* Истёкший набор заменяется новым по кнопке начала. */ }
+  } catch (error) { if (error.restartRequired) { el("error").textContent = error.message; el("start").textContent = "Начать заново"; } }
   finally { el("start").disabled = false; }
 })();

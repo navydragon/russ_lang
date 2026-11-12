@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI_5_6 — Вопросы и ответы по картинкам</title>
+  <link rel="stylesheet" href="classroom_questions.css">
+</head>
+<body>
+  <header class="page-header">
+    <div class="tag"># ГОВОРЕНИЕ И ПИСЬМО · УРОК 5 · AI_5_6</div>
+    <h1>Задайте вопрос и ответьте по картинке</h1>
+    <p>Для каждой картинки составьте одну пару «вопрос — ответ»: напишите её и произнесите вслух. Используйте опорные слова. ИИ проверит, соответствует ли вопрос картинке и отвечает ли ответ на вопрос.</p>
+  </header>
+  <main>
+    <section class="card task-card" aria-labelledby="pictureHeading">
+      <div class="progress-row"><strong id="pictureHeading">Картинка 1 из 3</strong><span id="progressText">Проверено 0 из 3</span></div>
+      <div class="picture-wrap"><img id="picture" src="images/water_glass.png" alt="Стакан с водой стоит на столе"></div>
+      <section class="supports" aria-labelledby="supportHeading"><h2 id="supportHeading">Опорные слова</h2><div id="supportWords" class="chips"></div></section>
+      <div class="pair-fields">
+        <label>Ваш вопрос<textarea id="question" rows="2" placeholder="Например: Что стоит на столе?"></textarea></label>
+        <label>Ваш ответ<textarea id="answer" rows="2" placeholder="Например: На столе стоит стакан с водой."></textarea></label>
+      </div>
+      <section class="oral" aria-labelledby="oralHeading">
+        <div><h2 id="oralHeading">Произнесите эту пару</h2><p>Сначала скажите вопрос, затем ответ.</p></div>
+        <div class="record-controls"><button id="record" type="button">Начать запись</button><button id="stop" type="button" disabled>Остановить</button><span id="timer" aria-live="polite">0:00</span></div>
+        <audio id="player" controls hidden></audio>
+      </section>
+      <div class="actions"><button id="previous" type="button" class="secondary" disabled>Назад</button><button id="check" type="button" disabled>Проверить пару</button><button id="next" type="button" class="secondary" disabled>Следующая картинка</button></div>
+      <p id="status" role="status" aria-live="polite">Заполните оба поля и запишите устную пару.</p>
+    </section>
+    <section class="card result-card" aria-live="polite">
+      <h2>Проверка этой картинки</h2>
+      <div class="results-grid"><article><h3>Письменно</h3><div id="writtenResult" class="result">Ещё не проверено</div></article><article><h3>Устно</h3><div id="oralResult" class="result">Ещё не проверено</div></article></div>
+      <p class="limitation">Устная часть проверяется по распознанному тексту. ИИ не оценивает надёжно произношение, ударение и интонацию.</p>
+      <p id="finish" class="finish" hidden>Все три картинки выполнены.</p>
+    </section>
+  </main>
+  <script src="../../api-config.js"></script>
+  <script src="classroom_questions.js"></script>
+</body>
+</html>

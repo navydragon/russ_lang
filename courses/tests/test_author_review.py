@@ -4,6 +4,13 @@ from courses.task_catalog import TASK_CATALOG
 
 
 class AuthorReviewTests(TestCase):
+    def test_planned_cards_are_visible_without_open_links_or_confirmation(self):
+        response = self.client.get('/authors/assignments/')
+        self.assertContains(response, 'Чтение «Моя профессия»')
+        self.assertContains(response, 'Изложение «Вечер на факультете»')
+        self.assertContains(response, 'Запланировано')
+        self.assertContains(response, 'Нужны текст и вопросы слайда 6.1.')
+
     @override_settings(DEBUG=False)
     def test_public_page_lists_ready_tasks_without_identity(self):
         response = self.client.get('/authors/assignments/')

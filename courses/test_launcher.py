@@ -7,6 +7,7 @@ from django.views.decorators.http import require_GET, require_POST
 from courses.models import Task, TaskAttempt, AssignmentReviewConfirmation
 from courses.review_dates import REVIEW_CHANGE_DATES
 from courses.task_catalog import TASK_CATALOG, TEST_COURSE_NAME, TEST_STUDENT_CODE
+from courses.planned_assignments import PLANNED_ASSIGNMENTS
 from students.models import Student
 
 
@@ -26,7 +27,7 @@ def test_launcher(request):
     ).select_related('task').order_by('-datetime', '-pk')[:20]) if student else []
     confirmations = set(AssignmentReviewConfirmation.objects.filter(confirmed=True).values_list("task_code", flat=True))
     lessons = []
-    for number in sorted({definition.lesson for definition in TASK_CATALOG}):
+    for number in sorted({definition.lesson for definition in TASK_CATALOG} | {item.lesson for item in PLANNED_ASSIGNMENTS}):
         rows = []
         for definition in TASK_CATALOG:
             if definition.lesson != number:
@@ -38,7 +39,8 @@ def test_launcher(request):
                 'confirmed': definition.code in confirmations,
                 'can_launch': bool(student and seeded and definition.html_path),
             })
-        lessons.append({'number': number, 'tasks': rows})
+        lessons.append({'number': number, 'tasks': rows,
+                        'planned': [item for item in PLANNED_ASSIGNMENTS if item.lesson == number]})
 
     response = render(request, 'courses/test_launcher.html', {
         'student': student, 'student_code': TEST_STUDENT_CODE,

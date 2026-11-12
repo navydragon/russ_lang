@@ -15,6 +15,7 @@ urlpatterns = [
     path('excursion/highlight/check', views.excursion_highlight_check),
     path('story/check', views.story_check, name='story_check'),
     path('retelling/check', views.retelling_check, name='retelling_check'),
+    path('picture-question/check', views.picture_question_check, name='picture_question_check'),
     path('speaking/check', views.speaking_check, name='speaking_check'),
     path('speaking/complete', views.speaking_complete, name='speaking_complete'),
     path('reading/check', views.reading_check, name='reading_check'),

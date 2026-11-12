@@ -74,6 +74,15 @@
             </div>
           </article>
         {% endfor %}
+        {% for item in lesson.planned %}
+          <article>
+            <span class="number">Часть урока {{ item.source_number }} · Запланировано</span>
+            <h3>{{ item.name }}</h3>
+            <p>{{ item.student_action }}</p>
+            <p class="muted">{{ item.missing }}</p>
+            <span class="status">Страница ещё не создана</span>
+          </article>
+        {% endfor %}
       </div>
     </section>
   {% endfor %}

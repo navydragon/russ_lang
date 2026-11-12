@@ -5,6 +5,7 @@ from unittest.mock import patch
 from django.core.management import call_command
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import SimpleTestCase, TestCase, override_settings
+from django.contrib.sessions.backends.db import SessionStore
 
 from courses.models import TaskAttempt
 from courses.task_catalog import TEST_STUDENT_CODE
@@ -19,13 +20,13 @@ class ExcursionSourceTests(SimpleTestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(json.loads(b''.join(response.streaming_content))['questions'], SOURCE['questions'])
 
-    def test_full_text_and_six_questions_are_shared_by_three_tasks(self):
+    def test_full_text_and_four_questions_are_shared_by_three_tasks(self):
         self.assertIn('На метро каждый москвич экономит 240 часов в год', REFERENCE_TEXT)
         self.assertIn('Летом в метро 20 градусов', REFERENCE_TEXT)
-        self.assertEqual(len(SOURCE['questions']), 6)
+        self.assertEqual(len(SOURCE['questions']), 4)
         self.assertEqual(READING_TASKS['excursion_moscow']['max_duration_sec'], 300)
         self.assertEqual(READING_TASKS['excursion_moscow']['reference_text'], REFERENCE_TEXT)
-        self.assertEqual(TASKS['AI_7_4']['count'], 6)
+        self.assertEqual(TASKS['AI_7_4']['count'], 4)
 
     def test_highlight_targets_and_penalty(self):
         words, targets = words_and_targets()
@@ -56,14 +57,14 @@ class ExcursionEndpointTests(TestCase):
         self.assertTrue(response.json()['saved'])
         self.assertTrue(TaskAttempt.objects.filter(task__code='AI_7_2', score=100).exists())
 
-    def test_six_answer_run_normalizes_to_100_and_saves(self):
+    def test_four_answer_run_normalizes_to_100_and_saves(self):
         start = self.client.post('/api/university-questions/start', data=json.dumps({
             'task_code': 'AI_7_4', 'student_code': TEST_STUDENT_CODE,
         }), content_type='application/json').json()
-        self.assertEqual(start['word_count'], 6)
+        self.assertEqual(start['word_count'], 4)
         self.assertIsNone(start['current']['audio_path'])
         with patch('api.university_question_views.grade_answer') as grader:
-            for index in range(6):
+            for index in range(4):
                 grader.return_value = {'answer': f'Ответ {index}', 'score': 10,
                                        'content_points': 5, 'writing_points': 5}
                 response = self.client.post('/api/university-questions/answer', data=json.dumps({
@@ -75,6 +76,42 @@ class ExcursionEndpointTests(TestCase):
         self.assertEqual(state['score'], 100)
         self.assertTrue(state['saved'])
         self.assertTrue(TaskAttempt.objects.filter(task__code='AI_7_4', score=100).exists())
+
+    def test_seven_faculty_answers_and_old_sessions(self):
+        start = self.client.post('/api/university-questions/start', {
+            'task_code': 'AI_7_6', 'student_code': TEST_STUDENT_CODE,
+        }, content_type='application/json').json()
+        self.assertEqual(start['word_count'], 7)
+        with patch('api.university_question_views.grade_answer') as grader:
+            for index in range(7):
+                grader.return_value = {'answer': 'Ответ', 'question': 'Вопрос', 'score': 10}
+                response = self.client.post('/api/university-questions/answer', {
+                    'run_id': start['run_id'], 'index': index, 'answer': 'Ответ',
+                }, content_type='application/json')
+                self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()['score'], 100)
+        self.assertTrue(TaskAttempt.objects.filter(task__code='AI_7_6', score=100).exists())
+
+        for completed in (False, True):
+            store = SessionStore()
+            store['ai_university_questions'] = {
+                'task_code': 'AI_7_4', 'student_code': TEST_STUDENT_CODE,
+                'words': list(range(1, 7)),
+                'answers': [{'answer': 'Ответ', 'question': 'Старый вопрос', 'score': 10}] * (6 if completed else 1),
+                'saved': completed,
+            }
+            store.create()
+            response = self.client.get('/api/university-questions/state', {'run_id': store.session_key})
+            if completed:
+                self.assertEqual(response.json()['score'], 100)
+                self.assertTrue(response.json()['completed'])
+            else:
+                self.assertEqual(response.status_code, 409)
+                self.assertTrue(response.json()['restart_required'])
+                response = self.client.post('/api/university-questions/answer', {
+                    'run_id': store.session_key, 'index': 1, 'answer': 'Ответ',
+                }, content_type='application/json')
+                self.assertEqual(response.status_code, 409)
 
     def test_reading_route_and_completion_save_under_ai_7_3(self):
         result = {'ok': True, 'score': 83, 'recognized': 'Экскурсия по Москве',

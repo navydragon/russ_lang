@@ -72,7 +72,15 @@ LESSON4_FREE_TIME_DIALOGUE = 'Что вы делаете в свободное �
 FACULTY_SOURCE = json.loads((Path(__file__).resolve().parent.parent / 'tasks/lesson7/faculty_text.json').read_text(encoding='utf-8'))
 FACULTY_REFERENCE_TEXT = '\n\n'.join(FACULTY_SOURCE['paragraphs'])
 
+LESSON7_NEW_SOURCES = {name: json.loads((Path(__file__).resolve().parent.parent / 'tasks/lesson7' / (name + '_source.json')).read_text(encoding='utf-8')) for name in ('vdnh', 'fairytale', 'gagarin')}
+
 READING_TASKS: dict[str, dict[str, Any]] = {
+    'lesson5_classroom_reading': {'title': 'В классе', 'reference_text': ' '.join(json.loads((Path(__file__).resolve().parent.parent / 'tasks/lesson5/classroom_reading/source.json').read_text(encoding='utf-8'))['paragraphs']), 'max_duration_sec': 120.0, 'coverage_ratio_min': 0.60, 'sentence_endings': '.?!', 'max_audio_bytes': 20 * 1024 * 1024},
+    'lesson5_juan_carlos_reading': {'title': 'Хуан и Карлос', 'reference_text': ' '.join(json.loads((Path(__file__).resolve().parent.parent / 'tasks/lesson5/juan_carlos_reading/source.json').read_text(encoding='utf-8'))['paragraphs']), 'max_duration_sec': 180.0, 'coverage_ratio_min': 0.60, 'sentence_endings': '.?!', 'max_audio_bytes': 20 * 1024 * 1024},
+    'lesson5_family_reading': {'title': 'Наша семья', 'reference_text': ' '.join(json.loads((Path(__file__).resolve().parent.parent / 'tasks/lesson5/family_reading/source.json').read_text(encoding='utf-8'))['paragraphs']), 'max_duration_sec': 180.0, 'coverage_ratio_min': 0.60, 'sentence_endings': '.?!', 'max_audio_bytes': 20 * 1024 * 1024},
+    'lesson5_parrot_reading': {'title': 'Попугай', 'reference_text': ' '.join(json.loads((Path(__file__).resolve().parent.parent / 'tasks/lesson5/parrot_reading/source.json').read_text(encoding='utf-8'))['paragraphs']), 'max_duration_sec': 180.0, 'coverage_ratio_min': 0.60, 'sentence_endings': '.?!', 'max_audio_bytes': 20 * 1024 * 1024},
+    'lesson5_thomas_edward_reading': {'title': 'Томас и Эдвард — студенты', 'reference_text': ' '.join(json.loads((Path(__file__).resolve().parent.parent / 'tasks/lesson5/thomas_edward_reading/source.json').read_text(encoding='utf-8'))['paragraphs']), 'max_duration_sec': 180.0, 'coverage_ratio_min': 0.60, 'sentence_endings': '.?!', 'max_audio_bytes': 20 * 1024 * 1024},
+    **{f'lesson7_{name}_reading': {'title': title, 'reference_text': '\n'.join(LESSON7_NEW_SOURCES[name]['paragraphs']), 'max_duration_sec': 120.0, 'coverage_ratio_min': 0.60, 'sentence_endings': '.?!', 'max_audio_bytes': 20 * 1024 * 1024} for name, title in (('vdnh', 'ВДНХ'), ('fairytale', 'Богач и бедняк'), ('gagarin', 'Юрий Гагарин'))},
     'faculty_evening': {'title': 'Вечер на факультете', 'reference_text': FACULTY_REFERENCE_TEXT, 'max_duration_sec': 240.0, 'coverage_ratio_min': 0.60, 'sentence_endings': '.?!', 'max_audio_bytes': 40 * 1024 * 1024},
     'excursion_moscow': {
         'title': 'Экскурсия по Москве', 'reference_text': EXCURSION_REFERENCE_TEXT,
@@ -475,6 +483,27 @@ def check_reading_audio(
         if corrected_output is not None:
             payload['_llm_output'] = corrected_output
 
+    if task_id.startswith('lesson7_') and not extract_recognized_text(payload) and not extract_word_timestamps(payload):
+        raise ValueError('Речь не распознана. Запишите чтение ещё раз.')
+    if task_id == 'lesson7_gagarin_reading':
+        numeric_words = {
+            '12': 'двенадцатого', '1961': 'тысяча девятьсот шестьдесят первого',
+            '9': 'девять', '09': 'девять', '7': 'семь', '07': 'семь',
+            '108': 'сто восемь', '27': 'двадцать седьмого',
+            '1968': 'тысяча девятьсот шестьдесят восьмого',
+        }
+        score_payload = dict(payload)
+        score_payload['text'] = re.sub(r'\b\d+\b', lambda m: numeric_words.get(m.group(), m.group()), extract_recognized_text(payload))
+        expanded = []
+        for item in extract_word_timestamps(payload):
+            parts = numeric_words.get(item['word'], item['word']).split()
+            start, end = float(item['start']), float(item['end'])
+            for index, word in enumerate(parts):
+                expanded.append({'word': word, 'start': start + (end - start) * index / len(parts),
+                                 'end': start + (end - start) * (index + 1) / len(parts)})
+        if expanded:
+            score_payload['words'] = expanded
+        payload = score_payload
     corrected = extract_corrected_text(payload)
     payload['duration'] = measured_duration
     result = score_reading_from_payload(

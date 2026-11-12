@@ -1,0 +1,12 @@
+<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>AI_7_12 — Изложение «Вечер на факультете»</title><link rel="stylesheet" href="../excursion.css"></head><body>
+<header><div class="tag"># ПИСЬМО · УРОК 7 · AI_7_12</div><h1>Изложение «Вечер на факультете»</h1><p>Прочитайте текст и письменно передайте его содержание своими словами. Зачёт — от 60 баллов.</p></header>
+<main><section class="card"><details><summary>Исходный текст</summary><div id="source" class="source"></div></details><form id="answerForm"><label for="answer">Ваш ответ</label><textarea id="answer" rows="12" required style="width:100%;font:inherit"></textarea><button id="check" type="submit">Проверить</button></form><p id="status" role="status"></p></section><aside class="card"><h2>Результат</h2><div id="result" class="result" aria-live="polite">—</div></aside></main>
+<script src="../../api-config.js"></script><script src="../faculty.js"></script><script>
+const API = window.ANALYZER_CONFIG.apiBaseUrl; const TASK_CODE = "AI_7_12"; const TASK_ID = "lesson7_faculty_writing";
+fetch("../faculty_text.json").then(response => { if (!response.ok) throw new Error("Не удалось загрузить текст."); return response.json(); }).then(data => renderParagraphs(document.getElementById("source"), data.paragraphs)).catch(error => document.getElementById("status").textContent = error.message);
+document.getElementById("answerForm").addEventListener("submit", async event => {
+ event.preventDefault(); const button=document.getElementById("check"), status=document.getElementById("status"), result=document.getElementById("result"), answer=document.getElementById("answer").value.trim(); if (!answer) return;
+ button.disabled=true; status.textContent="Проверяем ответ…";
+ try { const response=await fetch(API+"/api/story/check", {method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({task_id:TASK_ID,task_code:TASK_CODE,student_code:studentCode(),text:answer})}); const data=await response.json(); if(!response.ok) throw new Error(data.error || "Ошибка проверки"); result.textContent=`${data.score} / 100 — ${data.ok ? "Зачёт" : "Незачёт"}\n${data.feedback || ""}\n${data.quality_notes || ""}\n${(data.recommendations || []).join("\n")}\n${data.saved ? "Результат сохранён." : "Результат не сохранён. Откройте задание со страницы ученика."}`; status.textContent="Проверка завершена"; } catch(error) {status.textContent=error.message;} finally {button.disabled=false;}
+});
+</script></body></html>

@@ -12,21 +12,21 @@
     "semantic_hash": "4dcbf0e464c49bedf2fd1025b67a27f3"
   },
   "api/story_llm.py": {
-    "mtime": 1792960349.9266713,
-    "seen": 1792960423.5495253,
-    "ast_hash": "a373d4226799b13d799e2a4eef750c48",
+    "mtime": 1794485991.6304214,
+    "seen": 1794486390.8546565,
+    "ast_hash": "aebd70099cc7a716261da91f3c5a46b6",
     "semantic_hash": ""
   },
   "api/urls.py": {
-    "mtime": 1792946767.3266158,
-    "seen": 1792947085.9495227,
-    "ast_hash": "5162c986c4c3343616ab051da94ddecb",
+    "mtime": 1794486022.222444,
+    "seen": 1794486390.8546565,
+    "ast_hash": "1bd9390e0abe95542b7624f200ffde3d",
     "semantic_hash": ""
   },
   "api/views.py": {
-    "mtime": 1792944246.0481777,
-    "seen": 1792944332.3673518,
-    "ast_hash": "f6bb1db974400a1c4d9727a975b00615",
+    "mtime": 1794486052.1764355,
+    "seen": 1794486390.8546565,
+    "ast_hash": "872fff1f9f141d1b195d2b4f4a9e6b76",
     "semantic_hash": ""
   },
   "config/__init__.py": {
@@ -42,15 +42,15 @@
     "semantic_hash": "f10f8c95e84fe99e7da5afc89d00ecea"
   },
   "config/settings.py": {
-    "mtime": 1792919150.8774955,
-    "seen": 1792919413.584614,
-    "ast_hash": "2eab59250552568ea68fc7f724838284",
+    "mtime": 1793091078.7376947,
+    "seen": 1793092089.6774457,
+    "ast_hash": "db20fb7661ecc167e432e4fdb11023b2",
     "semantic_hash": ""
   },
   "config/urls.py": {
-    "mtime": 1792922037.4966803,
-    "seen": 1792922278.8996124,
-    "ast_hash": "e7fdba8baa7a9f6556a5c311138f08f0",
+    "mtime": 1794384623.8031898,
+    "seen": 1794384647.8814437,
+    "ast_hash": "3fa7530e8b2b1ca2d346d6e92312ec87",
     "semantic_hash": ""
   },
   "config/wsgi.py": {
@@ -66,10 +66,10 @@
     "semantic_hash": "d41d8cd98f00b204e9800998ecf8427e"
   },
   "courses/admin.py": {
-    "mtime": 1792919150.879505,
-    "seen": 1792919413.584614,
-    "ast_hash": "78880c15514d7f5ceb105702ccf28918",
-    "semantic_hash": "78880c15514d7f5ceb105702ccf28918"
+    "mtime": 1793091078.7376947,
+    "seen": 1793092089.6774457,
+    "ast_hash": "d04191e7ea1141f92894f585ad25e345",
+    "semantic_hash": ""
   },
   "courses/apps.py": {
     "mtime": 1792919150.8805094,
@@ -114,10 +114,10 @@
     "semantic_hash": "d41d8cd98f00b204e9800998ecf8427e"
   },
   "courses/models.py": {
-    "mtime": 1792919150.8830016,
-    "seen": 1792919413.584614,
-    "ast_hash": "8a2201684cff7fda44d6e8bf8e3ea803",
-    "semantic_hash": "8a2201684cff7fda44d6e8bf8e3ea803"
+    "mtime": 1794305976.3919978,
+    "seen": 1794306132.7346013,
+    "ast_hash": "1c051675b0d181f017169d7670565c46",
+    "semantic_hash": ""
   },
   "courses/quiz_report/__init__.py": {
     "mtime": 1792919150.8830016,
@@ -306,10 +306,10 @@
     "semantic_hash": "ffed530b23c368273f1126bcc6e96a6c"
   },
   "scripts/deploy.sh": {
-    "mtime": 1792919150.936618,
-    "seen": 1792919413.584614,
-    "ast_hash": "cf51ea3cf5bbb16f8210aa34842f1c7d",
-    "semantic_hash": "cf51ea3cf5bbb16f8210aa34842f1c7d"
+    "mtime": 1793272967.7091749,
+    "seen": 1793274274.2204282,
+    "ast_hash": "5f7c8ce5320a7a5a0878255eaae1a20f",
+    "semantic_hash": ""
   },
   "students/__init__.py": {
     "mtime": 1792919150.936618,
@@ -330,10 +330,10 @@
     "semantic_hash": "099fb5083e3e3066385e81ab08ccef77"
   },
   "students/forms.py": {
-    "mtime": 1792919150.9380407,
-    "seen": 1792919413.584614,
-    "ast_hash": "7d37d338faaaf6354f5e62c149e77e40",
-    "semantic_hash": "7d37d338faaaf6354f5e62c149e77e40"
+    "mtime": 1793091078.7376947,
+    "seen": 1793092089.6774457,
+    "ast_hash": "5fa50682370fe3aab6784bf43c9adaef",
+    "semantic_hash": ""
   },
   "students/management/__init__.py": {
     "mtime": 1792919150.9380407,
@@ -390,9 +390,9 @@
     "semantic_hash": "d41d8cd98f00b204e9800998ecf8427e"
   },
   "students/models.py": {
-    "mtime": 1792919150.940505,
-    "seen": 1792919413.584614,
-    "ast_hash": "4734e5df0cb518bbe42e23136d9696cf",
+    "mtime": 1793091078.751059,
+    "seen": 1793092089.6774457,
+    "ast_hash": "4456e2260beae961cb99fa59c4435d67",
     "semantic_hash": ""
   },
   "students/tests.py": {
@@ -402,15 +402,15 @@
     "semantic_hash": "e08f0582500f6562bf0a931ef9503b39"
   },
   "students/urls.py": {
-    "mtime": 1792919150.9478126,
-    "seen": 1792919413.584614,
-    "ast_hash": "1ec072127338b9b2223a9aeb51d6e2b1",
+    "mtime": 1793091078.755548,
+    "seen": 1793092089.6774457,
+    "ast_hash": "4cf17f3d0bdc5c6251041104ed94e56a",
     "semantic_hash": ""
   },
   "students/views.py": {
-    "mtime": 1792919150.9478126,
-    "seen": 1792919413.584614,
-    "ast_hash": "41f06007a2d2df669fe10be6cd39dbb7",
+    "mtime": 1793091078.755548,
+    "seen": 1793092089.6774457,
+    "ast_hash": "995139228fd4181f69160b52fcae4f2d",
     "semantic_hash": ""
   },
   "tasks/api-config.js": {
@@ -438,9 +438,9 @@
     "semantic_hash": "bfbb2d60873663d654018424e3cf8516"
   },
   "users/forms.py": {
-    "mtime": 1792919150.9639812,
-    "seen": 1792919413.584614,
-    "ast_hash": "e77851b5cfa829b0c69e92c844f2f2b1",
+    "mtime": 1793475507.687364,
+    "seen": 1793475542.0583026,
+    "ast_hash": "ac7c32da1599e13edbc2e69faaef18b9",
     "semantic_hash": ""
   },
   "users/migrations/0001_initial.py": {
@@ -480,10 +480,10 @@
     "semantic_hash": ""
   },
   "users/tests.py": {
-    "mtime": 1792919150.9677963,
-    "seen": 1792919413.584614,
-    "ast_hash": "e08f0582500f6562bf0a931ef9503b39",
-    "semantic_hash": "e08f0582500f6562bf0a931ef9503b39"
+    "mtime": 1793475507.6883707,
+    "seen": 1793475542.0583026,
+    "ast_hash": "5d43ba28d62fa6426207daff21ac34a1",
+    "semantic_hash": ""
   },
   "users/urls.py": {
     "mtime": 1792919150.9677963,
@@ -492,21 +492,21 @@
     "semantic_hash": ""
   },
   "users/views.py": {
-    "mtime": 1792919150.9688013,
-    "seen": 1792919413.584614,
-    "ast_hash": "2abbc464867a40445fd0272a23ded648",
+    "mtime": 1793475507.6897829,
+    "seen": 1793475542.058816,
+    "ast_hash": "99af24c7fd3cf531ca7832b78609b449",
     "semantic_hash": ""
   },
   "README.md": {
-    "mtime": 1792919150.8707376,
-    "seen": 1792919413.584614,
-    "ast_hash": "6218bd5909603f3ecb0c80f918ca56fa",
-    "semantic_hash": "6218bd5909603f3ecb0c80f918ca56fa"
+    "mtime": 1793551980.5686698,
+    "seen": 1793552047.4926834,
+    "ast_hash": "84a00769c9dcb125f1323dd1077cd341",
+    "semantic_hash": ""
   },
   "requirements.txt": {
-    "mtime": 1792934411.3800726,
-    "seen": 1792934898.2582066,
-    "ast_hash": "382cb0a3623c4b267ca4065540fa4446",
+    "mtime": 1794304211.251377,
+    "seen": 1794304443.0093281,
+    "ast_hash": "26f2c29f9aada7c4a7f1c3c3165c3b86",
     "semantic_hash": ""
   },
   "students/templates/base.html": {
@@ -648,16 +648,16 @@
     "semantic_hash": "c9bd433179d31f1a32d41b2d488b4234"
   },
   "students/templates/students/group_form.html": {
-    "mtime": 1792919150.9457536,
-    "seen": 1792919413.584614,
-    "ast_hash": "e47398e8192827ec5c6598b5f46285b8",
-    "semantic_hash": "e47398e8192827ec5c6598b5f46285b8"
+    "mtime": 1793091078.751059,
+    "seen": 1793092089.6774457,
+    "ast_hash": "e24d892e505c2739e909c92ce20b883b",
+    "semantic_hash": ""
   },
   "students/templates/students/group_management.html": {
-    "mtime": 1792919150.946267,
-    "seen": 1792919413.584614,
-    "ast_hash": "78c2104382340f0f6f955cc4f40861c8",
-    "semantic_hash": "78c2104382340f0f6f955cc4f40861c8"
+    "mtime": 1793091078.751059,
+    "seen": 1793092089.6774457,
+    "ast_hash": "a389444dbaf17f5069c375d3445f0fbb",
+    "semantic_hash": ""
   },
   "students/templates/students/group_results.html": {
     "mtime": 1792919150.946267,
@@ -666,10 +666,10 @@
     "semantic_hash": "edb93ff624c6f88c6ea2e18dbbbf2fde"
   },
   "students/templates/students/group_students.html": {
-    "mtime": 1792919150.9467862,
-    "seen": 1792919413.584614,
-    "ast_hash": "332ecc690e07ee5b5538144552c19698",
-    "semantic_hash": "332ecc690e07ee5b5538144552c19698"
+    "mtime": 1793091078.751059,
+    "seen": 1793092089.6774457,
+    "ast_hash": "420caa2624d814f268518e9d3ce91e5a",
+    "semantic_hash": ""
   },
   "students/templates/students/login.html": {
     "mtime": 1792919150.9467862,
@@ -744,10 +744,10 @@
     "semantic_hash": "dca6b1d3a9f701f8bdf53b1f77c1aaf0"
   },
   "users/templates/users/user_form.html": {
-    "mtime": 1792919150.9677963,
-    "seen": 1792919413.584614,
-    "ast_hash": "e7b8e72eda02a669058475f8ac7aa100",
-    "semantic_hash": "e7b8e72eda02a669058475f8ac7aa100"
+    "mtime": 1793475507.6883707,
+    "seen": 1793475542.058816,
+    "ast_hash": "74336532a95ec610409319e661a6bc24",
+    "semantic_hash": ""
   },
   "users/templates/users/user_management.html": {
     "mtime": 1792919150.9677963,
@@ -768,27 +768,27 @@
     "semantic_hash": ""
   },
   "api/reading_check.py": {
-    "mtime": 1792943673.27587,
-    "seen": 1792943768.9749444,
-    "ast_hash": "a50a30ff9e848f944732492fa90b6ce9",
+    "mtime": 1794484884.2903771,
+    "seen": 1794485169.211539,
+    "ast_hash": "414717735f8a3db947fd1152cfbf3cca",
     "semantic_hash": ""
   },
   "api/speaking_nexara.py": {
-    "mtime": 1792919150.8727062,
-    "seen": 1792919413.584614,
-    "ast_hash": "a517d7489057a1df6deab318a49f1685",
+    "mtime": 1793091078.7349713,
+    "seen": 1793092089.6774457,
+    "ast_hash": "505118d0cbcc17723cb40f934ae8133c",
     "semantic_hash": ""
   },
   "config/task_pages.py": {
-    "mtime": 1792946767.3271353,
-    "seen": 1792947085.9495227,
-    "ast_hash": "126c9f1edfde51330ee984d252cfa149",
+    "mtime": 1793525004.135428,
+    "seen": 1793525378.4084265,
+    "ast_hash": "0acbbb7bdddad0938a2081c01ffc07b1",
     "semantic_hash": ""
   },
   "update_prod.sh": {
-    "mtime": 1792919150.9629748,
-    "seen": 1792919413.584614,
-    "ast_hash": "bc9b5bd78afcf0482fc6f4bffb19105b",
+    "mtime": 1793272967.710177,
+    "seen": 1793274274.2204282,
+    "ast_hash": "3b47deb51492591ea8f1c5628d5bc823",
     "semantic_hash": ""
   },
   ".agents/skills/openspec-apply-change/SKILL.md": {
@@ -1086,9 +1086,9 @@
     "semantic_hash": ""
   },
   "tasks/README.md": {
-    "mtime": 1792960390.534949,
-    "seen": 1792960423.5506094,
-    "ast_hash": "3ff2e73211a59e98423890df6525fac0",
+    "mtime": 1794490726.5822246,
+    "seen": 1794490809.2900069,
+    "ast_hash": "1eed1d2e7e5530d6bb165d4db520e97e",
     "semantic_hash": ""
   },
   "tasks/lesson1/city_speaking/city_speaking.html": {
@@ -1098,9 +1098,9 @@
     "semantic_hash": ""
   },
   "tasks/lesson1/class_speaking/class_speaking.html": {
-    "mtime": 1792934582.9958582,
-    "seen": 1792934898.2582066,
-    "ast_hash": "7549f8664c88fd0218a59b234d7ee637",
+    "mtime": 1794302104.5706506,
+    "seen": 1794302124.1730664,
+    "ast_hash": "250469e82ee96d80ba4a66bad9bef824",
     "semantic_hash": ""
   },
   "tasks/lesson1/family_story/family_story.html": {
@@ -1122,9 +1122,9 @@
     "semantic_hash": ""
   },
   "tasks/lesson3/university_reading/university_reading.html": {
-    "mtime": 1792936841.9661036,
-    "seen": 1792936874.976491,
-    "ast_hash": "a6f92b62351a3a28e8d34a450720260f",
+    "mtime": 1794302169.6463425,
+    "seen": 1794302187.5160384,
+    "ast_hash": "7b5c8db1d86456589c0800694df847eb",
     "semantic_hash": ""
   },
   "tasks/lesson1/city_speaking/bg.jpg": {
@@ -1212,33 +1212,33 @@
     "semantic_hash": ""
   },
   "tasks/AI_ASSIGNMENTS.md": {
-    "mtime": 1792960390.5339382,
-    "seen": 1792960423.5506094,
-    "ast_hash": "bbc50e8ab2bff7aaa5373afc4a240ccd",
+    "mtime": 1794490747.2021642,
+    "seen": 1794490809.2900069,
+    "ast_hash": "b70ab3c1652af4cbe3c4635952ec44fd",
     "semantic_hash": ""
   },
   "courses/management/commands/seed_ai_test_data.py": {
-    "mtime": 1792942057.358868,
-    "seen": 1792942161.2012775,
-    "ast_hash": "c7d23ab0a4ac11709f97efdd3defaaf8",
+    "mtime": 1793522278.699109,
+    "seen": 1793522738.27899,
+    "ast_hash": "8ee52fdb983d53dfef2c9b4747557fe6",
     "semantic_hash": ""
   },
   "courses/task_catalog.py": {
-    "mtime": 1792960349.9281423,
-    "seen": 1792960423.5495253,
-    "ast_hash": "faffa0622657c0d4a14c21553a9fafbc",
+    "mtime": 1794490670.6868272,
+    "seen": 1794490809.28786,
+    "ast_hash": "b69d065d116b4cdf50270ca55e22fb24",
     "semantic_hash": ""
   },
   "courses/test_launcher.py": {
-    "mtime": 1792942057.360377,
-    "seen": 1792942161.2012775,
-    "ast_hash": "fa4b20185c81c4faf2b67f06ad8c1734",
+    "mtime": 1794474264.3701465,
+    "seen": 1794474331.2636342,
+    "ast_hash": "9bbf7c7dcf10a4fa49e605752bebc540",
     "semantic_hash": ""
   },
   "courses/tests/test_ai_test_launcher.py": {
-    "mtime": 1792960349.9300287,
-    "seen": 1792960423.5495253,
-    "ast_hash": "f297d19ef9596c4b7f0968a6013f5d14",
+    "mtime": 1794477559.8437808,
+    "seen": 1794477882.3978448,
+    "ast_hash": "ad045bda5afdd346a01c9813e58cee79",
     "semantic_hash": ""
   },
   "scripts/test_api_config.cjs": {
@@ -1248,9 +1248,9 @@
     "semantic_hash": ""
   },
   "courses/templates/courses/test_launcher.html": {
-    "mtime": 1792942057.3593738,
-    "seen": 1792942161.2012775,
-    "ast_hash": "f511bc1a5173314b972a6606cb91ebf1",
+    "mtime": 1794474265.307769,
+    "seen": 1794474331.2646484,
+    "ast_hash": "9190eb46ab2302af804b3cd593340bf6",
     "semantic_hash": ""
   },
   "config/course_sync_settings.py": {
@@ -1260,21 +1260,21 @@
     "semantic_hash": ""
   },
   "courses/course_sync.py": {
-    "mtime": 1792934530.6140208,
-    "seen": 1792934898.2571735,
-    "ast_hash": "0156ade0e29977b3093f0536461337a4",
+    "mtime": 1793551908.610253,
+    "seen": 1793552047.491681,
+    "ast_hash": "a8a69cc8f952e365d8aa7dbc1e0bec50",
     "semantic_hash": ""
   },
   "courses/management/commands/sync_russian_course.py": {
-    "mtime": 1792934530.6156335,
-    "seen": 1792934898.2571735,
-    "ast_hash": "18047bc182fca3735536953443d4f05a",
+    "mtime": 1793551908.9367406,
+    "seen": 1793552047.491681,
+    "ast_hash": "1daa9dd419b5b4f6b0aaf89ac8d98ab1",
     "semantic_hash": ""
   },
   "courses/tests/test_course_sync.py": {
-    "mtime": 1792942093.9849243,
-    "seen": 1792942161.2012775,
-    "ast_hash": "8cf8f2111e2757a2889bc450fd092117",
+    "mtime": 1794477559.8453002,
+    "seen": 1794477882.3978448,
+    "ast_hash": "96d2500a97204aa4d3dc6b428495f7a1",
     "semantic_hash": ""
   },
   "courses/COURSE_SYNC.md": {
@@ -1284,15 +1284,15 @@
     "semantic_hash": ""
   },
   "api/tests.py": {
-    "mtime": 1792943716.404351,
-    "seen": 1792943768.9749444,
-    "ast_hash": "fca546dc7c4a7335d8b3b253d43153ee",
+    "mtime": 1794304324.049848,
+    "seen": 1794304443.0088162,
+    "ast_hash": "0607ac091818354daab2d8b4ed49eefd",
     "semantic_hash": ""
   },
   "tasks/lesson2/photo_album_reading/photo_album_reading.html": {
-    "mtime": 1792936746.75264,
-    "seen": 1792936779.711238,
-    "ast_hash": "854923b8ad354d36ea7f0bfaded98302",
+    "mtime": 1794302533.5438294,
+    "seen": 1794302558.8075209,
+    "ast_hash": "d0eb9814e83509f19b933f318f483f6f",
     "semantic_hash": ""
   },
   "tasks/lesson2/photo_album_reading/bg.jpg": {
@@ -1326,15 +1326,15 @@
     "semantic_hash": ""
   },
   "api/retelling_check.py": {
-    "mtime": 1792960349.925656,
-    "seen": 1792960423.5495253,
-    "ast_hash": "6a7a689b10fa76a373caa6cc3b1e98e9",
+    "mtime": 1794477400.0430992,
+    "seen": 1794477882.3973396,
+    "ast_hash": "d54780ccc15433026cc34ea16c09ee80",
     "semantic_hash": ""
   },
   "api/test_retelling.py": {
-    "mtime": 1792960349.929488,
-    "seen": 1792960423.5495253,
-    "ast_hash": "cea6d67ab7299bfba1887da08f7e4a71",
+    "mtime": 1794470702.3795686,
+    "seen": 1794470758.628194,
+    "ast_hash": "a9ae3e1b5fb7dd9d62fcc003f48baa6d",
     "semantic_hash": ""
   },
   "tasks/lesson3/university_retelling/university_retelling.html": {
@@ -1380,9 +1380,9 @@
     "semantic_hash": ""
   },
   "tasks/lesson3/moscow_reading/moscow_reading.html": {
-    "mtime": 1792943674.635132,
-    "seen": 1792943768.9749444,
-    "ast_hash": "5f6a62f9f9489e18c3788c4b2c847dc6",
+    "mtime": 1794302169.641835,
+    "seen": 1794302187.5160384,
+    "ast_hash": "688aaa3f97ffd083a7f2c2fdf7d3c405",
     "semantic_hash": ""
   },
   "tasks/lesson3/moscow_reading/bg.jpg": {
@@ -1422,9 +1422,9 @@
     "semantic_hash": ""
   },
   "tasks/lesson3/moscow_retelling/moscow_retelling.html": {
-    "mtime": 1792944246.7335374,
-    "seen": 1792944332.3673518,
-    "ast_hash": "49f773630f51a7397a551a84afa947f6",
+    "mtime": 1794305259.396843,
+    "seen": 1794306132.7356064,
+    "ast_hash": "7c022df085d059f33e81a64f793a98ae",
     "semantic_hash": ""
   },
   "tasks/lesson3/moscow_retelling/bg.jpg": {
@@ -2055,6 +2055,1536 @@
     "mtime": 1792960349.9266713,
     "seen": 1792960423.5506094,
     "ast_hash": "a03ed77883b3d9229a44216fb091188c",
+    "semantic_hash": ""
+  },
+  "api/test_lesson4_reading.py": {
+    "mtime": 1794304491.8574123,
+    "seen": 1794304511.772864,
+    "ast_hash": "24a39bfc12ebc96aca82d73060d2f2f0",
+    "semantic_hash": ""
+  },
+  "config/roster_test_settings.py": {
+    "mtime": 1793091078.7376947,
+    "seen": 1793092089.6774457,
+    "ast_hash": "00718d84ba10622964c40429e9e00196",
+    "semantic_hash": ""
+  },
+  "config/roster_test_urls.py": {
+    "mtime": 1793091078.7376947,
+    "seen": 1793092089.6774457,
+    "ast_hash": "1a80993f340aa1e703bbf8184779b9e6",
+    "semantic_hash": ""
+  },
+  "courses/migrations/0002_course_websoft_id.py": {
+    "mtime": 1793091078.7376947,
+    "seen": 1793092089.6774457,
+    "ast_hash": "22a70ab30e9d5ada65ebe5bd41501019",
+    "semantic_hash": ""
+  },
+  "courses/tests/test_websoft_binding.py": {
+    "mtime": 1793091078.7376947,
+    "seen": 1793092089.6774457,
+    "ast_hash": "d5d8a004f3ac97df261aa81a9b991091",
+    "semantic_hash": ""
+  },
+  "courses/websoft.py": {
+    "mtime": 1793091078.7376947,
+    "seen": 1793092089.6774457,
+    "ast_hash": "aff760b95871c11f2cd4dd8c0ee9fedf",
+    "semantic_hash": ""
+  },
+  "scripts/check_group_course_websoft.py": {
+    "mtime": 1793091078.7376947,
+    "seen": 1793092089.6774457,
+    "ast_hash": "946d64e095e762e848e20e98eb484d0c",
+    "semantic_hash": ""
+  },
+  "scripts/check_roster_websoft.py": {
+    "mtime": 1793091078.7376947,
+    "seen": 1793092089.6774457,
+    "ast_hash": "a07f6d3dddd60c880d515c99aed81937",
+    "semantic_hash": ""
+  },
+  "students/importing.py": {
+    "mtime": 1793091078.7376947,
+    "seen": 1793092089.6774457,
+    "ast_hash": "15819f7378099e4da8a0260f370c7390",
+    "semantic_hash": ""
+  },
+  "students/management_views.py": {
+    "mtime": 1793091078.7376947,
+    "seen": 1793092089.6774457,
+    "ast_hash": "1b8796c6fe137fddf9ab1f556adad798",
+    "semantic_hash": ""
+  },
+  "students/migrations/0006_portal_roster.py": {
+    "mtime": 1793091078.7376947,
+    "seen": 1793092089.6774457,
+    "ast_hash": "d30a4785bcebbb893d274d6c0b18c690",
+    "semantic_hash": ""
+  },
+  "students/migrations/0007_group_courses.py": {
+    "mtime": 1793091078.751059,
+    "seen": 1793092089.6774457,
+    "ast_hash": "6f6840b4d7b36c48bf703f99e9d8fc4a",
+    "semantic_hash": ""
+  },
+  "students/portal.py": {
+    "mtime": 1793091078.751059,
+    "seen": 1793092089.6774457,
+    "ast_hash": "ab7e720ab05f0a9ba74416be91758ca4",
+    "semantic_hash": ""
+  },
+  "students/roster.py": {
+    "mtime": 1793091078.751059,
+    "seen": 1793092089.6774457,
+    "ast_hash": "dbb8a772c76f8447ea4a19f12619880d",
+    "semantic_hash": ""
+  },
+  "students/test_course_enrollment.py": {
+    "mtime": 1793091078.7549322,
+    "seen": 1793092089.6774457,
+    "ast_hash": "1bd235d61da7461b550270e94882044d",
+    "semantic_hash": ""
+  },
+  "students/test_roster.py": {
+    "mtime": 1793091078.755548,
+    "seen": 1793092089.6774457,
+    "ast_hash": "96c55b3ed447892de500bdcda075e6f7",
+    "semantic_hash": ""
+  },
+  "tasks/lesson4/university_reading/source.json": {
+    "mtime": 1793091737.5486507,
+    "seen": 1793092089.6774457,
+    "ast_hash": "3fe17bd0b19f94ccb15fb43ca565d9e8",
+    "semantic_hash": ""
+  },
+  "openspec/changes/group-course-enrollment/.openspec.yaml": {
+    "mtime": 1793091078.7376947,
+    "seen": 1793092089.6774457,
+    "ast_hash": "eaab9a99897a1d46ef58244b6e364668",
+    "semantic_hash": ""
+  },
+  "openspec/changes/group-course-enrollment/design.md": {
+    "mtime": 1793091078.7376947,
+    "seen": 1793092089.6774457,
+    "ast_hash": "c724c7d0984b32840f12ef115f8ce0b8",
+    "semantic_hash": ""
+  },
+  "openspec/changes/group-course-enrollment/proposal.md": {
+    "mtime": 1793091078.7376947,
+    "seen": 1793092089.6774457,
+    "ast_hash": "bf89e3e9ccda0bfbf95fa08884c9b124",
+    "semantic_hash": ""
+  },
+  "openspec/changes/group-course-enrollment/specs/group-course-enrollment/spec.md": {
+    "mtime": 1793091078.7376947,
+    "seen": 1793092089.6774457,
+    "ast_hash": "f5f92c7aa0d22f382a4a6f681089c472",
+    "semantic_hash": ""
+  },
+  "openspec/changes/group-course-enrollment/tasks.md": {
+    "mtime": 1793091078.7376947,
+    "seen": 1793092089.6774457,
+    "ast_hash": "15251cde601559e4fe0ee06149ffd41a",
+    "semantic_hash": ""
+  },
+  "openspec/changes/group-course-enrollment/verification.md": {
+    "mtime": 1793091078.7376947,
+    "seen": 1793092089.6774457,
+    "ast_hash": "ded7c2dfed4a5472d959551bc2261f8b",
+    "semantic_hash": ""
+  },
+  "openspec/changes/portal-group-student-management/.openspec.yaml": {
+    "mtime": 1793091078.7376947,
+    "seen": 1793092089.6774457,
+    "ast_hash": "eaab9a99897a1d46ef58244b6e364668",
+    "semantic_hash": ""
+  },
+  "openspec/changes/portal-group-student-management/design.md": {
+    "mtime": 1793091078.7376947,
+    "seen": 1793092089.6774457,
+    "ast_hash": "df71968fcaeb3a9a88186c4a7fda980b",
+    "semantic_hash": ""
+  },
+  "openspec/changes/portal-group-student-management/proposal.md": {
+    "mtime": 1793091078.7376947,
+    "seen": 1793092089.6774457,
+    "ast_hash": "f7b9f73670dca79701964679735ac606",
+    "semantic_hash": ""
+  },
+  "openspec/changes/portal-group-student-management/specs/group-student-management/spec.md": {
+    "mtime": 1793091078.7376947,
+    "seen": 1793092089.6774457,
+    "ast_hash": "1db9ccbb13e062c715824d7ce77d5584",
+    "semantic_hash": ""
+  },
+  "openspec/changes/portal-group-student-management/specs/portal-roster-sync/spec.md": {
+    "mtime": 1793091078.7376947,
+    "seen": 1793092089.6774457,
+    "ast_hash": "6cfdba3a4902c0cd6be42e29fdb5db83",
+    "semantic_hash": ""
+  },
+  "openspec/changes/portal-group-student-management/tasks.md": {
+    "mtime": 1793091078.7376947,
+    "seen": 1793092089.6774457,
+    "ast_hash": "c197d00bae7d548e3613a905eccc6e77",
+    "semantic_hash": ""
+  },
+  "openspec/changes/portal-group-student-management/verification.md": {
+    "mtime": 1793091078.7376947,
+    "seen": 1793092089.6774457,
+    "ast_hash": "29c8df0a448c494645af7527a6090021",
+    "semantic_hash": ""
+  },
+  "students/ROSTER.md": {
+    "mtime": 1793091078.7376947,
+    "seen": 1793092089.6774457,
+    "ast_hash": "6df5237be524299157470390a56a98dd",
+    "semantic_hash": ""
+  },
+  "students/templates/students/import_students.html": {
+    "mtime": 1793091078.751059,
+    "seen": 1793092089.678449,
+    "ast_hash": "98d18142fabd6f0cf23661c2adf0a1b9",
+    "semantic_hash": ""
+  },
+  "students/templates/students/student_modal_form.html": {
+    "mtime": 1793091078.751059,
+    "seen": 1793092089.678449,
+    "ast_hash": "248abba920d6ed93d1aaebeddc28921e",
+    "semantic_hash": ""
+  },
+  "tasks/lesson4/university_reading/SOURCE.md": {
+    "mtime": 1793092791.749092,
+    "seen": 1793092799.7348406,
+    "ast_hash": "a3638044c2adced46caf8d045a88583c",
+    "semantic_hash": ""
+  },
+  "tasks/lesson4/university_reading/university_reading.html": {
+    "mtime": 1794302169.6842215,
+    "seen": 1794302187.5165596,
+    "ast_hash": "2989006c8a5e2acb0f38f62d75373131",
+    "semantic_hash": ""
+  },
+  "tasks/lesson4/university_reading/bg.jpg": {
+    "mtime": 1793091737.5476208,
+    "seen": 1793092089.678449,
+    "ast_hash": "a03ed77883b3d9229a44216fb091188c",
+    "semantic_hash": ""
+  },
+  "tasks/lesson4/university_reading/preview.png": {
+    "mtime": 1793092689.9075847,
+    "seen": 1793092799.7348406,
+    "ast_hash": "7555b4753f88bf51b5a67536f2ada939",
+    "semantic_hash": ""
+  },
+  "tasks/lesson4/university_reading/source-background.png": {
+    "mtime": 1793091544.1332827,
+    "seen": 1793092089.678449,
+    "ast_hash": "057d360f957d022cb3773a8eeffdae11",
+    "semantic_hash": ""
+  },
+  "tasks/lesson4/university_reading/source-slide-35.png": {
+    "mtime": 1793091488.8561316,
+    "seen": 1793092089.678449,
+    "ast_hash": "b8eb79b940583a335794c041588643a9",
+    "semantic_hash": ""
+  },
+  "tasks/lesson4/university_reading/source-slide-36.png": {
+    "mtime": 1793091599.5028315,
+    "seen": 1793092089.678449,
+    "ast_hash": "022c2a6a52e0620e67ce082014c973c9",
+    "semantic_hash": ""
+  },
+  "tasks/lesson4/university_reading/university.png": {
+    "mtime": 1793091544.170747,
+    "seen": 1793092089.678449,
+    "ast_hash": "d536f1c9989812458b24f21745e7e19b",
+    "semantic_hash": ""
+  },
+  "tasks/lesson4/university_reading/reference-part-1.mp3": {
+    "mtime": 1793091599.787634,
+    "seen": 1793092089.678449,
+    "ast_hash": "e7f8e1a3d2bd303ef364af77cbdc8a38",
+    "semantic_hash": ""
+  },
+  "tasks/lesson4/university_reading/reference-part-2.mp3": {
+    "mtime": 1793091607.1028085,
+    "seen": 1793092089.678449,
+    "ast_hash": "b749409f8aa9f987919122e858f452dd",
+    "semantic_hash": ""
+  },
+  "scripts/generate_yandex_reading_audio.py": {
+    "mtime": 1793092440.7407596,
+    "seen": 1793092799.7348406,
+    "ast_hash": "4873b1d5fb084c7acd77605b42883dc3",
+    "semantic_hash": ""
+  },
+  "tasks/lesson4/university_reading/yandex-reading.json": {
+    "mtime": 1793092357.7658532,
+    "seen": 1793092799.7348406,
+    "ast_hash": "73003b054e22cd1ec67586531292bc5f",
+    "semantic_hash": ""
+  },
+  "tasks/lesson4/university_reading_part2/SOURCE.md": {
+    "mtime": 1793092577.1110475,
+    "seen": 1793092799.7348406,
+    "ast_hash": "4e75cf56182b21db4ece55ac1e731702",
+    "semantic_hash": ""
+  },
+  "tasks/lesson4/university_reading_part2/university_reading_part2.html": {
+    "mtime": 1794302169.6862504,
+    "seen": 1794302187.5165596,
+    "ast_hash": "9ec86cd14d30b32c45a677a3a6e5def7",
+    "semantic_hash": ""
+  },
+  "tasks/lesson4/university_reading_part2/bg.jpg": {
+    "mtime": 1793092498.4230485,
+    "seen": 1793092799.7348406,
+    "ast_hash": "a03ed77883b3d9229a44216fb091188c",
+    "semantic_hash": ""
+  },
+  "tasks/lesson4/university_reading_part2/preview.png": {
+    "mtime": 1793092723.2850244,
+    "seen": 1793092799.7348406,
+    "ast_hash": "f11a19d8fdef32f910d29cde6d24110f",
+    "semantic_hash": ""
+  },
+  "tasks/lesson4/university_reading_part2/university.png": {
+    "mtime": 1793092498.4242747,
+    "seen": 1793092799.7348406,
+    "ast_hash": "d536f1c9989812458b24f21745e7e19b",
+    "semantic_hash": ""
+  },
+  "tasks/lesson4/university_reading/reference.wav": {
+    "mtime": 1793092451.6679616,
+    "seen": 1793092799.7348406,
+    "ast_hash": "f4fd279a5f3d59ec77e4103c6a173da0",
+    "semantic_hash": ""
+  },
+  "tasks/lesson4/university_reading_part2/reference.wav": {
+    "mtime": 1793092451.6706562,
+    "seen": 1793092799.7348406,
+    "ast_hash": "27a66c60575f19f587f9053fc6117ce0",
+    "semantic_hash": ""
+  },
+  "api/test_university_questions.py": {
+    "mtime": 1793094325.7232637,
+    "seen": 1793094594.1430755,
+    "ast_hash": "4633c7950b2fec587226c27dd9db7405",
+    "semantic_hash": ""
+  },
+  "api/university_question_views.py": {
+    "mtime": 1794470620.7184882,
+    "seen": 1794470758.628194,
+    "ast_hash": "7023876067815b65dc1b343723247bf9",
+    "semantic_hash": ""
+  },
+  "api/university_questions.py": {
+    "mtime": 1794490746.7277172,
+    "seen": 1794490809.28786,
+    "ast_hash": "26b96f04b0244ed7964ced29be397c3c",
+    "semantic_hash": ""
+  },
+  "scripts/generate_yandex_question_audio.py": {
+    "mtime": 1793096532.338578,
+    "seen": 1793096889.709049,
+    "ast_hash": "0a1428209c1d84ce83cc4c50a0cf95a8",
+    "semantic_hash": ""
+  },
+  "tasks/lesson4/university_questions/audio/questions.json": {
+    "mtime": 1793094216.9517019,
+    "seen": 1793094594.1430755,
+    "ast_hash": "4f42f05f7936ce00e48c0bb527602564",
+    "semantic_hash": ""
+  },
+  "tasks/lesson4/university_questions/questions.js": {
+    "mtime": 1794489873.805213,
+    "seen": 1794490068.2976441,
+    "ast_hash": "849b226b09b7764bd22621484a18498a",
+    "semantic_hash": ""
+  },
+  "tasks/lesson4/university_questions/university_questions.html": {
+    "mtime": 1794489854.9454806,
+    "seen": 1794490068.2987077,
+    "ast_hash": "1d1febfd731bad5ee865564deb9cd43a",
+    "semantic_hash": ""
+  },
+  "tasks/lesson4/university_questions/bg.jpg": {
+    "mtime": 1793094181.8881667,
+    "seen": 1793094594.1430755,
+    "ast_hash": "a03ed77883b3d9229a44216fb091188c",
+    "semantic_hash": ""
+  },
+  "tasks/lesson4/university_questions/source-slide.png": {
+    "mtime": 1793094181.897228,
+    "seen": 1793094594.1430755,
+    "ast_hash": "6e1f200827f21123d58ef270236d55fc",
+    "semantic_hash": ""
+  },
+  "tasks/lesson4/university_questions/university.png": {
+    "mtime": 1793094181.8961701,
+    "seen": 1793094594.1430755,
+    "ast_hash": "d536f1c9989812458b24f21745e7e19b",
+    "semantic_hash": ""
+  },
+  "tasks/lesson4/university_questions/audio/01.wav": {
+    "mtime": 1793094409.8950403,
+    "seen": 1793094594.1430755,
+    "ast_hash": "bff58adab1717a7d5b538ce5959cd660",
+    "semantic_hash": ""
+  },
+  "tasks/lesson4/university_questions/audio/02.wav": {
+    "mtime": 1793094409.8955617,
+    "seen": 1793094594.1430755,
+    "ast_hash": "44f920cc3480ac2e0801f4b5624550e2",
+    "semantic_hash": ""
+  },
+  "tasks/lesson4/university_questions/audio/03.wav": {
+    "mtime": 1793094409.896598,
+    "seen": 1793094594.1430755,
+    "ast_hash": "36567afac6c84ee941f1311e3b04d061",
+    "semantic_hash": ""
+  },
+  "tasks/lesson4/university_questions/audio/04.wav": {
+    "mtime": 1793094409.897638,
+    "seen": 1793094594.1430755,
+    "ast_hash": "607084a280bd21664c0481035de619f2",
+    "semantic_hash": ""
+  },
+  "tasks/lesson4/university_questions/audio/05.wav": {
+    "mtime": 1793094409.897638,
+    "seen": 1793094594.1430755,
+    "ast_hash": "d23c1f96842fa0af630547fc3cc2c430",
+    "semantic_hash": ""
+  },
+  "tasks/lesson4/university_questions/audio/06.wav": {
+    "mtime": 1793094409.898982,
+    "seen": 1793094594.1430755,
+    "ast_hash": "7de14f5297dd9beb48365ffa9d490a0c",
+    "semantic_hash": ""
+  },
+  "tasks/lesson4/university_questions/audio/07.wav": {
+    "mtime": 1793094409.8999858,
+    "seen": 1793094594.1430755,
+    "ast_hash": "c955094b117bf43e02433682da67538f",
+    "semantic_hash": ""
+  },
+  "tasks/lesson4/university_questions/audio/08.wav": {
+    "mtime": 1793094409.9006002,
+    "seen": 1793094594.1430755,
+    "ast_hash": "510de30e6faf5e7331abe2e967e12e66",
+    "semantic_hash": ""
+  },
+  "tasks/lesson4/university_questions/audio/09.wav": {
+    "mtime": 1793094409.9006002,
+    "seen": 1793094594.1430755,
+    "ast_hash": "ed82e072944ef608bd574c8a3afebaee",
+    "semantic_hash": ""
+  },
+  "tasks/lesson4/university_questions/audio/10.wav": {
+    "mtime": 1793094409.9020698,
+    "seen": 1793094594.1430755,
+    "ast_hash": "5a9375a814c33664c3d9693f60b8035d",
+    "semantic_hash": ""
+  },
+  "tasks/lesson4/university_questions/audio/11.wav": {
+    "mtime": 1793094409.9020698,
+    "seen": 1793094594.1430755,
+    "ast_hash": "bc904d9b89710256bb5107dbdbeced4e",
+    "semantic_hash": ""
+  },
+  "tasks/lesson4/university_questions/audio/12.wav": {
+    "mtime": 1793094409.9034326,
+    "seen": 1793094594.1430755,
+    "ast_hash": "eab62fc3bcc3aed6c1dd3e59321d30a4",
+    "semantic_hash": ""
+  },
+  "api/test_library_questions.py": {
+    "mtime": 1793096594.188813,
+    "seen": 1793096889.709049,
+    "ast_hash": "427a3d3eea8569c9ed3ad5ac8d33cd46",
+    "semantic_hash": ""
+  },
+  "tasks/lesson4/library_questions/audio/questions.json": {
+    "mtime": 1793096533.0061767,
+    "seen": 1793096889.709049,
+    "ast_hash": "f4ec817b4176bddc0aa72861766ff7d4",
+    "semantic_hash": ""
+  },
+  "tasks/lesson4/library_questions/library_questions.html": {
+    "mtime": 1793272853.6996582,
+    "seen": 1793274274.2204282,
+    "ast_hash": "8be134f07d32a585a9b1a2113a471acf",
+    "semantic_hash": ""
+  },
+  "tasks/lesson4/library_questions/bg.jpg": {
+    "mtime": 1793096533.0018847,
+    "seen": 1793096889.709049,
+    "ast_hash": "a03ed77883b3d9229a44216fb091188c",
+    "semantic_hash": ""
+  },
+  "tasks/lesson4/library_questions/source-slide.png": {
+    "mtime": 1793096533.005177,
+    "seen": 1793096889.709049,
+    "ast_hash": "60fa89e3bdf6e6d52fe571785df81773",
+    "semantic_hash": ""
+  },
+  "tasks/lesson4/library_questions/university.png": {
+    "mtime": 1793096533.0028858,
+    "seen": 1793096889.709049,
+    "ast_hash": "d536f1c9989812458b24f21745e7e19b",
+    "semantic_hash": ""
+  },
+  "tasks/lesson4/library_questions/audio/01.wav": {
+    "mtime": 1793096538.0929244,
+    "seen": 1793096889.709049,
+    "ast_hash": "8f1352e4d4961fffc9c32578ffe96731",
+    "semantic_hash": ""
+  },
+  "tasks/lesson4/library_questions/audio/02.wav": {
+    "mtime": 1793096538.0970302,
+    "seen": 1793096889.709049,
+    "ast_hash": "d6af07e8ca914683c779f7a1ab2f2729",
+    "semantic_hash": ""
+  },
+  "tasks/lesson4/library_questions/audio/03.wav": {
+    "mtime": 1793096538.098537,
+    "seen": 1793096889.709049,
+    "ast_hash": "0b2e08d83ebe60203c9581e97292831f",
+    "semantic_hash": ""
+  },
+  "tasks/lesson4/library_questions/audio/04.wav": {
+    "mtime": 1793096538.0990531,
+    "seen": 1793096889.709049,
+    "ast_hash": "8f663166822374e1c3770f966605d048",
+    "semantic_hash": ""
+  },
+  "tasks/lesson4/library_questions/audio/05.wav": {
+    "mtime": 1793096538.0990531,
+    "seen": 1793096889.709049,
+    "ast_hash": "f8b802114b25fcfe340b9945ad832526",
+    "semantic_hash": ""
+  },
+  "tasks/lesson4/library_questions/audio/06.wav": {
+    "mtime": 1793096538.0990531,
+    "seen": 1793096889.709049,
+    "ast_hash": "28a7d23fc6685ce36774d94cad35b03a",
+    "semantic_hash": ""
+  },
+  "tasks/lesson4/library_questions/audio/07.wav": {
+    "mtime": 1793096538.0990531,
+    "seen": 1793096889.709049,
+    "ast_hash": "caf8bb0298955f36f5c4cdd9a76c49c8",
+    "semantic_hash": ""
+  },
+  "tasks/lesson4/library_questions/audio/08.wav": {
+    "mtime": 1793096538.0990531,
+    "seen": 1793096889.709049,
+    "ast_hash": "0cb2897aad75935ace7e9a773498f188",
+    "semantic_hash": ""
+  },
+  "tasks/lesson4/library_questions/audio/09.wav": {
+    "mtime": 1793096538.0990531,
+    "seen": 1793096889.709049,
+    "ast_hash": "254d766b73e8e51a3836135fe90c4e76",
+    "semantic_hash": ""
+  },
+  "tasks/lesson4/library_questions/audio/10.wav": {
+    "mtime": 1793096538.0990531,
+    "seen": 1793096889.709049,
+    "ast_hash": "178e5398d8174e0f7c87758d9f89ce26",
+    "semantic_hash": ""
+  },
+  "tasks/lesson4/library_questions/audio/11.wav": {
+    "mtime": 1793096538.0990531,
+    "seen": 1793096889.709049,
+    "ast_hash": "dcb71bf406871773a5be0b5cf1d580e7",
+    "semantic_hash": ""
+  },
+  "tasks/lesson4/university_retelling/university_retelling.html": {
+    "mtime": 1793105585.9956477,
+    "seen": 1793105596.4382613,
+    "ast_hash": "41867379e93499d76936c290f12e3f15",
+    "semantic_hash": ""
+  },
+  "tasks/lesson4/university_retelling/university.png": {
+    "mtime": 1793105140.4087846,
+    "seen": 1793105167.046265,
+    "ast_hash": "8ae6df7e7a874a37f60efd491bba490c",
+    "semantic_hash": ""
+  },
+  "tasks/lesson4/university_writing/university_writing.html": {
+    "mtime": 1793105585.997203,
+    "seen": 1793105596.4382613,
+    "ast_hash": "1783ef05382ff876723fa949f64917a0",
+    "semantic_hash": ""
+  },
+  "tasks/lesson4/university_writing/university.png": {
+    "mtime": 1793105585.997203,
+    "seen": 1793105596.4382613,
+    "ast_hash": "8ae6df7e7a874a37f60efd491bba490c",
+    "semantic_hash": ""
+  },
+  "scripts/generate_neighborhood_audio.py": {
+    "mtime": 1793127978.3249304,
+    "seen": 1793128004.2444608,
+    "ast_hash": "dafacbeb4ca57c912a32e91350f8e183",
+    "semantic_hash": ""
+  },
+  "tasks/lesson4/neighborhood_reading/neighborhood_reading.html": {
+    "mtime": 1794302169.6764207,
+    "seen": 1794302187.5160384,
+    "ast_hash": "97488fc0497d771a1b44404df6a468e7",
+    "semantic_hash": ""
+  },
+  "tasks/lesson4/neighborhood_reading/bg.jpg": {
+    "mtime": 1793127954.072531,
+    "seen": 1793128004.2450707,
+    "ast_hash": "a03ed77883b3d9229a44216fb091188c",
+    "semantic_hash": ""
+  },
+  "tasks/lesson4/neighborhood_reading/source-slide.png": {
+    "mtime": 1793127954.076046,
+    "seen": 1793128004.2450707,
+    "ast_hash": "1534b0e3d11960eb382b8bddf696a716",
+    "semantic_hash": ""
+  },
+  "tasks/lesson4/university_retelling/bg.jpg": {
+    "mtime": 1792919150.9629748,
+    "seen": 1793128004.2450707,
+    "ast_hash": "a03ed77883b3d9229a44216fb091188c",
+    "semantic_hash": ""
+  },
+  "tasks/lesson4/university_writing/bg.jpg": {
+    "mtime": 1792919150.9629748,
+    "seen": 1793128004.2450707,
+    "ast_hash": "a03ed77883b3d9229a44216fb091188c",
+    "semantic_hash": ""
+  },
+  "tasks/lesson4/neighborhood_reading/reference.wav": {
+    "mtime": 1793127989.3317645,
+    "seen": 1793128004.2450707,
+    "ast_hash": "e75904e6c666fdde594bd788e03425d2",
+    "semantic_hash": ""
+  },
+  "tasks/lesson4/neighborhood_verbs/neighborhood_verbs.html": {
+    "mtime": 1793129060.906673,
+    "seen": 1793129546.100934,
+    "ast_hash": "34d2d58f892b9bdcd4c537343f16ff9d",
+    "semantic_hash": ""
+  },
+  "tasks/lesson4/neighborhood_verbs/bg.jpg": {
+    "mtime": 1793128987.6823115,
+    "seen": 1793129002.2778058,
+    "ast_hash": "a03ed77883b3d9229a44216fb091188c",
+    "semantic_hash": ""
+  },
+  "tasks/lesson4/family_story/family_story.html": {
+    "mtime": 1793129534.4694903,
+    "seen": 1793129546.100934,
+    "ast_hash": "0485f744c86d59956b1496b392d70c52",
+    "semantic_hash": ""
+  },
+  "tasks/lesson4/family_story/bg.jpg": {
+    "mtime": 1793129534.4619074,
+    "seen": 1793129546.100934,
+    "ast_hash": "a03ed77883b3d9229a44216fb091188c",
+    "semantic_hash": ""
+  },
+  "tasks/lesson4/family_story/family.gif": {
+    "mtime": 1793129534.4639232,
+    "seen": 1793129546.100934,
+    "ast_hash": "f6f0e53f8be66f41f2a20a3f0d9d29de",
+    "semantic_hash": ""
+  },
+  "tasks/lesson4/family_story/source-slide.png": {
+    "mtime": 1793129534.4669845,
+    "seen": 1793129546.100934,
+    "ast_hash": "284c0780f92e95b17873f0a99c765a1e",
+    "semantic_hash": ""
+  },
+  "api/test_dialogue_reading.py": {
+    "mtime": 1794307000.5050454,
+    "seen": 1794307025.4873667,
+    "ast_hash": "654b3e435af64d6d5f0eb50fdcf875c1",
+    "semantic_hash": ""
+  },
+  "scripts/generate_dialogue_audio.py": {
+    "mtime": 1793131447.39264,
+    "seen": 1793131483.13254,
+    "ast_hash": "1bc4de737bfb59efba8623ba04892a40",
+    "semantic_hash": ""
+  },
+  "tasks/lesson4/dialogue_reading/dialogues.json": {
+    "mtime": 1793131432.5305753,
+    "seen": 1793131483.1335423,
+    "ast_hash": "9362dedfa2435744343bc9ac98913e42",
+    "semantic_hash": ""
+  },
+  "tasks/lesson4/dialogue_reading/dialogue_reading.html": {
+    "mtime": 1794302169.66509,
+    "seen": 1794302187.5160384,
+    "ast_hash": "b8825f03c25384a96440eaf0a9e2f699",
+    "semantic_hash": ""
+  },
+  "tasks/lesson4/dialogue_reading/bg.jpg": {
+    "mtime": 1793131432.5145173,
+    "seen": 1793131483.1335423,
+    "ast_hash": "a03ed77883b3d9229a44216fb091188c",
+    "semantic_hash": ""
+  },
+  "tasks/lesson4/dialogue_reading/source-slide.png": {
+    "mtime": 1793131432.5156488,
+    "seen": 1793131483.1335423,
+    "ast_hash": "43c87cef053fbd17dfe211c9eaa6c118",
+    "semantic_hash": ""
+  },
+  "tasks/lesson4/dialogue_reading/audio/1.wav": {
+    "mtime": 1793131454.7203007,
+    "seen": 1793131483.1335423,
+    "ast_hash": "af3a01197b1b4dfe7d1a3e33127f8d01",
+    "semantic_hash": ""
+  },
+  "tasks/lesson4/dialogue_reading/audio/2.wav": {
+    "mtime": 1793131455.9446204,
+    "seen": 1793131483.1335423,
+    "ast_hash": "5e7cefa9d7d334ef79cf8e18ee569f3f",
+    "semantic_hash": ""
+  },
+  "tasks/lesson4/dialogue_reading/audio/3.wav": {
+    "mtime": 1793131456.7674344,
+    "seen": 1793131483.1335423,
+    "ast_hash": "b274fc460c4cdfb08db76284f3cf976b",
+    "semantic_hash": ""
+  },
+  "tasks/lesson4/dialogue_reading/audio/4.wav": {
+    "mtime": 1793131458.0000029,
+    "seen": 1793131483.1335423,
+    "ast_hash": "e4c938c2d43f52fb405dd0cdfaf51038",
+    "semantic_hash": ""
+  },
+  "tasks/lesson4/about_me_story/about_me_story.html": {
+    "mtime": 1793262324.5846765,
+    "seen": 1793262340.7999644,
+    "ast_hash": "f4b33f8c315b7db88f5e7b8710bef6de",
+    "semantic_hash": ""
+  },
+  "tasks/lesson4/about_me_story/bg.jpg": {
+    "mtime": 1793262079.69899,
+    "seen": 1793262093.3138678,
+    "ast_hash": "a03ed77883b3d9229a44216fb091188c",
+    "semantic_hash": ""
+  },
+  "tasks/lesson4/about_me_story/illustration.gif": {
+    "mtime": 1793262064.9259193,
+    "seen": 1793262093.3138678,
+    "ast_hash": "8c9efa2313c4f02124f9200bfe232232",
+    "semantic_hash": ""
+  },
+  "tasks/lesson4/about_me_story/source-slide.png": {
+    "mtime": 1793262079.701101,
+    "seen": 1793262093.3138678,
+    "ast_hash": "51509cf1eac218c91447deab0d53bd95",
+    "semantic_hash": ""
+  },
+  "scripts/generate_introduction_dialogue_audio.py": {
+    "mtime": 1793262725.9635205,
+    "seen": 1793262750.5026813,
+    "ast_hash": "3a49880270a0bbc77f180e509226d1e9",
+    "semantic_hash": ""
+  },
+  "tasks/lesson4/introduction_dialogue/introduction_dialogue.html": {
+    "mtime": 1794302169.672304,
+    "seen": 1794302187.5160384,
+    "ast_hash": "e8c28108b5e34c10aa69f8caadf33ba8",
+    "semantic_hash": ""
+  },
+  "tasks/lesson4/introduction_dialogue/bg.jpg": {
+    "mtime": 1793262717.6710305,
+    "seen": 1793262750.5026813,
+    "ast_hash": "a03ed77883b3d9229a44216fb091188c",
+    "semantic_hash": ""
+  },
+  "tasks/lesson4/introduction_dialogue/source-slide.png": {
+    "mtime": 1793262717.672538,
+    "seen": 1793262750.5026813,
+    "ast_hash": "9839e0372a09a4eda4772abff0841bc6",
+    "semantic_hash": ""
+  },
+  "scripts/generate_free_time_dialogue_audio.py": {
+    "mtime": 1793263051.627351,
+    "seen": 1793263065.6157563,
+    "ast_hash": "044ce8f886a52ebee68b42bbf3ee9f1f",
+    "semantic_hash": ""
+  },
+  "tasks/lesson4/free_time_dialogue/free_time_dialogue.html": {
+    "mtime": 1794302169.6694396,
+    "seen": 1794302187.5160384,
+    "ast_hash": "910ef0dd17bfdfb640213bfa2316c4b8",
+    "semantic_hash": ""
+  },
+  "tasks/lesson4/free_time_dialogue/bg.jpg": {
+    "mtime": 1793263043.0591972,
+    "seen": 1793263065.6168017,
+    "ast_hash": "a03ed77883b3d9229a44216fb091188c",
+    "semantic_hash": ""
+  },
+  "tasks/lesson4/free_time_dialogue/source-slide.png": {
+    "mtime": 1793263043.0607474,
+    "seen": 1793263065.6168017,
+    "ast_hash": "9c1321dd2a144a2b3f714ac2d71700ff",
+    "semantic_hash": ""
+  },
+  "tasks/lesson4/introduction_dialogue/reference.wav": {
+    "mtime": 1793262742.91987,
+    "seen": 1793263065.6168017,
+    "ast_hash": "0f094b6a5e09ecc1c0a9b3b8066d0b00",
+    "semantic_hash": ""
+  },
+  "tasks/lesson4/university_plan_story/university_plan_story.html": {
+    "mtime": 1793263101.175223,
+    "seen": 1793263120.655826,
+    "ast_hash": "c42eca25b87a67d616ab5ad8173abf53",
+    "semantic_hash": ""
+  },
+  "tasks/lesson4/university_plan_story/bg.jpg": {
+    "mtime": 1793263101.1675396,
+    "seen": 1793263120.6563427,
+    "ast_hash": "a03ed77883b3d9229a44216fb091188c",
+    "semantic_hash": ""
+  },
+  "tasks/lesson4/university_plan_story/illustration.gif": {
+    "mtime": 1793263101.1695495,
+    "seen": 1793263120.6563427,
+    "ast_hash": "8c9efa2313c4f02124f9200bfe232232",
+    "semantic_hash": ""
+  },
+  "tasks/lesson4/university_plan_story/source-slide.png": {
+    "mtime": 1793263101.1730988,
+    "seen": 1793263120.6563427,
+    "ast_hash": "5714c7b0cbdf30000c0e2b99930705ee",
+    "semantic_hash": ""
+  },
+  "tasks/lesson4/free_time_dialogue/reference.wav": {
+    "mtime": 1793263062.7137642,
+    "seen": 1793263120.6563427,
+    "ast_hash": "6d1f77619089608cd290c14cd2ee02e9",
+    "semantic_hash": ""
+  },
+  "scripts/generate_library_retelling_audio.py": {
+    "mtime": 1793269340.816226,
+    "seen": 1793269777.6477184,
+    "ast_hash": "2c12a5a87cf9473434dab35a6a1314c0",
+    "semantic_hash": ""
+  },
+  "tasks/lesson4/library_retelling/library_retelling.html": {
+    "mtime": 1793270254.9913619,
+    "seen": 1793270284.8536518,
+    "ast_hash": "1d8fe9130106df3e017066ee7a838817",
+    "semantic_hash": ""
+  },
+  "tasks/lesson4/library_retelling/bg.jpg": {
+    "mtime": 1793268438.736472,
+    "seen": 1793268500.210889,
+    "ast_hash": "a03ed77883b3d9229a44216fb091188c",
+    "semantic_hash": ""
+  },
+  "tasks/lesson4/library_retelling/illustration.gif": {
+    "mtime": 1793268438.7397249,
+    "seen": 1793268500.210889,
+    "ast_hash": "8c9efa2313c4f02124f9200bfe232232",
+    "semantic_hash": ""
+  },
+  "tasks/lesson4/library_retelling/source-slide.png": {
+    "mtime": 1793268438.756303,
+    "seen": 1793268500.210889,
+    "ast_hash": "08e43aaa6ce39aea144c1dbee981b867",
+    "semantic_hash": ""
+  },
+  "tasks/lesson4/library_retelling/source-text.png": {
+    "mtime": 1793268438.7586,
+    "seen": 1793268500.210889,
+    "ast_hash": "cc0645cb0e66b248ba0e3e67d0e1d80e",
+    "semantic_hash": ""
+  },
+  "tasks/lesson4/library_retelling/reference.wav": {
+    "mtime": 1793269484.120111,
+    "seen": 1793269777.6477184,
+    "ast_hash": "93a969b90b226e6af8956c3e53713595",
+    "semantic_hash": ""
+  },
+  "scripts/generate_ivan_retelling_audio.py": {
+    "mtime": 1793269440.9896295,
+    "seen": 1793269777.6477184,
+    "ast_hash": "b4c8cfc62c0724aa24b7d76089d37305",
+    "semantic_hash": ""
+  },
+  "tasks/lesson4/ivan_retelling/ivan_retelling.html": {
+    "mtime": 1793270254.9918783,
+    "seen": 1793270284.8536518,
+    "ast_hash": "784238870ab5bf05a1aeee634bd8a4be",
+    "semantic_hash": ""
+  },
+  "tasks/lesson4/ivan_retelling/bg.jpg": {
+    "mtime": 1793269368.951854,
+    "seen": 1793269777.6477184,
+    "ast_hash": "a03ed77883b3d9229a44216fb091188c",
+    "semantic_hash": ""
+  },
+  "tasks/lesson4/ivan_retelling/illustration.png": {
+    "mtime": 1793269368.9670243,
+    "seen": 1793269777.6477184,
+    "ast_hash": "92e1ef72ce6595bac1036d6ca7425122",
+    "semantic_hash": ""
+  },
+  "tasks/lesson4/ivan_retelling/reference.wav": {
+    "mtime": 1793269506.7328367,
+    "seen": 1793269777.6477184,
+    "ast_hash": "e2d344b9289916f6cb3316894756e996",
+    "semantic_hash": ""
+  },
+  "courses/author_review.py": {
+    "mtime": 1794490671.1415699,
+    "seen": 1794490809.28786,
+    "ast_hash": "f76059496431bb508044385bcbe4959c",
+    "semantic_hash": ""
+  },
+  "courses/tests/test_author_review.py": {
+    "mtime": 1794474287.8173537,
+    "seen": 1794474331.2636342,
+    "ast_hash": "732ddd6fff844978a0697ce5002b25ac",
+    "semantic_hash": ""
+  },
+  "courses/templates/courses/author_assignments.html": {
+    "mtime": 1794493207.165128,
+    "seen": 1794493256.9067307,
+    "ast_hash": "e07581a3a1590e2171d79fb69c3fcaf7",
+    "semantic_hash": ""
+  },
+  "api/test_speaking_endpoint.py": {
+    "mtime": 1793273852.2812877,
+    "seen": 1793274274.2204282,
+    "ast_hash": "88d192f27d6a8eec859ef8908c7ce972",
+    "semantic_hash": ""
+  },
+  "tasks/lesson7/vdnh_retelling/vdnh_retelling.html": {
+    "mtime": 1794471044.7244241,
+    "seen": 1794471069.4205804,
+    "ast_hash": "fc37ef8250581f8417561418957be592",
+    "semantic_hash": ""
+  },
+  "tasks/lesson7/vdnh_retelling/bg.jpg": {
+    "mtime": 1792919150.9629748,
+    "seen": 1793522738.2811954,
+    "ast_hash": "a03ed77883b3d9229a44216fb091188c",
+    "semantic_hash": ""
+  },
+  "tasks/lesson7/vdnh_retelling/source-slide-14-3.png": {
+    "mtime": 1793521489.489958,
+    "seen": 1793522738.2811954,
+    "ast_hash": "0924ed7d9d6ecd95b556f137e8b0546f",
+    "semantic_hash": ""
+  },
+  "api/excursion.py": {
+    "mtime": 1793523720.3605654,
+    "seen": 1793525378.4073079,
+    "ast_hash": "a0b8e263a8446a04ff4ebcd267b48677",
+    "semantic_hash": ""
+  },
+  "api/test_excursion.py": {
+    "mtime": 1794470661.1751945,
+    "seen": 1794470758.628194,
+    "ast_hash": "c37b4c1849ed111553e26af7edea9114",
+    "semantic_hash": ""
+  },
+  "tasks/lesson7/excursion.js": {
+    "mtime": 1793523937.780819,
+    "seen": 1793525378.4084265,
+    "ast_hash": "4b655889bf07dbdb3b50c22a8df6c63b",
+    "semantic_hash": ""
+  },
+  "tasks/lesson7/excursion_highlight/highlight.js": {
+    "mtime": 1793523984.3483148,
+    "seen": 1793525378.4084265,
+    "ast_hash": "ecf0c81cd4eb5121cfc1363065feef3e",
+    "semantic_hash": ""
+  },
+  "tasks/lesson7/excursion_questions/questions.js": {
+    "mtime": 1794470630.995392,
+    "seen": 1794470758.6287017,
+    "ast_hash": "240019a0524a3cd5f05d67c7c05a160a",
+    "semantic_hash": ""
+  },
+  "tasks/lesson7/excursion_reading/reading.js": {
+    "mtime": 1793524041.9155488,
+    "seen": 1793525378.4084265,
+    "ast_hash": "0a130a4fe8da52d2060c3d31f944d01e",
+    "semantic_hash": ""
+  },
+  "tasks/lesson7/excursion_text.json": {
+    "mtime": 1794470605.54418,
+    "seen": 1794470758.6287017,
+    "ast_hash": "5b83f58133de98991cd0709c9c0bb845",
+    "semantic_hash": ""
+  },
+  "tasks/lesson7/excursion_highlight/excursion_highlight.html": {
+    "mtime": 1794471185.2980485,
+    "seen": 1794471207.7515247,
+    "ast_hash": "1ff0313490c65efac85c9e979143992e",
+    "semantic_hash": ""
+  },
+  "tasks/lesson7/excursion_questions/excursion_questions.html": {
+    "mtime": 1794471185.2995994,
+    "seen": 1794471207.7515247,
+    "ast_hash": "6340c5dd6573a4434f8e2f898fa921a9",
+    "semantic_hash": ""
+  },
+  "tasks/lesson7/excursion_reading/excursion_reading.html": {
+    "mtime": 1794471185.2990882,
+    "seen": 1794471207.7515247,
+    "ast_hash": "1b1a3ee674a4c76695cd399e06a650a1",
+    "semantic_hash": ""
+  },
+  "tasks/lesson7/faculty.js": {
+    "mtime": 1793548994.0173793,
+    "seen": 1793549125.3601067,
+    "ast_hash": "042a5de2918f07c9161c0e09631fd373",
+    "semantic_hash": ""
+  },
+  "tasks/lesson7/faculty_questions/questions.js": {
+    "mtime": 1794470630.997549,
+    "seen": 1794470758.6287017,
+    "ast_hash": "cbe93cc0593110e64d298c0024574a86",
+    "semantic_hash": ""
+  },
+  "tasks/lesson7/faculty_reading/reading.js": {
+    "mtime": 1793548994.0104651,
+    "seen": 1793549125.3601067,
+    "ast_hash": "3d741d2c5c8e34121bd0ffd2a410ce62",
+    "semantic_hash": ""
+  },
+  "tasks/lesson7/faculty_text.json": {
+    "mtime": 1794470605.54522,
+    "seen": 1794470758.6287017,
+    "ast_hash": "b39f608eb64913a26f30db4f08687e1b",
+    "semantic_hash": ""
+  },
+  "tasks/lesson7/faculty_questions/faculty_questions.html": {
+    "mtime": 1794470644.1198075,
+    "seen": 1794470758.6287017,
+    "ast_hash": "9e70afdb87a59e866f782c92c6a47984",
+    "semantic_hash": ""
+  },
+  "tasks/lesson7/faculty_reading/faculty_reading.html": {
+    "mtime": 1793550880.647526,
+    "seen": 1793550913.4598572,
+    "ast_hash": "086d226ee5aece07d62b8bcc26091ce7",
+    "semantic_hash": ""
+  },
+  "tasks/lesson7/faculty_reading/illustration.png": {
+    "mtime": 1793548994.0184047,
+    "seen": 1793549125.3601067,
+    "ast_hash": "c19c14cc5c6599cf71ed2f2e9af97985",
+    "semantic_hash": ""
+  },
+  "openspec/changes/sync-course-by-id/.openspec.yaml": {
+    "mtime": 1793551690.4038067,
+    "seen": 1793552047.4926834,
+    "ast_hash": "3623ba4db4ed24298de5b5828c49c15f",
+    "semantic_hash": ""
+  },
+  "openspec/changes/sync-course-by-id/design.md": {
+    "mtime": 1793551818.2988412,
+    "seen": 1793552047.4926834,
+    "ast_hash": "f6f9484282ce2a8bddeb9a6ba1df535c",
+    "semantic_hash": ""
+  },
+  "openspec/changes/sync-course-by-id/proposal.md": {
+    "mtime": 1793551755.1327176,
+    "seen": 1793552047.4926834,
+    "ast_hash": "002d0f6a13fe024401e0951536af3590",
+    "semantic_hash": ""
+  },
+  "openspec/changes/sync-course-by-id/specs/course-sync-by-id/spec.md": {
+    "mtime": 1793551819.003943,
+    "seen": 1793552047.4926834,
+    "ast_hash": "a2c0b5b71768706902c0de43061fc733",
+    "semantic_hash": ""
+  },
+  "openspec/changes/sync-course-by-id/tasks.md": {
+    "mtime": 1793552081.5966966,
+    "seen": 1794301350.353034,
+    "ast_hash": "7af58e31f2719b3e38487d56cead710b",
+    "semantic_hash": ""
+  },
+  ".local-deps/imageio_ffmpeg/__init__.py": {
+    "mtime": 1794303860.2528307,
+    "seen": 1794304443.0088162,
+    "ast_hash": "a304225b416e6738b55e9134eaff6809",
+    "semantic_hash": ""
+  },
+  ".local-deps/imageio_ffmpeg/_definitions.py": {
+    "mtime": 1794303860.2528307,
+    "seen": 1794304443.0088162,
+    "ast_hash": "0bd0394bbd63766d07744b2b48dbce17",
+    "semantic_hash": ""
+  },
+  ".local-deps/imageio_ffmpeg/_io.py": {
+    "mtime": 1794303860.2538333,
+    "seen": 1794304443.0088162,
+    "ast_hash": "b239aee175c848d5f39dcf3c468d8f32",
+    "semantic_hash": ""
+  },
+  ".local-deps/imageio_ffmpeg/_parsing.py": {
+    "mtime": 1794303860.2538333,
+    "seen": 1794304443.0088162,
+    "ast_hash": "148c597c212d8637b14632b1a5d4df54",
+    "semantic_hash": ""
+  },
+  ".local-deps/imageio_ffmpeg/_utils.py": {
+    "mtime": 1794303860.2538333,
+    "seen": 1794304443.0088162,
+    "ast_hash": "d614b2636eba3e65bd8e77d5661aabf4",
+    "semantic_hash": ""
+  },
+  ".local-deps/imageio_ffmpeg/binaries/__init__.py": {
+    "mtime": 1794303860.2562006,
+    "seen": 1794304443.0088162,
+    "ast_hash": "84d8792d141a97fcd48a2239f5cc232c",
+    "semantic_hash": ""
+  },
+  "api/audio_duration.py": {
+    "mtime": 1794304199.128278,
+    "seen": 1794304443.0088162,
+    "ast_hash": "b97b88eb52b753003864522941323cd5",
+    "semantic_hash": ""
+  },
+  ".local-deps/imageio_ffmpeg-0.8.1.dist-info/top_level.txt": {
+    "mtime": 1794303860.6077378,
+    "seen": 1794304443.0093281,
+    "ast_hash": "eb00a118d764bd19866c125b5ff007e2",
+    "semantic_hash": ""
+  },
+  ".local-deps/imageio_ffmpeg/binaries/README.md": {
+    "mtime": 1794303860.2552228,
+    "seen": 1794304443.0093281,
+    "ast_hash": "7a8446a3fe679acb9118f4c0268a7da1",
+    "semantic_hash": ""
+  },
+  "openspec/changes/measure-photo-album-audio-duration/.openspec.yaml": {
+    "mtime": 1794302730.2595143,
+    "seen": 1794304443.0093281,
+    "ast_hash": "6ef4f7747aa531c58d589ea284dca8d9",
+    "semantic_hash": ""
+  },
+  "openspec/changes/measure-photo-album-audio-duration/design.md": {
+    "mtime": 1794304550.1863282,
+    "seen": 1794306132.7356064,
+    "ast_hash": "cbecf72ae9998f9ead5751cf588d2f13",
+    "semantic_hash": ""
+  },
+  "openspec/changes/measure-photo-album-audio-duration/proposal.md": {
+    "mtime": 1794303347.6218073,
+    "seen": 1794304443.0093281,
+    "ast_hash": "95fa7677a56f3f168b92223c6b3ae9d8",
+    "semantic_hash": ""
+  },
+  "openspec/changes/measure-photo-album-audio-duration/specs/photo-album-audio-duration/spec.md": {
+    "mtime": 1794303347.6218073,
+    "seen": 1794304443.0093281,
+    "ast_hash": "8da5143ea2f47c57a71396fdc4f7d831",
+    "semantic_hash": ""
+  },
+  "openspec/changes/measure-photo-album-audio-duration/tasks.md": {
+    "mtime": 1794303347.6228426,
+    "seen": 1794304443.0093281,
+    "ast_hash": "944a8042142d5bcb513b9d9ab036fca3",
+    "semantic_hash": ""
+  },
+  "courses/migrations/0003_assignmentreviewconfirmation.py": {
+    "mtime": 1794305979.5820887,
+    "seen": 1794306132.7346013,
+    "ast_hash": "187d790fa60a776daa882bf21e1b010e",
+    "semantic_hash": ""
+  },
+  "courses/review_dates.py": {
+    "mtime": 1794490671.504908,
+    "seen": 1794490809.28786,
+    "ast_hash": "cc0648252874a4d12f8d6b2a3f42dd6b",
+    "semantic_hash": ""
+  },
+  "openspec/changes/track-assignment-review-status/.openspec.yaml": {
+    "mtime": 1794305862.0747626,
+    "seen": 1794306132.7356064,
+    "ast_hash": "6ef4f7747aa531c58d589ea284dca8d9",
+    "semantic_hash": ""
+  },
+  "openspec/changes/track-assignment-review-status/design.md": {
+    "mtime": 1794305905.5899947,
+    "seen": 1794306132.7356064,
+    "ast_hash": "c1765833f1aa9ae9add998aba17cd1dd",
+    "semantic_hash": ""
+  },
+  "openspec/changes/track-assignment-review-status/proposal.md": {
+    "mtime": 1794305876.5742984,
+    "seen": 1794306132.7356064,
+    "ast_hash": "8428aaefe9a9b4d5d43f258c4eea779a",
+    "semantic_hash": ""
+  },
+  "openspec/changes/track-assignment-review-status/specs/assignment-review-status/spec.md": {
+    "mtime": 1794305905.588894,
+    "seen": 1794306132.7356064,
+    "ast_hash": "c568dfdb64e9a5260043027a12db65ce",
+    "semantic_hash": ""
+  },
+  "openspec/changes/track-assignment-review-status/tasks.md": {
+    "mtime": 1794306113.527602,
+    "seen": 1794306132.7356064,
+    "ast_hash": "f29804340eecc6af888a413a54add7ca",
+    "semantic_hash": ""
+  },
+  "openspec/changes/revise-lesson7-ai-assignments/.openspec.yaml": {
+    "mtime": 1794470062.4837363,
+    "seen": 1794470758.6287017,
+    "ast_hash": "3d81d1267eddd749eda85fff90308b20",
+    "semantic_hash": ""
+  },
+  "openspec/changes/revise-lesson7-ai-assignments/design.md": {
+    "mtime": 1794470104.5884569,
+    "seen": 1794470758.6287017,
+    "ast_hash": "e947ffc0c246bb5966f6dd249d4edea4",
+    "semantic_hash": ""
+  },
+  "openspec/changes/revise-lesson7-ai-assignments/proposal.md": {
+    "mtime": 1794470075.1552186,
+    "seen": 1794470758.6287017,
+    "ast_hash": "2e52fa661c2ae5aef55eb6390e3fe3f8",
+    "semantic_hash": ""
+  },
+  "openspec/changes/revise-lesson7-ai-assignments/specs/lesson7-ai-assignments/spec.md": {
+    "mtime": 1794470104.2178993,
+    "seen": 1794470758.6287017,
+    "ast_hash": "4ac03fd9042d9524a233143dcba462ff",
+    "semantic_hash": ""
+  },
+  "openspec/changes/revise-lesson7-ai-assignments/tasks.md": {
+    "mtime": 1794470765.7604394,
+    "seen": 1794471069.4205804,
+    "ast_hash": "30adc8304649b18832f388dba8123f5f",
+    "semantic_hash": ""
+  },
+  "courses/planned_assignments.py": {
+    "mtime": 1794490671.9201717,
+    "seen": 1794490809.28786,
+    "ast_hash": "e86bbd04c5c7c7f8933fe9bcc43d603b",
+    "semantic_hash": ""
+  },
+  "tasks/lesson7/NEW_ASSIGNMENTS_SOURCE.md": {
+    "mtime": 1794476268.9278371,
+    "seen": 1794476285.498698,
+    "ast_hash": "dc3f0c65709a40e70f0ecee1a01bf494",
+    "semantic_hash": ""
+  },
+  "api/test_lesson7_new.py": {
+    "mtime": 1794477930.2879717,
+    "seen": 1794478248.8685582,
+    "ast_hash": "4cdbc2a31d4a4bded5144dcbeeb02788",
+    "semantic_hash": ""
+  },
+  "tasks/lesson7/fairytale_reading/reading.js": {
+    "mtime": 1794477506.2726374,
+    "seen": 1794477882.3978448,
+    "ast_hash": "6f9f42c15fee0135e1ce331d053774ac",
+    "semantic_hash": ""
+  },
+  "tasks/lesson7/fairytale_source.json": {
+    "mtime": 1794477335.8551784,
+    "seen": 1794477882.3978448,
+    "ast_hash": "18330c08cbf5e3bc41b7059fbdf18ca4",
+    "semantic_hash": ""
+  },
+  "tasks/lesson7/gagarin_reading/reading.js": {
+    "mtime": 1794477506.2746644,
+    "seen": 1794477882.3978448,
+    "ast_hash": "4b75b1f5dabdcd49b6cc2d8bb0adc6f7",
+    "semantic_hash": ""
+  },
+  "tasks/lesson7/gagarin_source.json": {
+    "mtime": 1794477335.8561797,
+    "seen": 1794477882.3978448,
+    "ast_hash": "84580067080654360d3c154ce3bc3629",
+    "semantic_hash": ""
+  },
+  "tasks/lesson7/vdnh_reading/reading.js": {
+    "mtime": 1794477506.2713234,
+    "seen": 1794477882.3978448,
+    "ast_hash": "10dc4538bc403f01140f784916a1f98c",
+    "semantic_hash": ""
+  },
+  "tasks/lesson7/vdnh_source.json": {
+    "mtime": 1794477335.853153,
+    "seen": 1794477882.3978448,
+    "ast_hash": "b3d1158d5fc2216abb736137021d490f",
+    "semantic_hash": ""
+  },
+  "openspec/changes/add-lesson7-new-ai-assignments/.openspec.yaml": {
+    "mtime": 1794477149.7062776,
+    "seen": 1794477882.3978448,
+    "ast_hash": "3d81d1267eddd749eda85fff90308b20",
+    "semantic_hash": ""
+  },
+  "openspec/changes/add-lesson7-new-ai-assignments/design.md": {
+    "mtime": 1794477214.2285092,
+    "seen": 1794477882.3978448,
+    "ast_hash": "34292c13c86ec7e2dd83be34dbac7f92",
+    "semantic_hash": ""
+  },
+  "openspec/changes/add-lesson7-new-ai-assignments/proposal.md": {
+    "mtime": 1794477169.007255,
+    "seen": 1794477882.3978448,
+    "ast_hash": "15ee9a101b25370ba7401386d45db3fc",
+    "semantic_hash": ""
+  },
+  "openspec/changes/add-lesson7-new-ai-assignments/specs/lesson7-new-ai-assignments/spec.md": {
+    "mtime": 1794477213.673963,
+    "seen": 1794477882.3978448,
+    "ast_hash": "6c084bc0bab5ee767f5ad9d26e00e3c2",
+    "semantic_hash": ""
+  },
+  "openspec/changes/add-lesson7-new-ai-assignments/tasks.md": {
+    "mtime": 1794478262.0279937,
+    "seen": 1794482030.82224,
+    "ast_hash": "c6858657e4ecfdb70e852386e56245e3",
+    "semantic_hash": ""
+  },
+  "tasks/lesson7/faculty_writing/faculty_writing.html": {
+    "mtime": 1794477559.8410752,
+    "seen": 1794477882.3983488,
+    "ast_hash": "7a31afb053e2d2b1d710bd4e72cd92c4",
+    "semantic_hash": ""
+  },
+  "tasks/lesson7/fairytale_reading/fairytale_reading.html": {
+    "mtime": 1794477359.5140495,
+    "seen": 1794477882.3983488,
+    "ast_hash": "78f7d6a93b92cb54659790aed95c4ef6",
+    "semantic_hash": ""
+  },
+  "tasks/lesson7/fairytale_retelling/fairytale_retelling.html": {
+    "mtime": 1794477534.233898,
+    "seen": 1794477882.3983488,
+    "ast_hash": "1b9724fb0a970fe765b1b4e4183ae74c",
+    "semantic_hash": ""
+  },
+  "tasks/lesson7/fairytale_verbs/fairytale_verbs.html": {
+    "mtime": 1794477559.8390436,
+    "seen": 1794477882.3983488,
+    "ast_hash": "c019cf75d2a18b366e114c78cd45fd3d",
+    "semantic_hash": ""
+  },
+  "tasks/lesson7/gagarin_reading/gagarin_reading.html": {
+    "mtime": 1794477359.5163953,
+    "seen": 1794477882.3983488,
+    "ast_hash": "84120f4fb3a8bd39405ffce3242c76e7",
+    "semantic_hash": ""
+  },
+  "tasks/lesson7/vdnh_reading/vdnh_reading.html": {
+    "mtime": 1794477359.5130415,
+    "seen": 1794477882.3983488,
+    "ast_hash": "dde7aa6ac0554135d100c4f7959e0424",
+    "semantic_hash": ""
+  },
+  "tasks/lesson5/SOURCE_MATERIALS.md": {
+    "mtime": 1794490672.3238406,
+    "seen": 1794490809.2900069,
+    "ast_hash": "e2715d2b5b8f41e23e5a3dcbe0934768",
+    "semantic_hash": ""
+  },
+  "tasks/lesson5/classroom_reading/source.json": {
+    "mtime": 1794486106.688684,
+    "seen": 1794486390.8551698,
+    "ast_hash": "e1c95aca11e3f661849018bb93e86aee",
+    "semantic_hash": ""
+  },
+  "tasks/lesson5/family_reading/source.json": {
+    "mtime": 1794486106.6912107,
+    "seen": 1794486390.8551698,
+    "ast_hash": "5c88cfa8733903c8cb1bb3b6dcc6aa86",
+    "semantic_hash": ""
+  },
+  "tasks/lesson5/juan_carlos_reading/source.json": {
+    "mtime": 1794486106.6901963,
+    "seen": 1794486390.8551698,
+    "ast_hash": "836e3a2058a38ae3f5a3132242f28357",
+    "semantic_hash": ""
+  },
+  "tasks/lesson5/parrot_reading/source.json": {
+    "mtime": 1794486106.6937351,
+    "seen": 1794486390.8551698,
+    "ast_hash": "53a1d4b79ae455d3ce82fa1b66a4ea87",
+    "semantic_hash": ""
+  },
+  "tasks/lesson5/reading.js": {
+    "mtime": 1794485264.3258946,
+    "seen": 1794485324.5571017,
+    "ast_hash": "afb0e7587a9f8b9262066554c0a324e8",
+    "semantic_hash": ""
+  },
+  "tasks/lesson5/thomas_edward_reading/source.json": {
+    "mtime": 1794486106.695805,
+    "seen": 1794486390.8551698,
+    "ast_hash": "ad541b08b4b8abd36c5b2150ecabb862",
+    "semantic_hash": ""
+  },
+  "openspec/changes/add-lesson5-reading-ai-tasks/.openspec.yaml": {
+    "mtime": 1794484327.1672475,
+    "seen": 1794485169.2125554,
+    "ast_hash": "3d81d1267eddd749eda85fff90308b20",
+    "semantic_hash": ""
+  },
+  "openspec/changes/add-lesson5-reading-ai-tasks/design.md": {
+    "mtime": 1794484476.8208897,
+    "seen": 1794485169.2125554,
+    "ast_hash": "4550275e2849922bcfa3660f6fde51e0",
+    "semantic_hash": ""
+  },
+  "openspec/changes/add-lesson5-reading-ai-tasks/proposal.md": {
+    "mtime": 1794484356.1703367,
+    "seen": 1794485169.2125554,
+    "ast_hash": "ff6bc5b538230af390c91c72fcf0e3f8",
+    "semantic_hash": ""
+  },
+  "openspec/changes/add-lesson5-reading-ai-tasks/specs/lesson5-reading-tasks/spec.md": {
+    "mtime": 1794484423.3382554,
+    "seen": 1794485169.2125554,
+    "ast_hash": "3cbc782d1abbe7a00230b4535420715e",
+    "semantic_hash": ""
+  },
+  "openspec/changes/add-lesson5-reading-ai-tasks/tasks.md": {
+    "mtime": 1794485194.7160332,
+    "seen": 1794485324.558611,
+    "ast_hash": "1c9184aa86206389a23338d368515dd1",
+    "semantic_hash": ""
+  },
+  "tasks/lesson5/classroom_reading/classroom_reading.html": {
+    "mtime": 1794485218.7445054,
+    "seen": 1794485324.558611,
+    "ast_hash": "a6ccdab2ee89ae1e5feca7a859b2490e",
+    "semantic_hash": ""
+  },
+  "tasks/lesson5/family_reading/family_reading.html": {
+    "mtime": 1794485218.7465813,
+    "seen": 1794485324.558611,
+    "ast_hash": "ee18db0eddf5f3bf99c91a66f5f10fd6",
+    "semantic_hash": ""
+  },
+  "tasks/lesson5/juan_carlos_reading/juan_carlos_reading.html": {
+    "mtime": 1794485218.748103,
+    "seen": 1794485324.558611,
+    "ast_hash": "3ec9f042ddbe826f8948a75dcc05e66b",
+    "semantic_hash": ""
+  },
+  "tasks/lesson5/parrot_reading/parrot_reading.html": {
+    "mtime": 1794485218.7501104,
+    "seen": 1794485324.558611,
+    "ast_hash": "db5f3896fa83e6dd42af4cece4b7a81d",
+    "semantic_hash": ""
+  },
+  "tasks/lesson5/thomas_edward_reading/thomas_edward_reading.html": {
+    "mtime": 1794485218.7521155,
+    "seen": 1794485324.558611,
+    "ast_hash": "e598ea926ca0a9585f353512c5bfc562",
+    "semantic_hash": ""
+  },
+  "tasks/lesson5/classroom_reading/reference.wav": {
+    "mtime": 1794485043.590338,
+    "seen": 1794485169.2135735,
+    "ast_hash": "ec6bd27ceb36d21188c3c42e00873963",
+    "semantic_hash": ""
+  },
+  "tasks/lesson5/family_reading/reference.wav": {
+    "mtime": 1794485052.1490586,
+    "seen": 1794485169.2135735,
+    "ast_hash": "e39da14564ab5e8cc26d25d71fd2b54f",
+    "semantic_hash": ""
+  },
+  "tasks/lesson5/juan_carlos_reading/reference.wav": {
+    "mtime": 1794485047.3475096,
+    "seen": 1794485169.2135735,
+    "ast_hash": "2433c00226a565904a2d3b83039c094d",
+    "semantic_hash": ""
+  },
+  "tasks/lesson5/parrot_reading/reference.wav": {
+    "mtime": 1794485056.3143463,
+    "seen": 1794485169.2135735,
+    "ast_hash": "15865d59575cb84212a500cbf4dbb16d",
+    "semantic_hash": ""
+  },
+  "tasks/lesson5/thomas_edward_reading/reference.wav": {
+    "mtime": 1794486125.1812766,
+    "seen": 1794486390.8572338,
+    "ast_hash": "f5d8d5e92940daf0af50dc56129d4ef9",
+    "semantic_hash": ""
+  },
+  "tasks/lesson5/classroom_questions/classroom_questions.js": {
+    "mtime": 1794486339.453841,
+    "seen": 1794486390.8551698,
+    "ast_hash": "dfd516ae5b133c465fa842c1b1ed0374",
+    "semantic_hash": ""
+  },
+  "tasks/lesson5/classroom_questions/classroom_questions.html": {
+    "mtime": 1794486227.2636886,
+    "seen": 1794486390.856205,
+    "ast_hash": "2c7bea4ae77ac3ea5af0db50f204b106",
+    "semantic_hash": ""
+  },
+  "tasks/lesson5/classroom_questions/images/boy_bed.png": {
+    "mtime": 1794486107.398968,
+    "seen": 1794486390.8567252,
+    "ast_hash": "319141b700977638b50a93702803c1cc",
+    "semantic_hash": ""
+  },
+  "tasks/lesson5/classroom_questions/images/cat_sofa.png": {
+    "mtime": 1794486107.379205,
+    "seen": 1794486390.8567252,
+    "ast_hash": "34a02753921339ca8433fb6b6ae89837",
+    "semantic_hash": ""
+  },
+  "tasks/lesson5/classroom_questions/images/water_glass.png": {
+    "mtime": 1794486107.364063,
+    "seen": 1794486390.8567252,
+    "ast_hash": "c9d2a424c64e0e51c55cc5205beebe7c",
+    "semantic_hash": ""
+  },
+  "tasks/lesson5/juan_carlos_questions/questions.js": {
+    "mtime": 1794489873.805213,
+    "seen": 1794490068.2976441,
+    "ast_hash": "849b226b09b7764bd22621484a18498a",
+    "semantic_hash": ""
+  },
+  "tasks/lesson5/juan_carlos_questions/juan_carlos_questions.html": {
+    "mtime": 1794491201.2801433,
+    "seen": 1794491231.6177878,
+    "ast_hash": "b4dee3a214716f4bb7c6ccd889e0776d",
+    "semantic_hash": ""
+  },
+  "tasks/lesson5/juan_carlos_questions/juan.png": {
+    "mtime": 1794489894.0051324,
+    "seen": 1794490068.2999263,
+    "ast_hash": "3829965b32da33a6757a94898af90c6f",
+    "semantic_hash": ""
+  },
+  "tasks/lesson5/family_questions/questions.js": {
+    "mtime": 1794489873.805213,
+    "seen": 1794490809.288943,
+    "ast_hash": "849b226b09b7764bd22621484a18498a",
+    "semantic_hash": ""
+  },
+  "tasks/lesson5/family_questions/family_questions.html": {
+    "mtime": 1794491201.278046,
+    "seen": 1794491231.6177878,
+    "ast_hash": "d4d1e8fac2dcab436607cd179f8b642a",
     "semantic_hash": ""
   }
 }

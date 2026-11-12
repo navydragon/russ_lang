@@ -12,8 +12,8 @@ from courses.services import parse_ispring_post, save_quiz_result
 from .reading_check import READING_TASKS, check_reading_audio
 from .retelling_check import check_retelling_audio, MAX_AUDIO_BYTES, RETELLING_TASKS
 from .audio_duration import AudioDurationError
-from .speaking_nexara import check_speaking_audio
-from .story_llm import VALID_TASK_IDS, check_story
+from .speaking_nexara import check_speaking_audio, transcribe_audio, extract_recognized_text
+from .story_llm import VALID_TASK_IDS, StoryCheckResult, check_story
 from .excursion import score_selection, words_and_targets
 
 logger = logging.getLogger('api')
@@ -125,6 +125,13 @@ def story_check(request):
             status=400,
         )
 
+    story_task_codes = {
+        'lesson7_fairytale_verbs': 'AI_7_10', 'lesson7_faculty_writing': 'AI_7_12',
+        'lesson5_classroom_questions': 'AI_5_6',
+    }
+    if task_id in story_task_codes and task_code != story_task_codes[task_id]:
+        return JsonResponse({'error': 'Неверный код задания.'}, status=400)
+
     if not text:
         return JsonResponse({'error': 'Text is required'}, status=400)
 
@@ -185,6 +192,81 @@ def retelling_check(request):
         source='retelling_check', extra_result=speech,
     )
     response = {**result.model_dump(), **speech, 'saved': saved}
+    if save_error:
+        response['save_error'] = save_error
+    return JsonResponse(response)
+
+
+@csrf_exempt
+@require_POST
+def picture_question_check(request):
+    """Check one written or spoken question-answer pair for the lesson-five pictures."""
+    task_id = request.POST.get('task_id', '').strip()
+    task_code = request.POST.get('task_code', '').strip()
+    mode = request.POST.get('mode', '').strip()
+    picture_index = request.POST.get('picture_index', '').strip()
+    if task_id != 'lesson5_classroom_questions' or task_code != 'AI_5_6':
+        return JsonResponse({'error': 'Неверный код задания.'}, status=400)
+    picture_data = {
+        '1': ('стакан с водой стоит на столе', 'стакан, вода, стол'),
+        '2': ('кошка сидит на диване', 'кошка, диван, сидеть'),
+        '3': ('мальчик спит в кровати', 'мальчик, кровать, спать'),
+    }
+    if picture_index not in picture_data:
+        return JsonResponse({'error': 'Неизвестная картинка.'}, status=400)
+
+    image_description, support_words = picture_data[picture_index]
+    if mode == 'written':
+        question = request.POST.get('question', '').strip()
+        answer = request.POST.get('answer', '').strip()
+        if not question or not answer:
+            return JsonResponse({'error': 'Заполните вопрос и ответ.'}, status=400)
+        student_text = f'Вопрос ученика: {question}\nОтвет ученика: {answer}'
+        recognized = ''
+    elif mode == 'oral':
+        upload = request.FILES.get('file')
+        if not upload:
+            return JsonResponse({'error': 'Запишите вопрос и ответ.'}, status=400)
+        if upload.size > MAX_AUDIO_BYTES:
+            return JsonResponse({'error': 'Максимальный размер записи — 20 МБ.'}, status=413)
+        try:
+            payload = transcribe_audio(
+                upload.read(), getattr(upload, 'name', 'question-answer.webm'),
+                content_type=getattr(upload, 'content_type', 'audio/webm'), language='ru',
+            )
+            recognized = extract_recognized_text(payload)
+        except Exception:
+            logger.exception('Picture question ASR failed')
+            return JsonResponse({'error': 'Не удалось распознать запись. Попробуйте ещё раз.'}, status=502)
+        if not recognized:
+            return JsonResponse({'error': 'Речь не распознана. Запишите вопрос и ответ ещё раз.'}, status=400)
+        student_text = 'Ученик сначала произносит вопрос, затем свой ответ. Транскрипт: ' + recognized
+    else:
+        return JsonResponse({'error': 'Неизвестный режим ответа.'}, status=400)
+
+    rubric_context = (
+        f'Картинка {picture_index}: {image_description}. Опорные слова: {support_words}.\n'
+        + student_text
+    )
+    try:
+        result = check_story(task_id, rubric_context)
+    except RuntimeError as exc:
+        logger.error('Picture question checker config error: %s', exc)
+        return JsonResponse({'error': str(exc)}, status=500)
+    except Exception:
+        logger.exception('Picture question LLM check failed')
+        return JsonResponse({'error': 'Не удалось проверить пару вопрос–ответ.'}, status=502)
+
+    student_code = request.POST.get('student_code', '').strip()
+    saved, save_error = _persist_story_attempt(
+        student_code, task_code, rubric_context, result,
+        source='picture_question_check',
+        extra_result={'mode': mode, 'picture_index': int(picture_index), 'recognized': recognized or None},
+    )
+    response = result.model_dump()
+    response.update({'saved': saved, 'mode': mode, 'picture_index': int(picture_index)})
+    if recognized:
+        response['recognized'] = recognized
     if save_error:
         response['save_error'] = save_error
     return JsonResponse(response)
@@ -411,7 +493,27 @@ def reading_complete(request):
     if not isinstance(check_result, dict):
         check_result = {}
 
-    saved, save_error = _persist_reading_attempt(student_code, task_code, task_id, check_result)
+    reading_codes = {
+        'lesson7_vdnh_reading': 'AI_7_7', 'lesson7_fairytale_reading': 'AI_7_8', 'lesson7_gagarin_reading': 'AI_7_9',
+        'lesson5_classroom_reading': 'AI_5_1', 'lesson5_juan_carlos_reading': 'AI_5_2',
+        'lesson5_family_reading': 'AI_5_3', 'lesson5_parrot_reading': 'AI_5_4',
+        'lesson5_thomas_edward_reading': 'AI_5_5',
+    }
+    if task_id in reading_codes:
+        if task_code != reading_codes[task_id]:
+            return JsonResponse({'error': 'Неверный код задания.'}, status=400)
+        try:
+            score = float(check_result['score'])
+            if not 0 <= score <= 100 or type(check_result.get('ok')) is not bool:
+                raise ValueError()
+            result = StoryCheckResult(ok=check_result['ok'], score=round(score), normalized=check_result.get('recognized', ''),
+                                      feedback='Чтение проверено.', errors=[], recommendations=[], quality_notes='')
+        except (KeyError, ValueError, TypeError):
+            return JsonResponse({'error': 'Некорректный результат чтения.'}, status=400)
+        saved, save_error = _persist_story_attempt(student_code, task_code, result.normalized, result,
+                                                  source='reading_complete', extra_result=check_result)
+    else:
+        saved, save_error = _persist_reading_attempt(student_code, task_code, task_id, check_result)
     response = {'saved': saved, 'ok': bool(check_result.get('ok'))}
     if save_error:
         response['save_error'] = save_error

@@ -48,9 +48,12 @@ function showCurrent() {
   el("error").textContent = "";
   el("question").hidden = run.completed;
   if (run.completed) { el("stepTitle").textContent = "Задание завершено"; return; }
-  el("stepTitle").textContent = "Вопрос " + (run.current.index + 1) + " из 10";
+  el("stepTitle").textContent = "Вопрос " + (run.current.index + 1) + " из " + run.word_count;
   el("questionText").textContent = run.current.question;
-  el("audio").src = API + run.current.audio_path + "?v=questions-1";
+  const hasAudio = !!run.current.audio_path;
+  el("listen").hidden = !hasAudio;
+  if (hasAudio) el("audio").src = API + run.current.audio_path + "?v=questions-1";
+  else { el("audio").removeAttribute("src"); el("audio").load(); }
   el("answer").value = "";
   el("answer").disabled = false;
   el("check").disabled = false;

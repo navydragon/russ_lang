@@ -40,9 +40,25 @@ def _find_session(run_id, lock=False):
 
 
 def _response(run_id, run, **extra):
-    response = JsonResponse({**public_state(run_id, run), **extra})
+    if _old_lesson7_run(run):
+        count = len(run['words'])
+        if len(run['answers']) < count:
+            return JsonResponse({'error': 'Вопросы задания обновились. Начните задание заново.', 'restart_required': True}, status=409)
+        score = round(sum(item['score'] for item in run['answers']) * 100 / (count * 10))
+        state = {'run_id': run_id, 'task_code': run['task_code'], 'student_code': run['student_code'],
+                 'word_count': count, 'answered': count, 'current': None, 'answers': run['answers'],
+                 'score': score, 'max_score': 100, 'passing_score': PASSING_SCORE,
+                 'completed': True, 'ok': score >= PASSING_SCORE,
+                 'saved': run.get('saved', False), 'save_error': run.get('save_error')}
+    else:
+        state = public_state(run_id, run)
+    response = JsonResponse({**state, **extra})
     response['Cache-Control'] = 'no-store'
     return response
+
+
+def _old_lesson7_run(run):
+    return run['task_code'] in ('AI_7_4', 'AI_7_6') and run.get('question_version') != 2
 
 
 @csrf_exempt
@@ -56,6 +72,8 @@ def start(request):
         return JsonResponse({'error': 'Неверный код ученика.'}, status=400)
     task_code = body['task_code']
     run = {'task_code': task_code, 'student_code': student_code.strip(), 'words': choose_words(task_code), 'answers': []}
+    if task_code in ('AI_7_4', 'AI_7_6'):
+        run['question_version'] = 2
     store = SessionStore()
     store.set_expiry(86400)
     store['ai_university_questions'] = run
@@ -85,6 +103,10 @@ def answer(request):
         return JsonResponse({'error': 'Набор не найден или срок его действия истёк.'}, status=404)
     data = session.get_decoded()
     run = data['ai_university_questions']
+    if _old_lesson7_run(run):
+        if len(run['answers']) == len(run['words']):
+            return _response(run_id, run)
+        return JsonResponse({'error': 'Вопросы задания обновились. Начните задание заново.', 'restart_required': True}, status=409)
     task_code = run['task_code']
     word_count = TASKS[task_code]['count']
     index = body.get('index')
