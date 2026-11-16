@@ -50,10 +50,6 @@ function showCurrent() {
   if (run.completed) { el("stepTitle").textContent = "Задание завершено"; return; }
   el("stepTitle").textContent = "Вопрос " + (run.current.index + 1) + " из " + run.word_count;
   el("questionText").textContent = run.current.question;
-  const hasAudio = !!run.current.audio_path;
-  el("listen").hidden = !hasAudio;
-  if (hasAudio) el("audio").src = API + run.current.audio_path + "?v=questions-1";
-  else { el("audio").removeAttribute("src"); el("audio").load(); }
   el("answer").value = "";
   el("answer").disabled = false;
   el("check").disabled = false;
@@ -97,10 +93,6 @@ el("answerForm").addEventListener("submit", event => {
   submit(el("answer").value.trim());
 });
 el("skip").addEventListener("click", () => { el("answer").value = ""; submit(""); });
-el("listen").addEventListener("click", async () => {
-  try { el("audio").currentTime = 0; await el("audio").play(); el("error").textContent = ""; }
-  catch (_) { el("error").textContent = "Не удалось воспроизвести вопрос. Проверьте звук и попробуйте ещё раз."; }
-});
 (async () => {
   const id = previousRun();
   if (!id) return;

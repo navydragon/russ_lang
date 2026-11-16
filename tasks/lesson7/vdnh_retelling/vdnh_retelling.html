@@ -308,7 +308,7 @@
         <div class="paper reading-text" id="referencePanel">
           <h3>ИСТОРИЯ О ВЫСТАВКЕ ВДНХ</h3>
           <p class="small text-muted">Вспомните, кто написал письмо, что происходило на выставке и как герои познакомились.</p>
-          <details open>
+          <details id="sourceDetails" open>
             <summary class="fw-semibold">Исходный текст</summary>
             <div class="source-text mt-2">
               <p>— Сергей Иванович, вы часто получаете письма из Москвы?<br>— Часто. Вот и вчера я опять получил письмо. Его написал мой друг Олег. Он рассказал мне интересный случай.</p>
@@ -486,6 +486,7 @@
           if (e.data && e.data.size > 0) recordedChunks.push(e.data);
         };
         mediaRecorder.onstop = () => {
+          document.getElementById("sourceDetails").hidden = false;
           lastBlob = new Blob(recordedChunks, { type: mediaRecorder.mimeType || "audio/webm" });
           player.src = URL.createObjectURL(lastBlob);
           player.hidden = false;
@@ -502,11 +503,17 @@
         timerDisplay.textContent = formatRemain(0);
         timerInterval = setInterval(updateTimer, 250);
         mediaRecorder.start();
+        document.getElementById("sourceDetails").hidden = true;
         setBusy(false);
         recStatus.textContent = "Идёт запись…";
         recHint.textContent = "";
         hintEl.innerHTML = "";
       } catch (e) {
+        document.getElementById("sourceDetails").hidden = false;
+        isRecording = false;
+        if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
+        if (mediaRecorder?.stream) mediaRecorder.stream.getTracks().forEach((t) => t.stop());
+        setBusy(false);
         recHint.textContent = "Не удалось получить доступ к микрофону.";
       }
     }

@@ -84,7 +84,10 @@ async function submit(text) {
     el("wordFeedback").textContent = feedbackText(f);
     el("answer").disabled = true;
     el("next").hidden = run.completed;
-    if (run.completed) el("stepTitle").textContent = "Диктант завершён";
+    if (run.completed) {
+      el("question").hidden = true;
+      el("stepTitle").textContent = "Диктант завершён";
+    }
   } catch (error) {
     el("error").textContent = error.message;
     el("check").disabled = false; el("skip").disabled = false;

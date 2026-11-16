@@ -247,9 +247,10 @@ class FamilyPhotoWritingTests(SimpleTestCase):
 class MyUniversityWritingTests(SimpleTestCase):
     def test_rubric_is_free_writing_without_fixed_reference_or_word_count(self):
         cfg = TASK_CONFIGS['my_university_story']
-        self.assertEqual((cfg.min_sentences, cfg.min_vocab_hits), (0, 0))
+        self.assertEqual((cfg.min_sentences, cfg.min_vocab_hits), (10, 0))
         self.assertEqual(cfg.passing_score, 60)
         prompt = _build_user_prompt('my_university_story', 'Мой университет большой.')
+        self.assertIn('минимум 10 предложений', prompt)
         self.assertIn('самостоятельный рассказ', prompt)
         self.assertIn('согласование прилагательных', prompt)
         self.assertIn('не требуй писать только о РУТ МИИТ', prompt)
@@ -265,7 +266,30 @@ class MyUniversityWritingTests(SimpleTestCase):
             )
             actual = _sanitize_result(result, text, 'my_university_story')
             self.assertEqual(actual.ok, expected)
-            self.assertEqual(len(actual.errors), 1)
+            self.assertTrue(any(e.code == 'grammar' for e in actual.errors))
+
+    def test_completed_sentence_limit_removes_false_count_complaint(self):
+        text = ' '.join(['Мой университет большой.'] * 10)
+        result = StoryCheckResult(
+            ok=False, score=55,
+            feedback='Обратите внимание на количество предложений и лексическое разнообразие. Добавьте детали.',
+            normalized=text,
+            errors=[StoryError(start=0, end=len(text), code='completeness', message='Текст содержит всего 10 простых предложений.')],
+            quality_notes='Раскройте тему подробнее.', recommendations=['Добавьте больше предложений.'],
+        )
+        actual = _sanitize_result(result, text, 'my_university_story')
+        self.assertNotIn('количество предложений', actual.feedback)
+        self.assertEqual(actual.feedback, 'Добавьте детали.')
+        self.assertEqual(actual.errors, [])
+        self.assertEqual(actual.recommendations, [])
+        self.assertEqual(actual.quality_notes, 'Раскройте тему подробнее.')
+
+    def test_sentence_limit(self):
+        for count in (9, 10):
+            text = ' '.join(['Мой университет большой.'] * count)
+            result = StoryCheckResult(ok=True, score=80, feedback='Хорошо.', normalized=text, errors=[], quality_notes='', recommendations=[])
+            actual = _sanitize_result(result, text, 'my_university_story')
+            self.assertEqual(any(e.code == 'completeness' and 'предложен' in e.message for e in actual.errors), count < 10)
 
 
 class MoscowReadingTests(SimpleTestCase):

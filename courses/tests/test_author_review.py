@@ -9,7 +9,7 @@ class AuthorReviewTests(TestCase):
         self.assertContains(response, 'Чтение «Моя профессия»')
         self.assertContains(response, 'Изложение «Вечер на факультете»')
         self.assertContains(response, 'Запланировано')
-        self.assertContains(response, 'Нужны текст и вопросы слайда 6.1.')
+        self.assertContains(response, 'Нужны текст и образец озвучки.')
 
     @override_settings(DEBUG=False)
     def test_public_page_lists_ready_tasks_without_identity(self):

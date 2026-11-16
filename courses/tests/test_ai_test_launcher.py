@@ -1,3 +1,4 @@
+import re
 from io import StringIO
 from html.parser import HTMLParser
 from pathlib import Path
@@ -23,6 +24,20 @@ class _TaskAssetParser(HTMLParser):
     def handle_starttag(self, tag, attrs):
         attributes = dict(attrs)
         self.references.extend(attributes[key] for key in ('src', 'href') if attributes.get(key))
+
+
+def _page_scripts(page, html):
+    parser = _TaskAssetParser()
+    parser.feed(html)
+    sources = [html]
+    for reference in parser.references:
+        parsed = urlsplit(reference)
+        if parsed.scheme or reference.startswith(('/', '#', 'data:')) or not parsed.path.endswith('.js'):
+            continue
+        script = (page.parent / unquote(parsed.path)).resolve()
+        if script.is_file():
+            sources.append(script.read_text(encoding='utf-8'))
+    return '\n'.join(sources)
 
 
 @override_settings(DEBUG=True)
@@ -73,8 +88,9 @@ class AITestLauncherTests(TestCase):
                 self.assertEqual(page.status_code, 200)
                 page.close()
                 source = (Path(settings.BASE_DIR) / 'tasks' / definition.html_path).read_text(encoding='utf-8')
-                self.assertIn(f'const TASK_CODE = "{definition.code}";', source)
-                self.assertIn('const API = window.ANALYZER_CONFIG.apiBaseUrl;', source)
+                scripts = _page_scripts(Path(settings.BASE_DIR) / 'tasks' / definition.html_path, source)
+                self.assertRegex(scripts, rf'TASK_CODE\s*=\s*[\"\']{re.escape(definition.code)}[\"\']')
+                self.assertRegex(scripts, r'API\s*=\s*window\.ANALYZER_CONFIG\.apiBaseUrl')
 
     def test_launcher_without_seed_disables_launches(self):
         response = self.client.get('/dev/tasks/')
@@ -91,8 +107,9 @@ class AITestLauncherTests(TestCase):
                 page = root / definition.html_path
                 html = page.read_text(encoding='utf-8')
                 self.assertIn('../../api-config.js', html)
-                self.assertIn('const API = window.ANALYZER_CONFIG.apiBaseUrl;', html)
-                self.assertIn(f'const TASK_CODE = "{definition.code}";', html)
+                scripts = _page_scripts(page, html)
+                self.assertRegex(scripts, r'API\s*=\s*window\.ANALYZER_CONFIG\.apiBaseUrl')
+                self.assertRegex(scripts, rf'TASK_CODE\s*=\s*[\"\']{re.escape(definition.code)}[\"\']')
                 parser = _TaskAssetParser()
                 parser.feed(html)
                 for reference in parser.references:

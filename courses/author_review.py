@@ -69,6 +69,7 @@ TASK_SUMMARIES = {
     'AI_5_6': ('По очереди составляет устную и письменную пару вопрос–ответ к трём картинкам, используя опорные слова.', 'ИИ проверяет связь вопроса и ответа, соответствие изображению, опорные слова и понятность русского языка.'),
     'AI_5_7': ('Письменно отвечает по одному на десять вопросов к тексту «Хуан и Карлос».', 'За каждый ответ начисляет до 5 баллов за смысл и до 5 за написание; зачёт от 60 из 100.'),
     'AI_5_8': ('Письменно отвечает по одному на восемь вопросов к тексту «Наша семья».', 'За каждый ответ начисляет 5 баллов за смысл и 5 за написание; итог переводится в шкалу 0–100, зачёт от 60.'),
+    'AI_5_9': ('Прослушивает текст «Попугай» и пишет изложение по шести вопросам.', 'Оценивает шесть смысловых частей до 60 баллов, связность до 25, грамматику и написание до 15; зачёт от 60.'),
 }
 
 
@@ -85,15 +86,15 @@ def _plain_details(section: str) -> str:
     return section.strip()
 
 
-def _assignment_details() -> dict[int, str]:
+def _assignment_details() -> dict[str, str]:
     source = Path(settings.BASE_DIR) / 'tasks' / 'AI_ASSIGNMENTS.md'
     text = source.read_text(encoding='utf-8')
     sections = re.split(r'(?=^### \d+\. )', text, flags=re.MULTILINE)
     details = {}
     for section in sections:
-        match = re.match(r'### (\d+)\. ', section)
+        match = re.search(r'\*\*Код:\*\*\s*`?(AI_\d+_\d+)`?', section)
         if match:
-            details[int(match.group(1))] = _plain_details(section)
+            details[match.group(1)] = _plain_details(section)
     return details
 
 
@@ -114,7 +115,7 @@ def author_assignments(request):
                 'confirmed': item.code in confirmed,
                 'student_action': student_action,
                 'ai_action': ai_action,
-                'details': details.get(item.number, ''),
+                'details': details.get(item.code, ''),
             })
         lessons.append({'number': number, 'tasks': tasks,
                         'planned': [item for item in PLANNED_ASSIGNMENTS if item.lesson == number]})

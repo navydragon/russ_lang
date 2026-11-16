@@ -128,6 +128,7 @@ def story_check(request):
     story_task_codes = {
         'lesson7_fairytale_verbs': 'AI_7_10', 'lesson7_faculty_writing': 'AI_7_12',
         'lesson5_classroom_questions': 'AI_5_6',
+        'lesson5_parrot_retelling': 'AI_5_9',
     }
     if task_id in story_task_codes and task_code != story_task_codes[task_id]:
         return JsonResponse({'error': 'Неверный код задания.'}, status=400)

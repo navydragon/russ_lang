@@ -79,4 +79,5 @@ TASK_CATALOG = (
     TaskDefinition(52, 5, 6, 'lesson5_classroom_questions', 'Вопросы и ответы по картинкам «В классе»', '6.1.1', 'lesson5/classroom_questions/classroom_questions.html'),
     TaskDefinition(53, 5, 7, 'lesson5_juan_carlos_questions', 'Ответы на вопросы по тексту «Хуан и Карлос»', '13.1.1', 'lesson5/juan_carlos_questions/juan_carlos_questions.html'),
     TaskDefinition(54, 5, 8, 'lesson5_family_questions', 'Ответы на вопросы по тексту «Наша семья»', '15.1.1', 'lesson5/family_questions/family_questions.html'),
+    TaskDefinition(55, 5, 9, 'lesson5_parrot_retelling', 'Изложение «Попугай»', '24.3', 'lesson5/parrot_retelling/parrot_retelling.html'),
 )
