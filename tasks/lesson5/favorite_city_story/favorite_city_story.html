@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI_5_12 — Мой любимый город</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+<body class="bg-light">
+  <main class="container py-3">
+    <h1 class="h4">Мой любимый город</h1>
+    <p>Напишите связный рассказ о любимом городе. Используйте «Экскурсию по Москве» как образец, а вопросы — как план. Зачёт от 60 баллов из 100.</p>
+    <div class="row g-3">
+      <section class="col-md-6" aria-labelledby="materials-title">
+        <div class="card card-body">
+          <h2 class="h5" id="materials-title">Опорные вопросы</h2>
+          <ol>
+            <li>Как называется ваш любимый город и где он находится?</li>
+            <li>Как выглядит город или его центр?</li>
+            <li>Какую достопримечательность вы бы показали туристу и чем она интересна?</li>
+            <li>Что можно делать в этом городе?</li>
+            <li>Какое место в городе вам особенно нравится?</li>
+            <li>Почему этот город ваш любимый?</li>
+          </ol>
+          <details class="border-top pt-3">
+            <summary class="fw-semibold">Текст-образец «Экскурсия по Москве»</summary>
+            <div class="mt-3" id="city-source"></div>
+          </details>
+        </div>
+      </section>
+      <section class="col-md-6" aria-labelledby="answer">
+        <form class="card card-body" id="description-form" data-task-id="lesson5_favorite_city_story" data-min-sentences="0">
+          <label class="form-label fw-semibold" id="answer" for="description">Рассказ о любимом городе</label>
+          <textarea class="form-control mb-3" id="description" rows="10" spellcheck="false" required></textarea>
+          <button class="btn btn-primary align-self-start" type="submit">Проверить</button>
+          <p class="mb-0 mt-3" id="check-status" role="status"></p>
+          <ul class="mb-0 mt-2" id="feedback" hidden></ul>
+        </form>
+      </section>
+    </div>
+  </main>
+  <script src="../../api-config.js"></script>
+  <script>
+    const TASK_CODE = "AI_5_12";
+    const citySource = document.getElementById("city-source");
+
+    async function loadCityExample() {
+      const response = await fetch("../moscow_excursion_reading/source.json");
+      if (!response.ok) throw new Error("Не удалось загрузить текст-образец.");
+      const { paragraphs } = await response.json();
+      for (const paragraph of paragraphs.slice(0, 3)) {
+        const element = document.createElement("p");
+        element.textContent = paragraph;
+        citySource.append(element);
+      }
+    }
+
+    loadCityExample().catch(() => {
+      citySource.textContent = "Не удалось загрузить текст-образец.";
+    });
+  </script>
+  <script src="../picture-description.js"></script>
+</body>
+</html>

@@ -298,6 +298,26 @@ class AITestLauncherTests(TestCase):
 
 class AssignmentReviewConfirmationTests(TestCase):
     @override_settings(DEBUG=True)
+    def test_author_review_shows_all_lesson_five_tasks_in_order(self):
+        response = self.client.get('/authors/assignments/')
+        self.assertEqual(response.status_code, 200)
+        lesson = next(item for item in response.context['lessons'] if item['number'] == 5)
+        self.assertEqual(
+            [row['definition'].code for row in lesson['tasks']],
+            [f'AI_5_{position}' for position in range(1, 17)],
+        )
+        self.assertEqual(lesson['planned'], [])
+        for row in lesson['tasks'][9:]:
+            definition = row['definition']
+            with self.subTest(task=definition.code):
+                self.assertIn(definition.code, row['details'])
+                self.assertIsNotNone(row['change_date'])
+                self.assertContains(response, '/tasks/' + definition.html_path)
+                page = self.client.get('/tasks/' + definition.html_path)
+                self.assertEqual(page.status_code, 200)
+                page.close()
+
+    @override_settings(DEBUG=True)
     def test_confirmation_shared_persistent_and_reversible(self):
         from django.test import Client
         first, second = Client(), Client()

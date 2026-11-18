@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI_5_10 — Я студент</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+<body class="bg-light">
+  <main class="container py-3">
+    <h1 class="h4">Я студент</h1>
+    <p>Напишите связный рассказ о себе и своей учёбе. Используйте вопросы как план. Зачёт от 60 баллов из 100.</p>
+    <div class="row g-3">
+      <section class="col-md-6" aria-labelledby="materials-title">
+        <div class="card card-body">
+          <h2 class="h5" id="materials-title">Опорные вопросы</h2>
+          <ol class="mb-0">
+            <li>Где вы учитесь?</li>
+            <li>Что вы изучаете?</li>
+            <li>Что вы обычно делаете на занятиях?</li>
+            <li>Какой предмет вам нравится и почему?</li>
+            <li>Что вы делаете после занятий?</li>
+            <li>Кем вы хотите стать?</li>
+          </ol>
+        </div>
+      </section>
+      <section class="col-md-6" aria-labelledby="answer">
+        <form class="card card-body" id="description-form" data-task-id="lesson5_student_story" data-min-sentences="0">
+          <label class="form-label fw-semibold" id="answer" for="description">Рассказ о себе</label>
+          <textarea class="form-control mb-3" id="description" rows="10" spellcheck="false" required></textarea>
+          <button class="btn btn-primary align-self-start" type="submit">Проверить</button>
+          <p class="mb-0 mt-3" id="check-status" role="status"></p>
+          <ul class="mb-0 mt-2" id="feedback" hidden></ul>
+        </form>
+      </section>
+    </div>
+  </main>
+  <script src="../../api-config.js"></script>
+  <script>
+    const TASK_CODE = "AI_5_10";
+  </script>
+  <script src="../picture-description.js"></script>
+</body>
+</html>

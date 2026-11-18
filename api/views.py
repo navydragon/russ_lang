@@ -129,6 +129,12 @@ def story_check(request):
         'lesson7_fairytale_verbs': 'AI_7_10', 'lesson7_faculty_writing': 'AI_7_12',
         'lesson5_classroom_questions': 'AI_5_6',
         'lesson5_parrot_retelling': 'AI_5_9',
+        'lesson5_friend_letter_retelling': 'AI_5_13',
+        'lesson5_student_story': 'AI_5_10',
+        'lesson5_favorite_city_story': 'AI_5_12',
+        'lesson5_room_description': 'AI_5_14',
+        'lesson5_lecture_room_description': 'AI_5_15',
+        'lesson5_street_description': 'AI_5_16',
     }
     if task_id in story_task_codes and task_code != story_task_codes[task_id]:
         return JsonResponse({'error': 'Неверный код задания.'}, status=400)
@@ -499,6 +505,7 @@ def reading_complete(request):
         'lesson5_classroom_reading': 'AI_5_1', 'lesson5_juan_carlos_reading': 'AI_5_2',
         'lesson5_family_reading': 'AI_5_3', 'lesson5_parrot_reading': 'AI_5_4',
         'lesson5_thomas_edward_reading': 'AI_5_5',
+        'lesson5_moscow_excursion_reading': 'AI_5_11',
     }
     if task_id in reading_codes:
         if task_code != reading_codes[task_id]:

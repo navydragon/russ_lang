@@ -9,7 +9,8 @@ from django.utils import timezone
 
 from courses.course_sync import COURSE_NAME, DEFAULT_TASKS_FILE, read_regular_tasks
 from courses.models import Course, Lesson, Task, TaskAttempt, StudentTask
-from courses.task_catalog import TASK_CATALOG
+from courses.planned_assignments import PLANNED_ASSIGNMENTS
+from courses.task_catalog import RETIRED_AI_CODES, TASK_CATALOG
 from students.models import Student
 
 
@@ -44,7 +45,8 @@ class CourseSyncTests(TestCase):
     def test_registry_codes_match_catalog(self):
         source = (Path(__file__).resolve().parents[2] / 'tasks' / 'AI_ASSIGNMENTS.md').read_text(encoding='utf-8')
         codes = re.findall(r'^\|\s*\d+\s*\|\s*\d+\s*\|\s*`(AI_\d+_\d+)`', source, re.MULTILINE)
-        self.assertEqual(set(codes), {item.code for item in TASK_CATALOG})
+        planned_codes = {item.code for item in PLANNED_ASSIGNMENTS if item.code}
+        self.assertEqual(set(codes), {item.code for item in TASK_CATALOG} | planned_codes)
         self.assertEqual(len(codes), len(set(codes)))
 
     def run_sync(self, apply=False):
@@ -111,10 +113,15 @@ class CourseSyncTests(TestCase):
         self.assertEqual(Task.objects.get(pk=task.pk).name, 'Занятый код')
 
     def test_catalog_codes_are_unique_and_sequential_per_lesson(self):
-        self.assertEqual(len({d.code for d in TASK_CATALOG}), 46)
+        catalog_codes = {definition.code for definition in TASK_CATALOG}
+        planned_codes = {item.code for item in PLANNED_ASSIGNMENTS if item.code}
+        self.assertEqual(len(catalog_codes), len(TASK_CATALOG))
+        self.assertTrue(catalog_codes.isdisjoint(planned_codes | RETIRED_AI_CODES))
         for lesson in range(1, 11):
-            definitions = [d for d in TASK_CATALOG if d.lesson == lesson]
-            self.assertEqual([d.code for d in definitions], [f'AI_{lesson}_{n}' for n in range(1, max((d.position for d in definitions), default=0) + 1) if f'AI_{lesson}_{n}' != 'AI_3_3'])
+            codes = {code for code in catalog_codes | planned_codes if code.startswith(f'AI_{lesson}_')}
+            positions = [int(code.rsplit('_', 1)[1]) for code in codes]
+            expected = {f'AI_{lesson}_{n}' for n in range(1, max(positions, default=0) + 1)}
+            self.assertEqual(codes, expected - RETIRED_AI_CODES)
 
     def test_duplicate_cleanup_is_repeatable_and_sync_does_not_recreate_it(self):
         self.run_sync(apply=True)

@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI_5_14 — Моя комната</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <style>
+    .room-picture { position: relative; overflow: hidden; aspect-ratio: 700 / 535; }
+    .room-picture img { position: absolute; width: 244.57%; height: auto; left: -105.71%; top: -61.31%; }
+  </style>
+</head>
+<body class="bg-light">
+  <main class="container py-3">
+    <h1 class="h4">Моя комната</h1>
+    <p>Рассмотрите картинку. Опишите комнату по вопросам в 12 предложениях. Зачёт от 60 баллов из 100.</p>
+    <div class="row g-3">
+      <section class="col-md-6" aria-labelledby="materials-title">
+        <div class="card card-body">
+          <div class="room-picture rounded mb-3">
+            <img src="slide-32-1.png" width="1712" height="1093"
+              alt="Спальня со шкафом, кроватью, столиком и картинами">
+          </div>
+          <h2 class="h5" id="materials-title">Вопросы к картинке</h2>
+          <ol class="mb-0">
+            <li>Что стоит слева от кровати?</li>
+            <li>Где находится зеркало?</li>
+            <li>Что стоит рядом с кроватью?</li>
+            <li>Что стоит на столике?</li>
+            <li>Где висит большая картина? Что на ней изображено?</li>
+            <li>Где лежит подушка? Какого она цвета?</li>
+            <li>Где лежит одеяло? Какого оно цвета?</li>
+          </ol>
+        </div>
+      </section>
+      <section class="col-md-6" aria-labelledby="answer">
+        <form class="card card-body" id="description-form" data-task-id="lesson5_room_description" data-min-sentences="12">
+          <label class="form-label fw-semibold" id="answer" for="description">Описание комнаты</label>
+          <textarea class="form-control mb-3" id="description" rows="12" spellcheck="false" required></textarea>
+          <button class="btn btn-primary align-self-start" type="submit">Проверить</button>
+          <p class="mb-0 mt-3" id="check-status" role="status"></p>
+          <ul class="mb-0 mt-2" id="feedback" hidden></ul>
+        </form>
+      </section>
+    </div>
+  </main>
+  <script src="../../api-config.js"></script>
+  <script>
+    const TASK_CODE = "AI_5_14";
+  </script>
+  <script src="../picture-description.js"></script>
+</body>
+</html>

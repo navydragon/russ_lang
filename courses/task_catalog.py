@@ -80,4 +80,11 @@ TASK_CATALOG = (
     TaskDefinition(53, 5, 7, 'lesson5_juan_carlos_questions', 'Ответы на вопросы по тексту «Хуан и Карлос»', '13.1.1', 'lesson5/juan_carlos_questions/juan_carlos_questions.html'),
     TaskDefinition(54, 5, 8, 'lesson5_family_questions', 'Ответы на вопросы по тексту «Наша семья»', '15.1.1', 'lesson5/family_questions/family_questions.html'),
     TaskDefinition(55, 5, 9, 'lesson5_parrot_retelling', 'Изложение «Попугай»', '24.3', 'lesson5/parrot_retelling/parrot_retelling.html'),
+    TaskDefinition(56, 5, 14, 'lesson5_room_description', 'Описание «Моя комната»', '32.1', 'lesson5/room_description/room_description.html'),
+    TaskDefinition(57, 5, 15, 'lesson5_lecture_room_description', 'Описание «Моя аудитория»', '32.2', 'lesson5/lecture_room_description/lecture_room_description.html'),
+    TaskDefinition(58, 5, 16, 'lesson5_street_description', 'Описание «Моя улица»', '32.3', 'lesson5/street_description/street_description.html'),
+    TaskDefinition(59, 5, 13, 'lesson5_friend_letter_retelling', 'Изложение «Письмо от моего друга»', '31.19', 'lesson5/friend_letter_retelling/friend_letter_retelling.html'),
+    TaskDefinition(60, 5, 10, 'lesson5_student_story', 'Сочинение «Я студент»', '25.11', 'lesson5/student_story/student_story.html'),
+    TaskDefinition(61, 5, 11, 'lesson5_moscow_excursion_reading', 'Чтение «Экскурсия по Москве»', '25.1–25.2', 'lesson5/moscow_excursion_reading/moscow_excursion_reading.html'),
+    TaskDefinition(62, 5, 12, 'lesson5_favorite_city_story', 'Рассказ «Мой любимый город»', '27.3', 'lesson5/favorite_city_story/favorite_city_story.html'),
 )
