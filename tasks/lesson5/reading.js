@@ -62,4 +62,6 @@ el("check").addEventListener("click", async () => {
   } catch (error) { el("status").textContent = "Ошибка проверки"; el("result").textContent = error.message; }
   finally { checking = false; buttons(); }
 });
-loadText().then(data => renderParagraphs(el("source"), data.paragraphs)).catch(error => { el("status").textContent = error.message; });
+if (typeof loadText === "function") {
+  loadText().then(data => renderParagraphs(el("source"), data.paragraphs)).catch(error => { el("status").textContent = error.message; });
+}

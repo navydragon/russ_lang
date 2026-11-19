@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI_6_1 — Чтение «Моя профессия»</title>
+  <link rel="stylesheet" href="../../lesson7/excursion.css">
+</head>
+<body>
+  <header>
+    <div class="tag"># ЧТЕНИЕ · УРОК 6 · AI_6_1</div>
+    <h1>Моя профессия</h1>
+    <p>Прослушайте текст и повторите его за диктором. Затем запишите чтение всего текста.
+      Лимит — 5 минут. Зачёт — от 60 баллов.</p>
+  </header>
+  <main>
+    <article class="card">
+      <audio id="narration" controls preload="metadata" src="reference.mp3" aria-label="Чтение диктора"></audio>
+      <div class="toolbar" aria-label="Запись чтения">
+        <button id="record" type="button">Начать запись</button>
+        <button id="stop" type="button" disabled>Остановить</button>
+        <button id="check" type="button" disabled>Проверить</button>
+        <strong id="timer">0:00 / 5:00</strong>
+      </div>
+      <audio id="player" controls hidden aria-label="Ваша запись"></audio>
+      <p id="status" role="status">Готово к записи</p>
+      <div id="source" class="source">
+        <p>Меня зовут Олег. Я журналист. Моя семья живёт в Петербурге. Раньше я тоже жил в Петербурге и учился там в школе. Я очень люблю Петербург, потому что это мой родной город. Когда я жил в Петербурге, я часто фотографировал его улицы, площади и парки.</p>
+        <p>Сейчас я живу в Москве и уже неплохо знаю её. Я работаю в журнале «Огонёк», пишу статьи, делаю фотографии. Вот моя статья «Фестиваль в Москве» и фотографии.</p>
+        <p>Когда в Москве был Всемирный фестиваль молодёжи, я был на фестивале и много работал, много видел, много фотографировал. Вот мои фотографии. Это был замечательный праздник, он был в центре Москвы.</p>
+        <p>В центре площади находится Мавзолей В. И. Ленина, слева — собор Василия Блаженного, справа — Исторический музей. На площади юноши и девушки гуляют, разговаривают, танцуют, смеются.</p>
+        <p>А это улица «Новый Арбат». Здесь большие магазины, популярные театры, известный кинотеатр «Октябрь». Самый большой магазин «Дом книги» тоже находится здесь. Я встретил Лейлу в магазине «Дом книги». Она покупала книги о Москве и подарки для подруги. Я и Лейла много гуляли, разговаривали и фотографировали Красную площадь, Исторический музей, хорошую подругу Лейлы. Сейчас Лейла моя жена. Мы живём в Казани, потому что Казань — родной город Лейлы. Мы вместе работаем в газете «Татарстан».</p>
+      </div>
+    </article>
+    <aside class="card">
+      <h2>Результат</h2>
+      <div id="result" class="result" aria-live="polite">—</div>
+    </aside>
+  </main>
+  <script src="../../api-config.js"></script>
+  <script src="../../lesson7/faculty.js"></script>
+  <script>
+    const API = window.ANALYZER_CONFIG.apiBaseUrl;
+    const TASK_ID = "lesson6_profession_reading";
+    const TASK_CODE = "AI_6_1";
+    const MAX_SECONDS = 300;
+    const narration = document.getElementById("narration");
+    const stopButton = document.getElementById("stop");
+
+    narration.addEventListener("play", () => {
+      if (!stopButton.disabled) narration.pause();
+    });
+    document.getElementById("record").addEventListener("click", () => narration.pause());
+  </script>
+  <script src="../../lesson5/reading.js"></script>
+</body>
+</html>

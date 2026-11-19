@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI_6_7 — Чтение «Моя биография»</title>
+  <link rel="stylesheet" href="../../lesson7/excursion.css">
+</head>
+<body>
+  <header>
+    <div class="tag"># ЧТЕНИЕ · УРОК 6 · AI_6_7</div>
+    <h1>Моя биография</h1>
+    <p>Прослушайте текст и повторите его за диктором. Затем запишите чтение всего текста.
+      Лимит — 1 минута. Зачёт — от 60 баллов.</p>
+  </header>
+  <main>
+    <article class="card">
+      <audio id="narration" controls preload="metadata" src="reference.mp3" aria-label="Чтение диктора"></audio>
+      <div class="toolbar" aria-label="Запись чтения">
+        <button id="record" type="button">Начать запись</button>
+        <button id="stop" type="button" disabled>Остановить</button>
+        <button id="check" type="button" disabled>Проверить</button>
+        <strong id="timer">0:00 / 1:00</strong>
+      </div>
+      <audio id="player" controls hidden aria-label="Ваша запись"></audio>
+      <p id="status" role="status">Готово к записи</p>
+      <div id="source" class="source">
+        <p>Володя приехал из Восточной Сибири, из небольшого города.</p>
+        <p>Город находится на берегу глубокого красивого озера Байкал. Володя много рассказывал о Байкале, показывал фотографии.</p>
+        <p>Сейчас Володя учится в университете. Он студент первого курса Университета инженеров транспорта. Он часто получает письма из своего родного города. Пишут его родители и его друзья.</p>
+      </div>
+    </article>
+    <aside class="card">
+      <h2>Результат</h2>
+      <div id="result" class="result" aria-live="polite">—</div>
+    </aside>
+  </main>
+  <script src="../../api-config.js"></script>
+  <script src="../../lesson7/faculty.js"></script>
+  <script>
+    const API = window.ANALYZER_CONFIG.apiBaseUrl;
+    const TASK_ID = "lesson6_biography_reading";
+    const TASK_CODE = "AI_6_7";
+    const MAX_SECONDS = 60;
+    const narration = document.getElementById("narration");
+    const stopButton = document.getElementById("stop");
+
+    narration.addEventListener("play", () => {
+      if (!stopButton.disabled) narration.pause();
+    });
+    document.getElementById("record").addEventListener("click", () => narration.pause());
+  </script>
+  <script src="../../lesson5/reading.js"></script>
+</body>
+</html>

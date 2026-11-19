@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI_6_2 — Винительный падеж в тексте «Моя профессия»</title>
+  <link rel="stylesheet" href="../../lesson7/excursion.css">
+  <link rel="stylesheet" href="../word_selection.css">
+</head>
+<body>
+  <header>
+    <div class="tag"># ГРАММАТИКА · УРОК 6 · AI_6_2</div>
+    <h1>Моя профессия</h1>
+    <p>Прочитайте текст. Выделите существительные и прилагательные в винительном падеже.
+      Зачёт — от 60 баллов.</p>
+  </header>
+  <main>
+    <article class="card">
+      <div class="toolbar">
+        <button id="check" type="button" disabled>Проверить</button>
+        <button id="clear" type="button" class="secondary" disabled>Сбросить выделение</button>
+      </div>
+      <div id="source" class="source"></div>
+      <p id="error" role="status"></p>
+    </article>
+    <aside class="card">
+      <h2>Результат</h2>
+      <div id="result" class="result" aria-live="polite">—</div>
+    </aside>
+  </main>
+  <script src="../../api-config.js"></script>
+  <script src="../../lesson7/faculty.js"></script>
+  <script>
+    const TASK_CODE = "AI_6_2";
+    const CHECK_PATH = "/api/profession/accusative/check";
+  </script>
+  <script src="../word_selection.js"></script>
+</body>
+</html>

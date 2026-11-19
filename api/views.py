@@ -15,6 +15,12 @@ from .audio_duration import AudioDurationError
 from .speaking_nexara import check_speaking_audio, transcribe_audio, extract_recognized_text
 from .story_llm import VALID_TASK_IDS, StoryCheckResult, check_story
 from .excursion import score_selection, words_and_targets
+from .profession import WORDS as PROFESSION_WORDS, ACCUSATIVE_INDEXES
+from .arbat import WORDS as ARBAT_WORDS, GENITIVE_INDEXES
+from .biography import WORDS as BIOGRAPHY_WORDS, GENITIVE_INDEXES as BIOGRAPHY_GENITIVE_INDEXES
+from .kremlin import WORDS as KREMLIN_WORDS, GENITIVE_INDEXES as KREMLIN_GENITIVE_INDEXES
+from .shop import WORDS as SHOP_WORDS, ACCUSATIVE_INDEXES as SHOP_ACCUSATIVE_INDEXES
+from .word_selection import score_selected_words
 
 logger = logging.getLogger('api')
 
@@ -130,8 +136,12 @@ def story_check(request):
         'lesson5_classroom_questions': 'AI_5_6',
         'lesson5_parrot_retelling': 'AI_5_9',
         'lesson5_friend_letter_retelling': 'AI_5_13',
+        'lesson6_socrates_retelling': 'AI_6_14',
         'lesson5_student_story': 'AI_5_10',
         'lesson5_favorite_city_story': 'AI_5_12',
+        'lesson6_university_story': 'AI_6_6',
+        'lesson6_hometown_story': 'AI_6_11',
+        'lesson6_shop_dialogue': 'AI_6_13',
         'lesson5_room_description': 'AI_5_14',
         'lesson5_lecture_room_description': 'AI_5_15',
         'lesson5_street_description': 'AI_5_16',
@@ -506,6 +516,11 @@ def reading_complete(request):
         'lesson5_family_reading': 'AI_5_3', 'lesson5_parrot_reading': 'AI_5_4',
         'lesson5_thomas_edward_reading': 'AI_5_5',
         'lesson5_moscow_excursion_reading': 'AI_5_11',
+        'lesson6_profession_reading': 'AI_6_1',
+        'lesson6_arbat_reading': 'AI_6_4',
+        'lesson6_biography_reading': 'AI_6_7',
+        'lesson6_kremlin_reading': 'AI_6_9',
+        'lesson6_shop_reading': 'AI_6_12',
     }
     if task_id in reading_codes:
         if task_code != reading_codes[task_id]:
@@ -558,6 +573,47 @@ def neighborhood_verbs_check(request):
     saved, error = _persist_story_attempt(student_code.strip(), 'AI_4_17', ', '.join(words[i] for i in sorted(chosen)), result, source='neighborhood_verbs_check')
     response = {**result.model_dump(), 'saved': saved, 'correct': correct, 'total': len(expected), 'wrong': wrong}
     if error: response['save_error'] = error
+    return JsonResponse(response)
+
+
+_WORD_SELECTION_TASKS = {
+    'AI_6_2': (PROFESSION_WORDS, ACCUSATIVE_INDEXES, 'profession_accusative_check'),
+    'AI_6_15': (ARBAT_WORDS, GENITIVE_INDEXES, 'arbat_genitive_check'),
+    'AI_6_8': (BIOGRAPHY_WORDS, BIOGRAPHY_GENITIVE_INDEXES, 'biography_genitive_check'),
+    'AI_6_10': (KREMLIN_WORDS, KREMLIN_GENITIVE_INDEXES, 'kremlin_genitive_check'),
+    'AI_6_16': (SHOP_WORDS, SHOP_ACCUSATIVE_INDEXES, 'shop_accusative_check'),
+}
+
+
+@csrf_exempt
+@require_POST
+def word_selection_check(request, task_code):
+    words, expected, source = _WORD_SELECTION_TASKS[task_code]
+    try:
+        body = json.loads(request.body.decode('utf-8'))
+        if not isinstance(body, dict) or body.get('task_code') != task_code:
+            raise ValueError('Неверный код задания.')
+        student_code = body.get('student_code', '')
+        if not isinstance(student_code, str) or len(student_code) > 50:
+            raise ValueError('Неверный код ученика.')
+        result = score_selected_words(body.get('selected'), words, expected)
+    except (UnicodeDecodeError, json.JSONDecodeError):
+        return JsonResponse({'error': 'Некорректный ответ.'}, status=400)
+    except ValueError as error:
+        return JsonResponse({'error': str(error)}, status=400)
+
+    answer = ', '.join(words[index] for index in sorted(set(body['selected'])))
+    grade = StoryCheckResult(
+        ok=result['ok'], score=result['score'], normalized=answer,
+        feedback=f"Найдено {result['correct']} из {result['total']}. Лишних слов: {result['extra']}.",
+        errors=[], recommendations=[], quality_notes='',
+    )
+    saved, error = _persist_story_attempt(
+        student_code.strip(), task_code, answer, grade, source=source, extra_result=result,
+    )
+    response = {**result, 'saved': saved}
+    if error:
+        response['save_error'] = error
     return JsonResponse(response)
 
 

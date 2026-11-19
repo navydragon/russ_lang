@@ -1,0 +1,2 @@
+.word { display: inline; padding: 0; background: transparent; color: inherit; }
+.word[aria-pressed="true"] { background: #dcecff; text-decoration: underline 2px #1768e5; }

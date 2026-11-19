@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI_6_5 — Вопросы по тексту «Арбат»</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="../../lesson7/excursion.css">
+</head>
+<body>
+  <header>
+    <div class="tag"># ПИСЬМО · УРОК 6 · AI_6_5</div>
+    <h1>Ответьте на вопросы по тексту «Арбат»</h1>
+    <p>Ответьте письменно на 9 вопросов по одному. За каждый ответ можно получить
+      5 баллов за содержание и 5 за написание. Зачёт — от 60 из 100.</p>
+  </header>
+  <main>
+    <section class="card">
+      <h2 id="stepTitle">Начните задание</h2>
+      <p id="intro" class="muted">Можно отвечать кратко. После проверки ответ изменить нельзя.</p>
+      <button id="start" type="button">Начать задание</button>
+
+      <div id="question" hidden>
+        <h2 id="questionText"></h2>
+        <button id="listen" type="button" hidden>Слушать вопрос</button>
+        <audio id="audio" hidden></audio>
+        <form id="answerForm">
+          <label for="answer">Ваш ответ</label>
+          <textarea id="answer" maxlength="500" spellcheck="false" aria-describedby="questionText"></textarea>
+          <div class="toolbar">
+            <button id="check" type="submit">Проверить</button>
+            <button id="skip" class="secondary" type="button">Пропустить — 0 баллов</button>
+            <button id="next" type="button" hidden>Следующий вопрос</button>
+          </div>
+        </form>
+        <p id="wordFeedback" role="status"></p>
+      </div>
+      <p id="error" role="alert"></p>
+    </section>
+    <aside class="card">
+      <h2>Результат</h2>
+      <strong id="total">0 / 100</strong>
+      <p id="progress">Проверено 0 из 9</p>
+      <p id="outcome" aria-live="polite"></p>
+      <p id="saved" class="muted"></p>
+      <h2>Проверенные ответы</h2>
+      <ol id="history" class="question-list"></ol>
+    </aside>
+  </main>
+  <script src="../../api-config.js"></script>
+  <script>
+    const API = window.ANALYZER_CONFIG.apiBaseUrl;
+    const TASK_CODE = "AI_6_5";
+  </script>
+  <script src="../../lesson5/family_questions/questions.js?v=lesson5-family-1"></script>
+</body>
+</html>

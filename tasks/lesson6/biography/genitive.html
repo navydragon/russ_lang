@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI_6_8 — Родительный падеж в тексте «Моя биография»</title>
+  <link rel="stylesheet" href="../../lesson7/excursion.css">
+  <link rel="stylesheet" href="../word_selection.css">
+</head>
+<body>
+  <header>
+    <div class="tag"># ГРАММАТИКА · УРОК 6 · AI_6_8</div>
+    <h1>Моя биография</h1>
+    <p>Прочитайте текст. Выделите все слова в форме родительного падежа.
+      Зачёт — от 60 баллов.</p>
+  </header>
+  <main>
+    <article class="card">
+      <div class="toolbar">
+        <button id="check" type="button" disabled>Проверить</button>
+        <button id="clear" type="button" class="secondary" disabled>Сбросить выделение</button>
+      </div>
+      <div id="source" class="source"></div>
+      <p id="error" role="status"></p>
+    </article>
+    <aside class="card">
+      <h2>Результат</h2>
+      <div id="result" class="result" aria-live="polite">—</div>
+    </aside>
+  </main>
+  <script src="../../api-config.js"></script>
+  <script src="../../lesson7/faculty.js"></script>
+  <script>
+    const TASK_CODE = "AI_6_8";
+    const CHECK_PATH = "/api/biography/genitive/check";
+  </script>
+  <script src="../word_selection.js"></script>
+</body>
+</html>

@@ -19,7 +19,7 @@ from pydantic_ai.providers.openai import OpenAIProvider
 
 logger = logging.getLogger('api')
 
-VALID_TASK_IDS = frozenset({'family', 'room', 'family_retelling', 'my_university_story', 'lesson4_university_retelling', 'lesson4_university_writing', 'lesson4_family_story', 'lesson4_text_answer', 'lesson4_written_answer', 'library_retelling', 'ivan_retelling', 'lesson7_fairytale_verbs', 'lesson7_faculty_writing', 'lesson5_classroom_questions', 'lesson5_parrot_retelling', 'lesson5_room_description', 'lesson5_lecture_room_description', 'lesson5_street_description', 'lesson5_friend_letter_retelling', 'lesson5_student_story', 'lesson5_favorite_city_story'})
+VALID_TASK_IDS = frozenset({'family', 'room', 'family_retelling', 'my_university_story', 'lesson4_university_retelling', 'lesson4_university_writing', 'lesson4_family_story', 'lesson4_text_answer', 'lesson4_written_answer', 'library_retelling', 'ivan_retelling', 'lesson7_fairytale_verbs', 'lesson7_faculty_writing', 'lesson5_classroom_questions', 'lesson5_parrot_retelling', 'lesson5_room_description', 'lesson5_lecture_room_description', 'lesson5_street_description', 'lesson5_friend_letter_retelling', 'lesson5_student_story', 'lesson5_favorite_city_story', 'lesson6_university_story', 'lesson6_hometown_story', 'lesson6_shop_dialogue', 'lesson6_socrates_retelling'})
 
 SYSTEM_PROMPT = """\
 Ты — преподаватель русского языка для иностранных студентов.
@@ -112,6 +112,9 @@ VDNH_RETELLING_SOURCE = (
 FAIRYTALE_REFERENCE = '\n'.join(json.loads((Path(__file__).resolve().parent.parent / 'tasks/lesson7/fairytale_source.json').read_text(encoding='utf-8'))['paragraphs'])
 FACULTY_WRITING_SOURCE = '\n'.join(json.loads((Path(__file__).resolve().parent.parent / 'tasks/lesson7/faculty_text.json').read_text(encoding='utf-8'))['paragraphs'])
 LESSON5_PARROT_SOURCE = '\n'.join(json.loads((Path(__file__).resolve().parent.parent / 'tasks/lesson5/parrot_reading/source.json').read_text(encoding='utf-8'))['paragraphs'])
+SOCRATES_SOURCE = '\n'.join(json.loads(
+    (Path(__file__).resolve().parents[1] / 'tasks/lesson6/socrates_retelling/source.json').read_text(encoding='utf-8')
+)['paragraphs'])
 
 TASK_CONFIGS: dict[str, TaskConfig] = {
     'lesson7_fairytale_verbs': TaskConfig(
@@ -225,6 +228,67 @@ TASK_CONFIGS: dict[str, TaskConfig] = {
             'Принимай «я студентка», простую лексику и разные места и форматы обучения. '
             'Не требуй имени, точного названия учебного заведения или минимального объёма. '
             'Связность и понятность — до 25, грамотность — до 15.'
+        ),
+    ),
+    'lesson6_university_story': TaskConfig(
+        title='Рассказ о своём университете', min_sentences=0, min_vocab_hits=0, vocab=(), passing_score=60,
+        additional_criteria=(
+            'Ученик пишет связный рассказ о своём университете. Принимай любой университет и простые формулировки. '
+            'Иллюстрация РУТ МИИТ служит оформлением; описывать её не требуется. '
+            'Содержание — до 60 баллов, по 15 за каждый из четырёх пунктов: '
+            '1) название университета, в том числе общепринятое сокращение; '
+            '2) местоположение (достаточно города, района или понятного ориентира); '
+            '3) какие есть аудитории, лаборатории или кабинеты (достаточно одного конкретного примера); '
+            '4) кто там учится. Принимай краткие ответы о студентах, их направлениях или группах. '
+            'За неполный пункт начисляй частичный балл. Пункты могут идти в любом порядке. '
+            'Связность и понятность — до 25, грамотность — до 15. Минимального объёма нет.'
+        ),
+    ),
+    'lesson6_hometown_story': TaskConfig(
+        title='Рассказ «Мой родной город»', min_sentences=0, min_vocab_hits=0, vocab=(), passing_score=60,
+        additional_criteria=(
+            'Ученик пишет связный рассказ о родном городе. Принимай любой город и простые формулировки. '
+            'Иллюстрация служит оформлением; описывать её не требуется. '
+            'Содержание — до 60 баллов, по 20 за каждый из трёх пунктов: '
+            '1) назван город и приведён хотя бы один пример того, что есть в центре; '
+            '2) назван главный символ и сказано, чем он известен или почему важен для города; '
+            '3) названо хотя бы одно место для туристов и сказано, что там можно увидеть или сделать. '
+            'Принимай достопримечательность или другой неофициальный символ; символ может быть и туристическим местом. '
+            'Принимай совет туристам, даже если автор не говорит, что они уже посещают это место. '
+            'За неполный пункт начисляй частичный балл. Пункты могут идти в любом порядке. '
+            'Связность и понятность — до 25, грамотность — до 15. Минимального объёма нет.'
+        ),
+    ),
+    'lesson6_shop_dialogue': TaskConfig(
+        title='Диалог «В магазине»', min_sentences=0, min_vocab_hits=0, vocab=(), passing_score=60,
+        additional_criteria=(
+            'Ученик пишет диалог Саманты и продавца, затем кратко пересказывает покупку своими словами. '
+            'Содержание — до 60 баллов: до 15 за просьбу о товаре с количеством; до 15 за вопрос о цене '
+            'или стоимости покупки и уместный ответ продавца; до 15 за завершение покупки '
+            '(согласие купить, оплата, благодарность или прощание); до 15 за отдельный пересказ, '
+            'в котором названо, что Саманта купила и сколько заплатила. '
+            'Принимай разные товары, цены и валюты, не требуй цифр с картинки или дословных опорных фраз. '
+            'Для продавца допустимы реплики продавщицы. Имена перед каждой репликой необязательны, '
+            'если ясно, кто говорит. За неполное выполнение пункта давай частичные баллы. '
+            'Связность и понятность диалога и пересказа — до 25, грамотность — до 15. '
+            'Не требуй минимального числа реплик или предложений.'
+        ),
+    ),
+    'lesson6_socrates_retelling': TaskConfig(
+        title='Изложение «История о Сократе»', min_sentences=0, min_vocab_hits=0, vocab=(), passing_score=60,
+        additional_criteria=(
+            'Письменное изложение прослушанного текста. Исходный текст: '
+            + SOCRATES_SOURCE + '\n'
+            'Содержание — до 60 баллов, по 15 за каждый смысловой эпизод: '
+            '1) Сократ гулял, и незнакомец спросил его, где живёт Сократ; '
+            '2) Сократ ответил, что живёт на этой улице в доме номер один; '
+            '3) женщина сказала, что Сократ гуляет в парке и скоро вернётся, и гость долго ждал; '
+            '4) после возвращения Сократа гость спросил, почему тот сразу не представился. '
+            'Сократ объяснил, что гость спросил, где он живёт, и не сказал, что хочет его увидеть. '
+            'За частично переданные эпизоды начисляй частичные баллы. '
+            'Принимай естественные перефразирования и косвенную речь. Не требуй дословности, точного минимального объёма '
+            'или сведений, которых нет в записи. Связность и понятность — до 25, грамотность — до 15. '
+            'Объясняй снижение баллов конкретными пропусками и ошибками.'
         ),
     ),
     'lesson5_friend_letter_retelling': TaskConfig(
@@ -916,6 +980,9 @@ def check_story(task_id: str, text: str) -> StoryCheckResult:
     if task_id in (
         'lesson5_room_description', 'lesson5_lecture_room_description',
         'lesson5_street_description', 'lesson5_student_story', 'lesson5_favorite_city_story',
+        'lesson6_university_story',
+        'lesson6_hometown_story',
+        'lesson6_shop_dialogue',
     ):
         return _check_rubric_writing(task_id, original)
     if task_id == 'my_university_story':
@@ -934,7 +1001,7 @@ def check_story(task_id: str, text: str) -> StoryCheckResult:
         logger.info('Story check: task_id=%s text_len=%d sentences=%d', task_id, len(original), sentence_count)
         run_result = _get_about_me_agent().run_sync(prompt, usage_limits=UsageLimits(request_limit=3))
         return _sanitize_result(run_result.output, original, task_id)
-    if task_id in ('lesson4_text_answer', 'lesson4_written_answer', 'library_retelling', 'ivan_retelling', 'lesson7_fairytale_verbs', 'lesson7_faculty_writing', 'lesson5_classroom_questions', 'lesson5_friend_letter_retelling'):
+    if task_id in ('lesson4_text_answer', 'lesson4_written_answer', 'library_retelling', 'ivan_retelling', 'lesson7_fairytale_verbs', 'lesson7_faculty_writing', 'lesson5_classroom_questions', 'lesson5_friend_letter_retelling', 'lesson6_socrates_retelling'):
         cfg = TASK_CONFIGS[task_id]
         prompt = f'Задание: {cfg.title}\nРубрика: {cfg.additional_criteria}\nПроходной балл: {cfg.passing_score}.\nТекст ученика:\n{original}'
         logger.info('Story check: task_id=%s text_len=%d', task_id, len(original))

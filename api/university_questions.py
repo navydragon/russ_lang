@@ -14,6 +14,8 @@ from pydantic_ai.providers.openai import OpenAIProvider
 
 from .reading_check import LESSON4_UNIVERSITY_REFERENCE_PARTS, FACULTY_SOURCE, FACULTY_REFERENCE_TEXT
 from .excursion import SOURCE as EXCURSION_SOURCE, REFERENCE_TEXT as EXCURSION_REFERENCE_TEXT
+from .profession import QUESTION_BANK as PROFESSION_QUESTION_BANK, SOURCE as PROFESSION_SOURCE
+from .arbat import QUESTION_BANK as ARBAT_QUESTION_BANK, REFERENCE_TEXT as ARBAT_REFERENCE_TEXT
 
 TASK_CODE = 'AI_4_3'
 PASSING_SCORE = 60
@@ -171,6 +173,22 @@ TASKS = {
     'AI_5_8': {'count': 8, 'questions': LESSON5_FAMILY_QUESTIONS,
                'examples': LESSON5_FAMILY_EXAMPLES, 'source': LESSON5_FAMILY_GRADING_SOURCE,
                'directory': None, 'shuffle': False},
+    'AI_6_3': {
+        'count': len(PROFESSION_QUESTION_BANK),
+        'questions': tuple((question, guidance) for question, guidance, _ in PROFESSION_QUESTION_BANK),
+        'examples': tuple(example for _, _, example in PROFESSION_QUESTION_BANK),
+        'source': '\n\n'.join(PROFESSION_SOURCE['paragraphs']),
+        'directory': None,
+        'shuffle': False,
+    },
+    'AI_6_5': {
+        'count': len(ARBAT_QUESTION_BANK),
+        'questions': tuple((question, guidance) for question, guidance, _ in ARBAT_QUESTION_BANK),
+        'examples': tuple(example for _, _, example in ARBAT_QUESTION_BANK),
+        'source': ARBAT_REFERENCE_TEXT,
+        'directory': None,
+        'shuffle': False,
+    },
 }
 
 

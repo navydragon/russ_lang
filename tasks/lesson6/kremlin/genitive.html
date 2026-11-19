@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI_6_10 — Родительный падеж в тексте «Московский Кремль»</title>
+  <link rel="stylesheet" href="../../lesson7/excursion.css">
+  <link rel="stylesheet" href="../word_selection.css">
+</head>
+<body>
+  <header>
+    <div class="tag"># ГРАММАТИКА · УРОК 6 · AI_6_10</div>
+    <h1>Московский Кремль</h1>
+    <p>Прочитайте текст. Выделите все слова в форме родительного падежа.
+      Зачёт — от 60 баллов.</p>
+  </header>
+  <main>
+    <article class="card">
+      <div class="toolbar">
+        <button id="check" type="button" disabled>Проверить</button>
+        <button id="clear" type="button" class="secondary" disabled>Сбросить выделение</button>
+      </div>
+      <div id="source" class="source"></div>
+      <p id="error" role="status"></p>
+    </article>
+    <aside class="card">
+      <h2>Результат</h2>
+      <div id="result" class="result" aria-live="polite">—</div>
+      <img src="illustration.png" alt="Спасская башня с курантами и три человека у Кремля"
+        width="680" height="606" style="display: block; max-width: 100%; height: auto; margin-top: 1rem;">
+    </aside>
+  </main>
+  <script src="../../api-config.js"></script>
+  <script src="../../lesson7/faculty.js"></script>
+  <script>
+    const TASK_CODE = "AI_6_10";
+    const CHECK_PATH = "/api/kremlin/genitive/check";
+  </script>
+  <script src="../word_selection.js"></script>
+</body>
+</html>

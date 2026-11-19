@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI_6_12 — Чтение «В магазине»</title>
+  <link rel="stylesheet" href="../../lesson7/excursion.css">
+</head>
+<body>
+  <header>
+    <div class="tag"># ЧТЕНИЕ · УРОК 6 · AI_6_12</div>
+    <h1>В магазине</h1>
+    <p>Прослушайте текст и повторите его за диктором. Затем запишите чтение всего текста.
+      Лимит — 2 минуты. Зачёт — от 60 баллов.</p>
+  </header>
+  <main>
+    <article class="card">
+      <audio id="narration" controls preload="metadata" src="reference.mp3" aria-label="Чтение диктора"></audio>
+      <div class="toolbar" aria-label="Запись чтения">
+        <button id="record" type="button">Начать запись</button>
+        <button id="stop" type="button" disabled>Остановить</button>
+        <button id="check" type="button" disabled>Проверить</button>
+        <strong id="timer">0:00 / 2:00</strong>
+      </div>
+      <audio id="player" controls hidden aria-label="Ваша запись"></audio>
+      <p id="status" role="status">Готово к записи</p>
+      <div id="source" class="source">
+        <p>Вчера вечером я была в магазине. Я покупала продукты. Как всё дорого! Вы знаете, сколько стоит пакет молока? 51 рубль!</p>
+        <p>А о колбасе и о сыре я и говорить не хочу. Один килограмм колбасы стоит 444 рубля, а один килограмм сыра — 320 рублей. А моя стипендия маленькая. Завтра мой день рождения, и я пригласила в гости друзей.</p>
+        <p>Что делать?</p>
+        <p>Я решила приготовить 5 салатов и много мяса. Моя подруга Марсела решила купить 2 торта и 4 пакета сока. А Кристиан купит 6 бутылок воды. Это недорого!</p>
+        <p>В магазине я купила 2 килограмма мяса, килограмм риса, 300 граммов сыра, 400 граммов колбасы, пачку майонеза, банку кукурузы и десяток яиц. Вот и всё.</p>
+        <p>Дома я приготовила вкусный ужин. Вечером была вечеринка. Мои друзья поздравили меня с днём рождения. Мы ужинали, рассказывали интересные истории, смеялись. Правильно говорят в России: «Не имей сто рублей, а имей сто друзей!»</p>
+      </div>
+    </article>
+    <aside class="card">
+      <h2>Результат</h2>
+      <div id="result" class="result" aria-live="polite">—</div>
+      <img src="illustration.png" alt="Покупательница на фоне полок с продуктами"
+        width="1024" height="1024" style="display: block; max-width: 100%; height: auto; margin-top: 1rem;">
+    </aside>
+  </main>
+  <script src="../../api-config.js"></script>
+  <script src="../../lesson7/faculty.js"></script>
+  <script>
+    const API = window.ANALYZER_CONFIG.apiBaseUrl;
+    const TASK_ID = "lesson6_shop_reading";
+    const TASK_CODE = "AI_6_12";
+    const MAX_SECONDS = 120;
+    const narration = document.getElementById("narration");
+    const stopButton = document.getElementById("stop");
+
+    narration.addEventListener("play", () => {
+      if (!stopButton.disabled) narration.pause();
+    });
+    document.getElementById("record").addEventListener("click", () => narration.pause());
+  </script>
+  <script src="../../lesson5/reading.js"></script>
+</body>
+</html>

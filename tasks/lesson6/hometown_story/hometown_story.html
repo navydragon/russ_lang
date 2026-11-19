@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI_6_11 — Мой родной город</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="../../lesson7/excursion.css">
+</head>
+<body>
+  <header>
+    <div class="tag"># ПИСЬМО · УРОК 6 · AI_6_11</div>
+    <h1>Мой родной город</h1>
+    <p>Напишите связный рассказ по плану. Зачёт — от 60 из 100.</p>
+  </header>
+  <main>
+    <section class="card" aria-labelledby="plan">
+      <h2 id="plan">План рассказа</h2>
+      <ol class="question-list">
+        <li>Как называется ваш родной город? Что находится в его центре, например площадь, главная улица или мэрия?</li>
+        <li>Что вы считаете главным символом города? Чем он известен?</li>
+        <li>Куда в вашем городе любят ходить туристы? Что там можно увидеть или сделать?</li>
+      </ol>
+      <img src="illustration.png" alt="Городские дома и скамейка между двумя фонарями" width="1024" height="1024"
+        style="display: block; width: min(100%, 16rem); height: auto; margin: 0 auto;">
+    </section>
+    <section class="card">
+      <form id="description-form" data-task-id="lesson6_hometown_story" data-min-sentences="0">
+        <h2><label for="description">Ваш рассказ</label></h2>
+        <textarea id="description" rows="10" spellcheck="false" required></textarea>
+        <div class="toolbar">
+          <button type="submit">Проверить</button>
+        </div>
+        <p id="check-status" role="status"></p>
+        <ul id="feedback" hidden></ul>
+      </form>
+    </section>
+  </main>
+  <script src="../../api-config.js"></script>
+  <script>
+    const TASK_CODE = "AI_6_11";
+  </script>
+  <script src="../../lesson5/picture-description.js"></script>
+</body>
+</html>

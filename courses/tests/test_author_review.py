@@ -1,15 +1,22 @@
+from unittest.mock import patch
+
 from django.test import TestCase, override_settings
 
+from courses.planned_assignments import PlannedAssignment
 from courses.task_catalog import TASK_CATALOG
 
 
 class AuthorReviewTests(TestCase):
     def test_planned_cards_are_visible_without_open_links_or_confirmation(self):
-        response = self.client.get('/authors/assignments/')
-        self.assertContains(response, 'Чтение «Моя профессия»')
+        planned = PlannedAssignment(8, '1.1', 'Чтение «Тест»', 'Читает текст.', 'Нужна озвучка.', code='AI_8_1')
+        with patch('courses.author_review.PLANNED_ASSIGNMENTS', (planned,)):
+            response = self.client.get('/authors/assignments/')
+        self.assertContains(response, planned.name)
         self.assertContains(response, 'Изложение «Вечер на факультете»')
         self.assertContains(response, 'Запланировано')
-        self.assertContains(response, 'Нужны текст и образец озвучки.')
+        self.assertContains(response, planned.missing)
+        self.assertNotContains(response, f'Открыть задание {planned.code}')
+        self.assertNotContains(response, f'name="task_code" value="{planned.code}"')
 
     @override_settings(DEBUG=False)
     def test_public_page_lists_ready_tasks_without_identity(self):
@@ -24,6 +31,7 @@ class AuthorReviewTests(TestCase):
         self.assertIn('target="_blank" rel="noopener noreferrer"', html)
         self.assertIn('Что делает студент', html)
         self.assertIn('Что делает ИИ', html)
+        self.assertIn('Учебная запись длится 1 минуту 4 секунды.', html)
         self.assertNotIn('AI_TEST_STUDENT', html)
         self.assertNotIn('student_code=', html)
         self.assertNotIn('student_code', response.cookies)

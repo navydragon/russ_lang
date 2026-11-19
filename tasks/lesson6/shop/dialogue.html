@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI_6_13 — Диалог «В магазине»</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="../../lesson7/excursion.css">
+</head>
+<body>
+  <header>
+    <div class="tag"># ПИСЬМО · УРОК 6 · AI_6_13</div>
+    <h1>Диалог «В магазине»</h1>
+    <p>Напишите диалог Саманты и продавца. Затем кратко перескажите покупку своими словами. Зачёт — от 60 из 100.</p>
+  </header>
+  <main>
+    <section class="card" aria-labelledby="plan">
+      <h2 id="plan">Опорные реплики</h2>
+      <ol class="question-list">
+        <li><strong>Саманта</strong> здоровается и говорит, что ей нужно и сколько. «Дайте, пожалуйста, …»</li>
+        <li><strong>Саманта</strong> уточняет цену. «Сколько стоит …?» <strong>Продавец</strong> отвечает.</li>
+        <li><strong>Продавец</strong> называет итоговую сумму. «С вас …» Саманта оплачивает покупку и благодарит.</li>
+      </ol>
+      <p>Продукты, количество и цены придумайте сами. В пересказе напишите, что Саманта купила и сколько заплатила.</p>
+      <img src="dialogue.png" alt="Саманта разговаривает с продавцом у прилавка с продуктами" width="1024" height="1024"
+        style="display: block; width: min(100%, 16rem); height: auto; margin: 0 auto;">
+    </section>
+    <section class="card">
+      <form id="description-form" data-task-id="lesson6_shop_dialogue" data-min-sentences="0">
+        <h2><label for="description">Ваш диалог и пересказ</label></h2>
+        <textarea id="description" rows="12" spellcheck="false" required></textarea>
+        <div class="toolbar">
+          <button type="submit">Проверить</button>
+        </div>
+        <p id="check-status" role="status"></p>
+        <ul id="feedback" hidden></ul>
+      </form>
+    </section>
+  </main>
+  <script src="../../api-config.js"></script>
+  <script>
+    const TASK_CODE = "AI_6_13";
+  </script>
+  <script src="../../lesson5/picture-description.js"></script>
+</body>
+</html>

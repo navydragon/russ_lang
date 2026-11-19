@@ -244,6 +244,113 @@ class AITestLauncherTests(TestCase):
         self.assertEqual(attempt.task.code, 'AI_3_4')
         self.assertEqual(attempt.task.lesson.position, 3)
 
+    @override_settings(LLM_API_KEY='test-key')
+    @patch('api.story_llm._get_rubric_writing_agent')
+    def test_lesson6_university_story_returns_rubric_and_saves_under_ai_6_6(self, get_agent):
+        from api.story_llm import WritingRubric
+
+        self.seed()
+        grader = get_agent.return_value.run_sync
+        grader.return_value.output = WritingRubric(
+            content=60, content_reason='Раскрыты все четыре пункта.',
+            coherence=25, coherence_reason='Рассказ связный.',
+            literacy=15, literacy_reason='Ошибок нет.',
+        )
+        body = {
+            'task_id': 'lesson6_university_story',
+            'task_code': 'AI_3_4',
+            'student_code': TEST_STUDENT_CODE,
+            'text': 'Я учусь в МГУ в Москве, где есть лаборатории и где учатся студенты из разных стран.',
+        }
+        response = self.client.post('/api/story/check', body, content_type='application/json')
+        self.assertEqual(response.status_code, 400)
+        grader.assert_not_called()
+
+        body['task_code'] = 'AI_6_6'
+        response = self.client.post('/api/story/check', body, content_type='application/json')
+        self.assertEqual(response.status_code, 200)
+        result = response.json()
+        self.assertTrue(result['saved'])
+        self.assertEqual(result['score'], 100)
+        self.assertEqual(result['rubric']['content'], 60)
+        self.assertFalse(result['sentence_limit_applied'])
+        self.assertTrue(TaskAttempt.objects.filter(task__code='AI_6_6', score=100).exists())
+
+    @override_settings(LLM_API_KEY='test-key')
+    @patch('api.story_llm._get_rubric_writing_agent')
+    def test_hometown_story_uses_three_part_rubric_and_saves_under_ai_6_11(self, get_agent):
+        from api.story_llm import WritingRubric
+
+        self.seed()
+        grader = get_agent.return_value.run_sync
+        grader.return_value.output = WritingRubric(
+            content=60, content_reason='Раскрыты все три пункта.',
+            coherence=25, coherence_reason='Рассказ связный.',
+            literacy=15, literacy_reason='Ошибок нет.',
+        )
+        response = self.client.post('/api/story/check', {
+            'task_id': 'lesson6_hometown_story', 'task_code': 'AI_6_11',
+            'student_code': TEST_STUDENT_CODE,
+            'text': 'Мой родной город — Казань. В центре есть пешеходная улица. Символ города — Кремль, '
+                    'его знают по белым стенам. Там туристы могут погулять и увидеть старинные здания.',
+        }, content_type='application/json')
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.json()['saved'])
+        self.assertEqual(response.json()['score'], 100)
+        self.assertIn('по 20 за каждый из трёх пунктов', grader.call_args.args[0])
+        self.assertTrue(TaskAttempt.objects.filter(task__code='AI_6_11', score=100).exists())
+
+    @override_settings(LLM_API_KEY='test-key')
+    @patch('api.story_llm._get_rubric_writing_agent')
+    def test_shop_dialogue_and_recap_save_under_ai_6_13(self, get_agent):
+        from api.story_llm import WritingRubric
+
+        self.seed()
+        grader = get_agent.return_value.run_sync
+        grader.return_value.output = WritingRubric(
+            content=60, content_reason='Есть диалог и краткий пересказ.',
+            coherence=25, coherence_reason='Реплики связаны.',
+            literacy=15, literacy_reason='Ошибок нет.',
+        )
+        response = self.client.post('/api/story/check', {
+            'task_id': 'lesson6_shop_dialogue', 'task_code': 'AI_6_13',
+            'student_code': TEST_STUDENT_CODE,
+            'text': 'Саманта: Здравствуйте! Дайте, пожалуйста, две бутылки молока. Сколько с меня?\n'
+                    'Продавец: С вас 160 рублей.\nСаманта: Вот 160 рублей. Спасибо!\n\n'
+                    'Саманта купила две бутылки молока и заплатила за них 160 рублей.',
+        }, content_type='application/json')
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.json()['saved'])
+        self.assertEqual(response.json()['score'], 100)
+        self.assertIn('до 15 за отдельный пересказ', grader.call_args.args[0])
+        self.assertTrue(TaskAttempt.objects.filter(task__code='AI_6_13', score=100).exists())
+
+    @override_settings(LLM_API_KEY='test-key')
+    @patch('api.story_llm._get_about_me_agent')
+    def test_socrates_retelling_uses_its_source_and_saves_under_ai_6_14(self, get_agent):
+        from api.story_llm import StoryCheckResult
+
+        self.seed()
+        lesson = Lesson.objects.get(course__name=TEST_COURSE_NAME, position=6)
+        Task.objects.get_or_create(
+            lesson=lesson, position=14,
+            defaults={'name': 'Изложение «История о Сократе»', 'code': 'AI_6_14'},
+        )
+        grader = get_agent.return_value.run_sync
+        text = 'Сократ гулял. Прохожий спросил его адрес. Потом он узнал, с кем говорил.'
+        grader.return_value.output = StoryCheckResult(
+            score=75, ok=True, normalized=text, feedback='Главные события переданы.',
+            quality_notes='Можно подробнее рассказать о встрече у дома.',
+        )
+        response = self.client.post('/api/story/check', {
+            'task_id': 'lesson6_socrates_retelling', 'task_code': 'AI_6_14',
+            'student_code': TEST_STUDENT_CODE, 'text': text,
+        }, content_type='application/json')
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.json()['saved'])
+        self.assertIn('Сократ живёт на этой улице, в доме номер один.', grader.call_args.args[0])
+        self.assertTrue(TaskAttempt.objects.filter(task__code='AI_6_14', score=75).exists())
+
     def test_moscow_reading_saves_under_ai_3_5(self):
         self.seed()
         response = self.client.post('/api/reading/complete', {

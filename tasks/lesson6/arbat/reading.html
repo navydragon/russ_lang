@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI_6_4 — Чтение «Арбат»</title>
+  <link rel="stylesheet" href="../../lesson7/excursion.css">
+</head>
+<body>
+  <header>
+    <div class="tag"># ЧТЕНИЕ · УРОК 6 · AI_6_4</div>
+    <h1>Арбат</h1>
+    <p>Прослушайте текст и повторите его за диктором. Затем запишите чтение всего текста.
+      Лимит — 5 минут. Зачёт — от 60 баллов.</p>
+  </header>
+  <main>
+    <article class="card">
+      <audio id="narration" controls preload="metadata" src="reference.mp3" aria-label="Чтение диктора"></audio>
+      <div class="toolbar" aria-label="Запись чтения">
+        <button id="record" type="button">Начать запись</button>
+        <button id="stop" type="button" disabled>Остановить</button>
+        <button id="check" type="button" disabled>Проверить</button>
+        <strong id="timer">0:00 / 5:00</strong>
+      </div>
+      <audio id="player" controls hidden aria-label="Ваша запись"></audio>
+      <p id="status" role="status">Готово к записи</p>
+      <div id="source" class="source">
+        <p>В центре Москвы недалеко от Кремля есть старинная улица. Эта улица называется Арбат. Сначала здесь жили рабочие люди, а потом — учёные, поэты, писатели и художники.</p>
+        <p>Арбат — необычная улица. Можно сказать, что это не улица, а музей. Здания Арбата — это памятники истории и архитектуры. Например, в доме № 53 жил великий русский поэт Александр Сергеевич Пушкин. Это была его первая семейная квартира. Сейчас здесь находится музей-квартира Пушкина.</p>
+        <p>Арбат — это литературный центр Москвы. Здесь жили и работали известные русские писатели, художники и артисты. На Арбате находится драматический театр имени Вахтангова и высшее театральное училище имени Михаила Семёновича Щепкина. Здесь учатся будущие актёры и актрисы.</p>
+        <p>Современный Арбат — это пешеходная улица, поэтому здесь нет транспорта. Тут и там кафе и рестораны. Люди не спешат, они спокойно гуляют, отдыхают, разговаривают.</p>
+        <p>На Арбате бывают гости столицы, потому что здесь находятся не только театры, музеи, но и выставки. Здесь можно купить русские сувениры, послушать, как играют уличные музыканты, посмотреть, как рисуют молодые художники и даже сделать свой портрет.</p>
+      </div>
+    </article>
+    <aside class="card">
+      <h2>Результат</h2>
+      <div id="result" class="result" aria-live="polite">—</div>
+    </aside>
+  </main>
+  <script src="../../api-config.js"></script>
+  <script src="../../lesson7/faculty.js"></script>
+  <script>
+    const API = window.ANALYZER_CONFIG.apiBaseUrl;
+    const TASK_ID = "lesson6_arbat_reading";
+    const TASK_CODE = "AI_6_4";
+    const MAX_SECONDS = 300;
+    const narration = document.getElementById("narration");
+    const stopButton = document.getElementById("stop");
+
+    narration.addEventListener("play", () => {
+      if (!stopButton.disabled) narration.pause();
+    });
+    document.getElementById("record").addEventListener("click", () => narration.pause());
+  </script>
+  <script src="../../lesson5/reading.js"></script>
+</body>
+</html>

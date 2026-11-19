@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI_6_9 — Чтение «Московский Кремль»</title>
+  <link rel="stylesheet" href="../../lesson7/excursion.css">
+</head>
+<body>
+  <header>
+    <div class="tag"># ЧТЕНИЕ · УРОК 6 · AI_6_9</div>
+    <h1>Московский Кремль</h1>
+    <p>Прослушайте текст и повторите его за диктором. Затем запишите чтение всего текста.
+      Произносите каждый год один раз. Лимит — 2 минуты. Зачёт — от 60 баллов.</p>
+  </header>
+  <main>
+    <article class="card">
+      <audio id="narration" controls preload="metadata" src="reference.mp3" aria-label="Чтение диктора"></audio>
+      <div class="toolbar" aria-label="Запись чтения">
+        <button id="record" type="button">Начать запись</button>
+        <button id="stop" type="button" disabled>Остановить</button>
+        <button id="check" type="button" disabled>Проверить</button>
+        <strong id="timer">0:00 / 2:00</strong>
+      </div>
+      <audio id="player" controls hidden aria-label="Ваша запись"></audio>
+      <p id="status" role="status">Готово к записи</p>
+      <div id="source" class="source">
+        <p>Миллионы людей знают Московский Кремль, Спасскую башню Кремля. Символ Москвы — это и московские куранты на Спасской башне.</p>
+        <p>Первые часы на башне установил английский мастер Христов Головей в 1625 (в тысяча шестьсот двадцать пятом) году.</p>
+        <p>Современные часы установили в 1851 (тысяча восемьсот пятьдесят первом) году, и они работают и сегодня.</p>
+        <p>Это самые большие часы в России. Их диаметр — 6 метров, 12 сантиметров. Каждая цифра — 72 сантиметра. Длина часовой стрелки — 2 метра 97 сантиметров, а минутной — 3 метра 27 сантиметров.</p>
+      </div>
+    </article>
+    <aside class="card">
+      <h2>Результат</h2>
+      <div id="result" class="result" aria-live="polite">—</div>
+      <img src="illustration.png" alt="Спасская башня с курантами и три человека у Кремля"
+        width="680" height="606" style="display: block; max-width: 100%; height: auto; margin-top: 1rem;">
+    </aside>
+  </main>
+  <script src="../../api-config.js"></script>
+  <script src="../../lesson7/faculty.js"></script>
+  <script>
+    const API = window.ANALYZER_CONFIG.apiBaseUrl;
+    const TASK_ID = "lesson6_kremlin_reading";
+    const TASK_CODE = "AI_6_9";
+    const MAX_SECONDS = 120;
+    const narration = document.getElementById("narration");
+    const stopButton = document.getElementById("stop");
+
+    narration.addEventListener("play", () => {
+      if (!stopButton.disabled) narration.pause();
+    });
+    document.getElementById("record").addEventListener("click", () => narration.pause());
+  </script>
+  <script src="../../lesson5/reading.js"></script>
+</body>
+</html>

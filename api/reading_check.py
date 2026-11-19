@@ -16,6 +16,11 @@ from .speaking_nexara import (
     transcribe_audio,
 )
 from .excursion import REFERENCE_TEXT as EXCURSION_REFERENCE_TEXT
+from .profession import REFERENCE_TEXT as PROFESSION_REFERENCE_TEXT
+from .arbat import REFERENCE_TEXT as ARBAT_REFERENCE_TEXT
+from .biography import REFERENCE_TEXT as BIOGRAPHY_REFERENCE_TEXT
+from .kremlin import READING_REFERENCE_TEXT as KREMLIN_REFERENCE_TEXT
+from .shop import REFERENCE_TEXT as SHOP_REFERENCE_TEXT
 from .audio_duration import measure_audio_duration
 
 logger = logging.getLogger('api')
@@ -81,6 +86,31 @@ READING_TASKS: dict[str, dict[str, Any]] = {
     'lesson5_parrot_reading': {'title': 'Попугай', 'reference_text': ' '.join(json.loads((Path(__file__).resolve().parent.parent / 'tasks/lesson5/parrot_reading/source.json').read_text(encoding='utf-8'))['paragraphs']), 'max_duration_sec': 180.0, 'coverage_ratio_min': 0.60, 'sentence_endings': '.?!', 'max_audio_bytes': 20 * 1024 * 1024},
     'lesson5_thomas_edward_reading': {'title': 'Томас и Эдвард — студенты', 'reference_text': ' '.join(json.loads((Path(__file__).resolve().parent.parent / 'tasks/lesson5/thomas_edward_reading/source.json').read_text(encoding='utf-8'))['paragraphs']), 'max_duration_sec': 180.0, 'coverage_ratio_min': 0.60, 'sentence_endings': '.?!', 'max_audio_bytes': 20 * 1024 * 1024},
     'lesson5_moscow_excursion_reading': {'title': 'Экскурсия по Москве', 'reference_text': ' '.join(json.loads((Path(__file__).resolve().parent.parent / 'tasks/lesson5/moscow_excursion_reading/source.json').read_text(encoding='utf-8'))['paragraphs']), 'max_duration_sec': 180.0, 'coverage_ratio_min': 0.60, 'sentence_endings': '.?!', 'max_audio_bytes': 20 * 1024 * 1024},
+    'lesson6_profession_reading': {
+        'title': 'Моя профессия', 'reference_text': PROFESSION_REFERENCE_TEXT,
+        'max_duration_sec': 300.0, 'coverage_ratio_min': 0.60,
+        'sentence_endings': '.?!', 'max_audio_bytes': 20 * 1024 * 1024,
+    },
+    'lesson6_arbat_reading': {
+        'title': 'Арбат', 'reference_text': ARBAT_REFERENCE_TEXT.replace('№ 53', 'номер пятьдесят три'),
+        'max_duration_sec': 300.0, 'coverage_ratio_min': 0.60,
+        'sentence_endings': '.?!', 'max_audio_bytes': 20 * 1024 * 1024,
+    },
+    'lesson6_biography_reading': {
+        'title': 'Моя биография', 'reference_text': BIOGRAPHY_REFERENCE_TEXT,
+        'max_duration_sec': 60.0, 'coverage_ratio_min': 0.60,
+        'sentence_endings': '.?!', 'max_audio_bytes': 20 * 1024 * 1024,
+    },
+    'lesson6_kremlin_reading': {
+        'title': 'Московский Кремль', 'reference_text': KREMLIN_REFERENCE_TEXT,
+        'max_duration_sec': 120.0, 'coverage_ratio_min': 0.60,
+        'sentence_endings': '.?!', 'max_audio_bytes': 20 * 1024 * 1024,
+    },
+    'lesson6_shop_reading': {
+        'title': 'В магазине', 'reference_text': SHOP_REFERENCE_TEXT,
+        'max_duration_sec': 120.0, 'coverage_ratio_min': 0.60,
+        'sentence_endings': '.?!', 'max_audio_bytes': 20 * 1024 * 1024,
+    },
     **{f'lesson7_{name}_reading': {'title': title, 'reference_text': '\n'.join(LESSON7_NEW_SOURCES[name]['paragraphs']), 'max_duration_sec': 120.0, 'coverage_ratio_min': 0.60, 'sentence_endings': '.?!', 'max_audio_bytes': 20 * 1024 * 1024} for name, title in (('vdnh', 'ВДНХ'), ('fairytale', 'Богач и бедняк'), ('gagarin', 'Юрий Гагарин'))},
     'faculty_evening': {'title': 'Вечер на факультете', 'reference_text': FACULTY_REFERENCE_TEXT, 'max_duration_sec': 240.0, 'coverage_ratio_min': 0.60, 'sentence_endings': '.?!', 'max_audio_bytes': 40 * 1024 * 1024},
     'excursion_moscow': {
